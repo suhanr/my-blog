@@ -1,3 +1,4 @@
+import fs from 'node:fs/promises'
 import https from 'node:https'
 import { URL } from 'node:url'
 
@@ -48,7 +49,7 @@ async function fetchAllMedia() {
   const rows = []
   let page = 1
   while (true) {
-    const query = new URLSearchParams({ per_page: String(perPage), page: String(page), media_type: 'image' })
+    const query = new URLSearchParams({ per_page: String(perPage), page: String(page) })
     const result = await fetchJson(`/wp-json/wp/v2/media?${query}`)
     rows.push(...result.data)
     const totalPages = Number(result.headers['x-wp-totalpages'] || 1)
@@ -86,7 +87,7 @@ async function uploadOne(item) {
     body: response.body,
   })
   if (!upload.ok) throw new Error(`R2 upload ${upload.status}: ${key}`)
-  return { uploaded: true, key, bytes: response.body.length }
+  return { uploaded: true, source, key, bytes: response.body.length }
 }
 
 const media = await fetchAllMedia()
@@ -94,6 +95,7 @@ console.log(`Found ${media.length} WordPress media items.`)
 let cursor = 0
 let uploaded = 0
 let skipped = 0
+const manifest = { uploaded: [], skipped: [] }
 
 async function worker() {
   while (true) {
@@ -104,18 +106,24 @@ async function worker() {
       const result = await uploadOne(item)
       if (result.uploaded) {
         uploaded += 1
+        manifest.uploaded.push(result)
         console.log(`Uploaded ${uploaded}/${media.length}: ${result.key} (${result.bytes} bytes)`)
       } else {
         skipped += 1
+        manifest.skipped.push(result)
         console.warn(`Skipped: ${result.source} — ${result.reason}`)
       }
     } catch (error) {
       skipped += 1
+      const result = { source: item.source_url, reason: error instanceof Error ? error.message : String(error) }
+      manifest.skipped.push(result)
       console.error(`Failed: ${item.source_url}`)
-      console.error(error instanceof Error ? error.message : error)
+      console.error(result.reason)
     }
   }
 }
 
 await Promise.all(Array.from({ length: Math.min(concurrency, media.length) }, () => worker()))
+await fs.mkdir('migration-data', { recursive: true })
+await fs.writeFile('migration-data/media-manifest.json', JSON.stringify(manifest, null, 2))
 console.log(`Media migration complete: ${uploaded} uploaded, ${skipped} skipped.`)
