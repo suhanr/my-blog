@@ -60,10 +60,17 @@ async function fetchAll(resource, query = '') {
   return rows
 }
 
-const posts = await fetchAll('posts', 'context=view&_embed=1')
+let posts
+try {
+  posts = await fetchAll('posts', 'status=any&context=view&_embed=1')
+} catch (error) {
+  console.warn(`status=any export was not permitted; falling back to published posts: ${error instanceof Error ? error.message : error}`)
+  posts = await fetchAll('posts', 'status=publish&context=view&_embed=1')
+}
+
 const categories = await fetchAll('categories')
 const tags = await fetchAll('tags')
-const comments = await fetchAll('comments', 'context=embed&orderby=date&order=asc')
+const comments = await fetchAll('comments', 'context=embed&orderby=date&order=asc&per_page=100')
 
 const normalized = posts.map((post) => ({
   id: `wp-${post.id}`,
@@ -88,6 +95,8 @@ const normalizedComments = comments.map((comment) => ({
   body: (comment.content?.rendered || '').replace(/<[^>]+>/g, '').trim(),
   status: comment.status === 'approved' ? 'APPROVED' : comment.status === 'spam' ? 'SPAM' : comment.status === 'trash' ? 'TRASH' : 'PENDING',
   createdAt: comment.date_gmt || comment.date,
+  type: comment.type || 'comment',
+  parentId: comment.parent ? `wp-comment-${comment.parent}` : null,
 }))
 
 await fs.mkdir('migration-data', { recursive: true })
