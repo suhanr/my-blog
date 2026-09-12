@@ -2,6 +2,8 @@ name: Migrate WordPress to D1 and R2
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
 
 concurrency:
   group: wordpress-migration
@@ -9,6 +11,7 @@ concurrency:
 
 jobs:
   migrate:
+    if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'MIGRATE-WORDPRESS-ONCE'
     runs-on: ubuntu-latest
     permissions:
       contents: write
