@@ -3,7 +3,7 @@ import './globals.css'
 import './ckeditor-admin.css'
 import './admin-ui.css'
 import './admin-reference.css'
-import './admin-final.css'
+import './netra-style.css'
 
 const SITE = 'https://blog.suhanurrahman.com'
 
