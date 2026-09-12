@@ -13,6 +13,8 @@ for (const post of supplement.posts || []) {
 
 const existingComments = new Map(main.comments.map((comment) => [String(comment.id), comment]))
 for (const comment of supplement.comments || []) {
+  // Pingbacks are WordPress metadata, not reader comments.
+  if (comment.type && comment.type !== 'comment') continue
   if (!existingComments.has(String(comment.id))) existingComments.set(String(comment.id), comment)
 }
 
