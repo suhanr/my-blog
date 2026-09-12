@@ -1,0 +1,9 @@
+import Link from 'next/link'
+import { requireAdmin } from '@/lib/admin'
+import { getCategories } from '@/lib/db'
+
+export default async function NewPostPage() {
+  await requireAdmin()
+  const categories = await getCategories()
+  return <div className="admin-wrap"><div className="admin-shell"><aside className="admin-side"><Link className="brand" href="/admin/">SUHANUR RAHMAN / CMS</Link><nav className="admin-nav"><Link href="/admin/">Dashboard</Link><Link href="/admin/posts/new/">New post</Link><Link href="/admin/comments/">Comments</Link></nav></aside><main className="admin-main"><p className="kicker">Publishing</p><h1 className="serif">New post</h1><form className="admin-form" action="/api/admin/posts" method="post"><input type="hidden" name="intent" value="create" /><div className="form-row"><label>Title<input name="title" required /></label><label>Slug<input name="slug" placeholder="auto-generated-from-title" /></label></div><div className="form-row"><label>Category<select name="categoryId"><option value="">No category</option>{categories.map((category)=><option key={category.id} value={category.id}>{category.name}</option>)}</select></label><label>Tags<input name="tags" placeholder="ai, research, technology" /></label></div><label>Excerpt<textarea name="excerpt" style={{minHeight:100}} /></label><label>Cover image URL<input name="coverImage" placeholder="https://... or /media/..." /></label><label>Content (Markdown)<textarea className="editor" name="content" placeholder="# Your headline\n\nWrite your article here..." required /></label><div style={{display:'flex',gap:12,flexWrap:'wrap'}}><button className="button" name="status" value="DRAFT">Save draft</button><button className="button" name="status" value="PUBLISHED">Publish</button><Link className="meta" href="/admin/">Cancel</Link></div></form></main></div></div>
+}
