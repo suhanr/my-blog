@@ -64,7 +64,7 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
           <section className="ck-editor-post-card"><div className="ck-editor-post-card-title">SEO</div><label>SEO title<input name="seoTitle" defaultValue={initial.seoTitle || ''} maxLength={60} /></label><label>Meta description<textarea name="seoDescription" defaultValue={initial.seoDescription || ''} maxLength={160} /></label><label>Keywords<input name="seoKeywords" defaultValue={initial.seoKeywords || ''} /></label><label>Canonical URL<input name="canonicalUrl" defaultValue={initial.canonicalUrl || ''} /></label><label>Open Graph image<input name="ogImage" defaultValue={initial.ogImage || ''} /></label><label className="ck-editor-check"><input type="checkbox" name="noindex" value="1" defaultChecked={initial.noindex === 1} /> Prevent indexing</label></section>
         </aside>
       </div>
-      <div className="ck-editor-post-actions"><div><button className="primary-action" name="intent" value={saveIntent} status="DRAFT">Save draft</button><button className="publish-action" name="intent" value={saveIntent} status="PUBLISHED">Publish</button>{initial.id && <button className="danger-action" name="intent" value="trash" formNoValidate>Move to Trash</button>}</div></div>
+      <div className="ck-editor-post-actions"><div><button className="primary-action" name="intent" value={saveIntent} type="submit" >Save draft</button><button className="publish-action" name="intent" value={saveIntent} type="submit">Publish</button>{initial.id && <button className="danger-action" name="intent" value="trash" type="submit" formNoValidate>Move to Trash</button>}</div></div>
     </form>
   )
 }
