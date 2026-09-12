@@ -6,7 +6,7 @@ compatibility_flags = ["nodejs_compat"]
 [[d1_databases]]
 binding = "BLOG_DB"
 database_name = "suhanur-blog"
-database_id = "REPLACE_WITH_D1_DATABASE_ID"
+database_id = "16d29e6e-9485-47df-bb16-2ea2e2ed5414"
 migrations_dir = "migrations"
 
 [[r2_buckets]]
