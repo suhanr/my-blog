@@ -10,9 +10,10 @@ export async function POST(request: Request) {
   if (!(await isAdmin(request))) return new Response('Unauthorized', { status: 401 })
   const form = await request.formData()
   const intent = String(form.get('intent') || 'create')
+  const action = String(form.get('action') || '')
   const id = String(form.get('id') || crypto.randomUUID())
 
-  if (intent === 'delete' || intent === 'trash') {
+  if (action === 'trash' || intent === 'delete' || intent === 'trash') {
     await db.prepare(`UPDATE posts SET deleted_at=?, updated_at=? WHERE id=?`).bind(new Date().toISOString(), new Date().toISOString(), id).run()
     return Response.redirect(new URL('/admin/', request.url), 303)
   }
