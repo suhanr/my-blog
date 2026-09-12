@@ -10,19 +10,9 @@ export const metadata: Metadata = {
   alternates: { canonical: SITE },
   authors: [{ name: 'Suhanur Rahman', url: 'https://suhanurrahman.com/' }],
   robots: { index: true, follow: true },
-  openGraph: {
-    type: 'website',
-    siteName: 'Suhanur Rahman — Journal',
-    url: SITE,
-    title: 'Suhanur Rahman — Journal',
-    description: 'Technology, research, digital investigations, data and ideas.',
-  },
+  openGraph: { type: 'website', siteName: 'Suhanur Rahman — Journal', url: SITE, title: 'Suhanur Rahman — Journal', description: 'Technology, research, digital investigations, data and ideas.' },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  )
+  return <html lang="en"><body>{children}</body></html>
 }
