@@ -17,6 +17,11 @@ const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'wp-media-'))
 
 if (!legacyIp) throw new Error('LEGACY_WP_IP is required')
 
+function lookupLegacy(_hostname, options, callback) {
+  if (options?.all) return callback(null, [{ address: legacyIp, family: 4 }])
+  return callback(null, legacyIp, 4)
+}
+
 function requestBuffer(pathname, headers = {}) {
   return new Promise((resolve, reject) => {
     const request = https.request({
@@ -26,7 +31,7 @@ function requestBuffer(pathname, headers = {}) {
       method: 'GET',
       servername: host,
       headers: { Host: host, ...headers },
-      lookup: (_hostname, _options, callback) => callback(null, legacyIp, 4),
+      lookup: lookupLegacy,
     }, (response) => {
       const chunks = []
       response.on('data', (chunk) => chunks.push(chunk))
@@ -70,11 +75,12 @@ async function uploadOne(item) {
   const key = objectKeyFromUrl(source)
   if (!key) return { skipped: true, reason: 'not an uploads URL', source }
 
-  const sourcePath = new URL(source).pathname + new URL(source).search
+  const sourceUrl = new URL(source)
+  const sourcePath = sourceUrl.pathname + sourceUrl.search
   const response = await requestBuffer(sourcePath)
   if (response.status !== 200) return { skipped: true, reason: `HTTP ${response.status}`, source }
 
-  const ext = path.extname(new URL(source).pathname) || '.bin'
+  const ext = path.extname(sourceUrl.pathname) || '.bin'
   const tempFile = path.join(tempDir, `${crypto.createHash('sha1').update(source).digest('hex')}${ext}`)
   await fs.writeFile(tempFile, response.body)
 
