@@ -1,19 +1,52 @@
 import fs from 'node:fs/promises'
+import https from 'node:https'
+import { URL } from 'node:url'
 
 const base = (process.env.WP_URL || 'https://blog.suhanurrahman.com').replace(/\/$/, '')
+const host = new URL(base).hostname
+const legacyIp = process.env.LEGACY_WP_IP
 const perPage = 100
+
+function legacyGet(pathname) {
+  return new Promise((resolve, reject) => {
+    const request = https.request({
+      hostname: host,
+      port: 443,
+      path: pathname,
+      method: 'GET',
+      servername: host,
+      headers: { Host: host, Accept: 'application/json' },
+      ...(legacyIp ? { lookup: (_hostname, _options, callback) => callback(null, legacyIp, 4) } : {}),
+    }, (response) => {
+      const chunks = []
+      response.on('data', (chunk) => chunks.push(chunk))
+      response.on('end', () => resolve({ status: response.statusCode || 0, headers: response.headers, body: Buffer.concat(chunks) }))
+    })
+    request.on('error', reject)
+    request.end()
+  })
+}
+
+async function fetchJson(pathname) {
+  const response = await legacyGet(pathname)
+  if (response.status >= 300 && response.status < 400 && response.headers.location) {
+    const location = new URL(response.headers.location, base)
+    return fetchJson(`${location.pathname}${location.search}`)
+  }
+  if (response.status !== 200) throw new Error(`WordPress API ${response.status}: ${pathname}`)
+  return { data: JSON.parse(response.body.toString('utf8')), headers: response.headers }
+}
 
 async function fetchAll(resource, query = '') {
   const rows = []
   let page = 1
   while (true) {
-    const separator = query ? '&' : ''
-    const response = await fetch(`${base}/wp-json/wp/v2/${resource}?per_page=${perPage}&page=${page}${separator}${query}`)
-    if (response.status === 400) break
-    if (!response.ok) throw new Error(`WordPress API ${response.status}: ${resource}`)
-    const data = await response.json()
-    rows.push(...data)
-    const totalPages = Number(response.headers.get('X-WP-TotalPages') || 1)
+    const params = new URLSearchParams({ per_page: String(perPage), page: String(page) })
+    if (query) for (const [key, value] of new URLSearchParams(query)) params.set(key, value)
+    const result = await fetchJson(`/wp-json/wp/v2/${resource}?${params.toString()}`)
+    if (page === 1 && !Array.isArray(result.data)) throw new Error(`Unexpected WordPress response for ${resource}`)
+    rows.push(...result.data)
+    const totalPages = Number(result.headers['x-wp-totalpages'] || 1)
     if (page >= totalPages) break
     page += 1
   }
