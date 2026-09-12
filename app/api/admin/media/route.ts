@@ -4,12 +4,12 @@ import { db } from '@/lib/db'
 
 export async function GET(request: Request) {
   if (!(await isAdmin(request))) return new Response('Unauthorized', { status: 401 })
-  const media = await db.prepare(`SELECT id,url,filename,mime_type AS mimeType,size,created_at AS createdAt FROM media_assets WHERE deleted_at IS NULL ORDER BY datetime(created_at) DESC LIMIT 500`).all<{id:string;url:string;filename:string|null;mimeType:string|null;size:number|null;createdAt:string}>()
+  const media = await db.prepare(`SELECT id,url,filename,mime_type AS mimeType,size,created_at AS createdAt FROM media_assets WHERE deleted_at IS NULL ORDER BY datetime(created_at) DESC`).all<{id:string;url:string;filename:string|null;mimeType:string|null;size:number|null;createdAt:string}>()
   return Response.json({ media: media.results })
 }
 
 export async function POST(request: Request) {
-  if (!(await isAdmin(request))) return new Response('Unauthorized', { status: 401 })
+  if (!(await isAdmin(request))) return Response.json({ error: 'Unauthorized' }, { status: 401 })
   const form = await request.formData()
   const file = form.get('file')
   if (!(file instanceof File)) return Response.json({ error: 'File required' }, { status: 400 })
