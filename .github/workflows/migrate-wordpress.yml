@@ -57,7 +57,7 @@ jobs:
 
       - name: Verify migration counts
         run: |
-          npx wrangler d1 execute suhanur-blog --remote --json --command="SELECT 'posts' AS table_name, COUNT(*) AS count FROM posts UNION ALL SELECT 'published_posts', COUNT(*) FROM posts WHERE status='PUBLISHED' UNION ALL SELECT 'draft_posts', COUNT(*) FROM posts WHERE status='DRAFT' UNION ALL SELECT 'categories', COUNT(*) FROM categories UNION ALL SELECT 'tags', COUNT(*) FROM tags UNION ALL SELECT 'post_categories', COUNT(*) FROM post_categories UNION ALL SELECT 'post_tags', COUNT(*) FROM post_tags UNION ALL SELECT 'comments', COUNT(*) FROM comments;"
+          npx wrangler d1 execute suhanur-blog --remote --json --command="SELECT (SELECT COUNT(*) FROM posts) AS posts, (SELECT COUNT(*) FROM posts WHERE status='PUBLISHED') AS published_posts, (SELECT COUNT(*) FROM posts WHERE status='DRAFT') AS draft_posts, (SELECT COUNT(*) FROM categories) AS categories, (SELECT COUNT(*) FROM tags) AS tags, (SELECT COUNT(*) FROM post_categories) AS post_categories, (SELECT COUNT(*) FROM post_tags) AS post_tags, (SELECT COUNT(*) FROM comments) AS comments;"
 
       - name: Commit generated migration manifest
         run: |
