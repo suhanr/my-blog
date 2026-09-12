@@ -14,13 +14,22 @@ A self-hosted-style editorial CMS built with Next.js, vinext and Cloudflare Work
 1. Create a D1 database named `suhanur-blog`.
 2. Create an R2 bucket named `suhanur-blog-media`.
 3. Put the D1 database ID into `wrangler.toml`.
-4. Configure these secrets in the Worker: `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET`.
-5. Apply the migration with `wrangler d1 migrations apply suhanur-blog --remote`.
+4. Configure the admin secrets `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET` for the Worker.
+5. Apply the migration with `npx wrangler d1 migrations apply suhanur-blog --remote`.
 6. Connect `blog.suhanurrahman.com` as the custom Worker domain.
+
+### GitHub Actions deployment
+
+The repository includes `.github/workflows/deploy.yml`. After the Cloudflare resources are created, add these GitHub repository secrets:
+
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ACCOUNT_ID`
+
+Every push to `main` will then apply pending D1 migrations and deploy the vinext Worker. The workflow uses Cloudflare's `@vinext/cloudflare` deployment command.
 
 ## Local
 
-Copy `.dev.vars.example` to `.dev.vars` and set the two secrets. Use the vinext dev workflow for the Cloudflare runtime.
+Copy `.dev.vars.example` to `.dev.vars` and set the two admin secrets. Use the vinext development workflow for the Cloudflare runtime.
 
 ## CMS
 
@@ -30,4 +39,4 @@ Post content is authored in Markdown. Published articles are rendered as semanti
 
 ## WordPress migration
 
-Use `scripts/export-wordpress.mjs` to pull posts, categories and tags from an existing WordPress REST API and produce a migration bundle. The generated post data can then be loaded into D1 with the migration tooling.
+Use `scripts/export-wordpress.mjs` to pull posts, categories and tags from the existing WordPress REST API and produce a migration bundle. The generated post data can then be loaded into D1 with the migration tooling.
