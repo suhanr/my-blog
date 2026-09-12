@@ -8,7 +8,6 @@ const legacyIp = process.env.LEGACY_WP_IP
 const legacyServerName = process.env.LEGACY_SERVER_NAME || 'premium120.web-hosting.com'
 const perPage = 100
 
-// Source-of-truth IDs from the supplied wpaf_ SQL dump.
 const SOURCE_POST_IDS = new Set([15,3264,3297,3307,3334,3339,3342,3345,3348,3351,3354,3423,3669,3690,3695,3741,3753,3841,3866,3893,3948,3959,3962,3969,4010,4163,4167,4198,4287,4345,4349,4377,4402,4639,4672,4715,4754,4759,4770,4811,4873,4885,4887,4896,4934,4937,4965,5012,5044,5051,5069,5074,5116,5123,5126,5130,5134,5147,5154,5163,5177,5183,5279,4990,5244])
 const SOURCE_CATEGORY_IDS = new Set([1,2,3,4,5,6,16,17,18,19,20,21,22,26,27,40,41])
 const SOURCE_COMMENT_IDS = [264,277,278,291,292,293,294,628,662,663,685,686,687,688,689,690,693,694,695]
@@ -108,17 +107,20 @@ const normalized = posts
     tagIds: post.tags || [],
   }))
 
-const normalizedComments = comments.map((comment) => ({
-  id: `wp-comment-${comment.id}`,
-  postId: `wp-${comment.post}`,
-  name: comment.author_name || 'Anonymous',
-  email: null,
-  body: (comment.content?.rendered || '').replace(/<[^>]+>/g, '').trim(),
-  status: comment.status === 'approved' ? 'APPROVED' : comment.status === 'spam' ? 'SPAM' : comment.status === 'trash' ? 'TRASH' : 'PENDING',
-  createdAt: comment.date_gmt || comment.date,
-  type: comment.type || 'comment',
-  parentId: comment.parent ? `wp-comment-${comment.parent}` : null,
-})).filter((comment) => SOURCE_POST_IDS.has(Number(comment.postId.replace('wp-', ''))))
+const normalizedComments = comments
+  .filter((comment) => !comment.type || comment.type === 'comment')
+  .map((comment) => ({
+    id: `wp-comment-${comment.id}`,
+    postId: `wp-${comment.post}`,
+    name: comment.author_name || 'Anonymous',
+    email: null,
+    body: (comment.content?.rendered || '').replace(/<[^>]+>/g, '').trim(),
+    status: comment.status === 'approved' ? 'APPROVED' : comment.status === 'spam' ? 'SPAM' : comment.status === 'trash' ? 'TRASH' : 'PENDING',
+    createdAt: comment.date_gmt || comment.date,
+    type: 'comment',
+    parentId: comment.parent ? `wp-comment-${comment.parent}` : null,
+  }))
+  .filter((comment) => SOURCE_POST_IDS.has(Number(comment.postId.replace('wp-', ''))))
 
 const normalizedCategories = categories.filter((category) => SOURCE_CATEGORY_IDS.has(Number(category.id)))
 
