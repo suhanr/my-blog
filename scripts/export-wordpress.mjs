@@ -7,6 +7,12 @@ const host = new URL(base).hostname
 const legacyIp = process.env.LEGACY_WP_IP
 const perPage = 100
 
+function lookupLegacy(_hostname, options, callback) {
+  if (!legacyIp) return callback(null, undefined, 4)
+  if (options?.all) return callback(null, [{ address: legacyIp, family: 4 }])
+  return callback(null, legacyIp, 4)
+}
+
 function legacyGet(pathname) {
   return new Promise((resolve, reject) => {
     const request = https.request({
@@ -16,7 +22,7 @@ function legacyGet(pathname) {
       method: 'GET',
       servername: host,
       headers: { Host: host, Accept: 'application/json' },
-      ...(legacyIp ? { lookup: (_hostname, _options, callback) => callback(null, legacyIp, 4) } : {}),
+      ...(legacyIp ? { lookup: lookupLegacy } : {}),
     }, (response) => {
       const chunks = []
       response.on('data', (chunk) => chunks.push(chunk))
@@ -44,7 +50,7 @@ async function fetchAll(resource, query = '') {
     const params = new URLSearchParams({ per_page: String(perPage), page: String(page) })
     if (query) for (const [key, value] of new URLSearchParams(query)) params.set(key, value)
     const result = await fetchJson(`/wp-json/wp/v2/${resource}?${params.toString()}`)
-    if (page === 1 && !Array.isArray(result.data)) throw new Error(`Unexpected WordPress response for ${resource}`)
+    if (!Array.isArray(result.data)) throw new Error(`Unexpected WordPress response for ${resource}`)
     rows.push(...result.data)
     const totalPages = Number(result.headers['x-wp-totalpages'] || 1)
     if (page >= totalPages) break
