@@ -2,6 +2,10 @@ name = "suhanur-rahman-blog"
 main = "vinext/server/fetch-handler"
 compatibility_date = "2026-09-12"
 compatibility_flags = ["nodejs_compat"]
+keep_vars = true
+
+[secrets]
+required = ["ADMIN_PASSWORD", "ADMIN_SESSION_SECRET"]
 
 [[d1_databases]]
 binding = "BLOG_DB"
