@@ -10,7 +10,7 @@ export default async function AdminDashboard() {
     FROM posts
     WHERE deleted_at IS NULL
     ORDER BY datetime(updated_at) DESC
-    LIMIT 50
+    LIMIT 100
   `).all<any>()
 
   const [all, published, drafts, comments, categories, tags, trash] = await Promise.all([
