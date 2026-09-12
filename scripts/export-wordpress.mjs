@@ -5,6 +5,7 @@ import { URL } from 'node:url'
 const base = (process.env.WP_URL || 'https://blog.suhanurrahman.com').replace(/\/$/, '')
 const host = new URL(base).hostname
 const legacyIp = process.env.LEGACY_WP_IP
+const legacyServerName = process.env.LEGACY_SERVER_NAME || 'premium120.web-hosting.com'
 const perPage = 100
 
 function lookupLegacy(_hostname, options, callback) {
@@ -16,11 +17,11 @@ function lookupLegacy(_hostname, options, callback) {
 function legacyGet(pathname) {
   return new Promise((resolve, reject) => {
     const request = https.request({
-      hostname: host,
+      hostname: legacyServerName,
       port: 443,
       path: pathname,
       method: 'GET',
-      servername: host,
+      servername: legacyServerName,
       headers: { Host: host, Accept: 'application/json' },
       ...(legacyIp ? { lookup: lookupLegacy } : {}),
     }, (response) => {
