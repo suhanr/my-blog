@@ -26,9 +26,8 @@ The repository includes `.github/workflows/deploy.yml`. After the Cloudflare res
 - `CLOUDFLARE_ACCOUNT_ID`
 - `ADMIN_PASSWORD`
 - `ADMIN_SESSION_SECRET`
-- `MEDIA_IMPORT_TOKEN`
 
-Every push to `main` will then apply pending D1 migrations and deploy the vinext Worker. The workflow uses Cloudflare's `@vinext/cloudflare` deployment command. When the admin secrets are present in GitHub, they are re-applied to the Worker after deployment.
+Every push to `main` will then apply pending D1 migrations and deploy the vinext Worker. When the admin secrets are present in GitHub, they are re-applied to the Worker after deployment.
 
 ## Local
 
@@ -42,4 +41,4 @@ Post content is authored in Markdown. Published articles are rendered as semanti
 
 ## WordPress migration
 
-The one-time migration workflow exports WordPress content from the legacy origin, merges unpublished/special records from the database snapshot, imports all accessible uploads into R2, builds a foreign-key-safe D1 import, and verifies the resulting counts. The workflow is guarded by the `MIGRATE-WORDPRESS-ONCE` commit message and remains manually dispatchable.
+The one-time migration workflow exports WordPress content from the legacy origin, merges unpublished/special records from the database snapshot, imports all accessible uploads into R2 with authenticated Wrangler access, builds a foreign-key-safe D1 import, and verifies the resulting counts. The workflow is guarded by the `MIGRATE-WORDPRESS-ONCE` commit message and remains manually dispatchable.
