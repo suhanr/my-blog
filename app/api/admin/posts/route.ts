@@ -2,6 +2,10 @@ import { isAdmin } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { slugify } from '@/lib/slug'
 
+function values(form: FormData, name: string) {
+  return form.getAll(name).map((value) => String(value).trim()).filter(Boolean)
+}
+
 export async function POST(request: Request) {
   if (!(await isAdmin(request))) return new Response('Unauthorized', { status: 401 })
   const form = await request.formData()
@@ -18,7 +22,8 @@ export async function POST(request: Request) {
   const excerpt = String(form.get('excerpt') || '').trim().slice(0, 500)
   const content = String(form.get('content') || '')
   const coverImage = String(form.get('coverImage') || '').trim().slice(0, 500)
-  const categoryId = String(form.get('categoryId') || '').trim() || null
+  const categoryIds = values(form, 'categoryIds').slice(0, 20)
+  const categoryId = categoryIds[0] || null
   const status = String(form.get('status') || 'DRAFT') === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT'
   const now = new Date().toISOString()
 
@@ -30,6 +35,11 @@ export async function POST(request: Request) {
   } else {
     await db.prepare(`INSERT INTO posts (id,title,slug,excerpt,content,cover_image,status,published_at,created_at,updated_at,category_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)`)
       .bind(id, title, slug, excerpt || null, content, coverImage || null, status, status === 'PUBLISHED' ? now : null, now, now, categoryId).run()
+  }
+
+  await db.prepare(`DELETE FROM post_categories WHERE post_id=?`).bind(id).run()
+  for (const categoryId of categoryIds) {
+    await db.prepare(`INSERT OR IGNORE INTO post_categories (post_id,category_id) VALUES (?,?)`).bind(id, categoryId).run()
   }
 
   const tags = String(form.get('tags') || '').split(',').map((v) => v.trim()).filter(Boolean).slice(0, 20)
