@@ -2,8 +2,6 @@ name: Migrate WordPress to D1 and R2
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
 
 concurrency:
   group: wordpress-migration
@@ -11,10 +9,9 @@ concurrency:
 
 jobs:
   migrate:
-    if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'MIGRATE-WORDPRESS-ONCE'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
 
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -22,7 +19,7 @@ jobs:
       WP_URL: https://blog.suhanurrahman.com
       LEGACY_WP_IP: 162.0.229.133
       LEGACY_SERVER_NAME: premium120.web-hosting.com
-      MEDIA_BUCKET: suhanur-blog-media
+      MEDIA_IMPORT_TOKEN: ${{ secrets.MEDIA_IMPORT_TOKEN }}
 
     steps:
       - name: Checkout
@@ -40,10 +37,13 @@ jobs:
       - name: Export WordPress content from legacy origin
         run: node scripts/export-wordpress.mjs
 
-      - name: Import WordPress media into R2
+      - name: Merge unpublished and special WordPress records
+        run: node scripts/merge-wordpress-supplement.mjs
+
+      - name: Import all WordPress uploads into R2
         run: node scripts/migrate-wordpress-media.mjs
 
-      - name: Build D1 import SQL
+      - name: Build complete D1 import SQL
         run: node scripts/build-import-sql.mjs
 
       - name: Apply D1 schema migrations
@@ -52,6 +52,14 @@ jobs:
       - name: Import WordPress content into D1
         run: npx wrangler d1 execute suhanur-blog --remote --file=migration-data/import.sql --yes
 
-      - name: Verify imported content
+      - name: Verify migration counts
         run: |
-          npx wrangler d1 execute suhanur-blog --remote --json --command="SELECT 'posts' AS table_name, COUNT(*) AS count FROM posts UNION ALL SELECT 'categories', COUNT(*) FROM categories UNION ALL SELECT 'tags', COUNT(*) FROM tags UNION ALL SELECT 'comments', COUNT(*) FROM comments;"
+          npx wrangler d1 execute suhanur-blog --remote --json --command="SELECT 'posts' AS table_name, COUNT(*) AS count FROM posts UNION ALL SELECT 'published_posts', COUNT(*) FROM posts WHERE status='PUBLISHED' UNION ALL SELECT 'draft_posts', COUNT(*) FROM posts WHERE status='DRAFT' UNION ALL SELECT 'categories', COUNT(*) FROM categories UNION ALL SELECT 'tags', COUNT(*) FROM tags UNION ALL SELECT 'post_categories', COUNT(*) FROM post_categories UNION ALL SELECT 'post_tags', COUNT(*) FROM post_tags UNION ALL SELECT 'comments', COUNT(*) FROM comments;"
+
+      - name: Commit generated migration manifest
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add migration-data/media-manifest.json
+          git diff --cached --quiet || git commit -m "Record WordPress media migration manifest"
+          git push
