@@ -52,12 +52,15 @@ jobs:
       - name: Apply D1 schema migrations
         run: npx wrangler d1 migrations apply suhanur-blog --remote
 
+      - name: Remove previous WordPress migration records
+        run: node scripts/cleanup-wordpress-import.mjs && npx wrangler d1 execute suhanur-blog --remote --file=migration-data/cleanup.sql --yes
+
       - name: Import WordPress content into D1
         run: npx wrangler d1 execute suhanur-blog --remote --file=migration-data/import.sql --yes
 
       - name: Verify migration counts
         run: |
-          npx wrangler d1 execute suhanur-blog --remote --json --command="SELECT (SELECT COUNT(*) FROM posts) AS posts, (SELECT COUNT(*) FROM posts WHERE status='PUBLISHED') AS published_posts, (SELECT COUNT(*) FROM posts WHERE status='DRAFT') AS draft_posts, (SELECT COUNT(*) FROM categories) AS categories, (SELECT COUNT(*) FROM tags) AS tags, (SELECT COUNT(*) FROM post_categories) AS post_categories, (SELECT COUNT(*) FROM post_tags) AS post_tags, (SELECT COUNT(*) FROM comments) AS comments;"
+          npx wrangler d1 execute suhanur-blog --remote --json --command="SELECT (SELECT COUNT(*) FROM posts WHERE id LIKE 'wp-%') AS wp_posts, (SELECT COUNT(*) FROM posts WHERE id LIKE 'wp-%' AND status='PUBLISHED') AS wp_published_posts, (SELECT COUNT(*) FROM posts WHERE id LIKE 'wp-%' AND status='DRAFT') AS wp_draft_posts, (SELECT COUNT(*) FROM categories WHERE id LIKE 'wp-cat-%') AS wp_categories, (SELECT COUNT(*) FROM tags WHERE id LIKE 'wp-tag-%') AS wp_tags, (SELECT COUNT(*) FROM post_categories WHERE post_id LIKE 'wp-%') AS wp_post_categories, (SELECT COUNT(*) FROM post_tags WHERE post_id LIKE 'wp-%') AS wp_post_tags, (SELECT COUNT(*) FROM comments WHERE id LIKE 'wp-comment-%') AS wp_comments;"
 
       - name: Commit generated migration manifest
         run: |
