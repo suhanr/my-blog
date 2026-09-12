@@ -11,6 +11,7 @@ const execFileAsync = promisify(execFile)
 const base = (process.env.WP_URL || 'https://blog.suhanurrahman.com').replace(/\/$/, '')
 const host = new URL(base).hostname
 const legacyIp = process.env.LEGACY_WP_IP
+const legacyServerName = process.env.LEGACY_SERVER_NAME || 'premium120.web-hosting.com'
 const bucket = process.env.MEDIA_BUCKET || 'suhanur-blog-media'
 const perPage = 100
 const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'wp-media-'))
@@ -25,11 +26,11 @@ function lookupLegacy(_hostname, options, callback) {
 function requestBuffer(pathname, headers = {}) {
   return new Promise((resolve, reject) => {
     const request = https.request({
-      hostname: host,
+      hostname: legacyServerName,
       port: 443,
       path: pathname,
       method: 'GET',
-      servername: host,
+      servername: legacyServerName,
       headers: { Host: host, ...headers },
       lookup: lookupLegacy,
     }, (response) => {
