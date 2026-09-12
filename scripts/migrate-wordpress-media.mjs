@@ -1,22 +1,17 @@
-import fs from 'node:fs/promises'
-import path from 'node:path'
-import os from 'node:os'
-import crypto from 'node:crypto'
 import https from 'node:https'
-import { execFile } from 'node:child_process'
-import { promisify } from 'node:util'
 import { URL } from 'node:url'
 
-const execFileAsync = promisify(execFile)
 const base = (process.env.WP_URL || 'https://blog.suhanurrahman.com').replace(/\/$/, '')
 const host = new URL(base).hostname
 const legacyIp = process.env.LEGACY_WP_IP
 const legacyServerName = process.env.LEGACY_SERVER_NAME || 'premium120.web-hosting.com'
-const bucket = process.env.MEDIA_BUCKET || 'suhanur-blog-media'
+const importUrl = process.env.MEDIA_IMPORT_URL || `${base}/api/media-import`
+const importToken = process.env.MEDIA_IMPORT_TOKEN
 const perPage = 100
-const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'wp-media-'))
+const concurrency = 8
 
 if (!legacyIp) throw new Error('LEGACY_WP_IP is required')
+if (!importToken) throw new Error('MEDIA_IMPORT_TOKEN is required')
 
 function lookupLegacy(_hostname, options, callback) {
   if (options?.all) return callback(null, [{ address: legacyIp, family: 4 }])
@@ -63,61 +58,64 @@ async function fetchAllMedia() {
   return rows
 }
 
-function objectKeyFromUrl(sourceUrl) {
+function relativeUploadKey(sourceUrl) {
   const url = new URL(sourceUrl)
   const marker = '/wp-content/uploads/'
   const index = url.pathname.indexOf(marker)
   if (index < 0) return null
-  return `media/uploads/${decodeURIComponent(url.pathname.slice(index + marker.length))}`
+  return `uploads/${decodeURIComponent(url.pathname.slice(index + marker.length))}`
 }
 
 async function uploadOne(item) {
   const source = item.source_url
-  const key = objectKeyFromUrl(source)
+  const key = relativeUploadKey(source)
   if (!key) return { skipped: true, reason: 'not an uploads URL', source }
 
   const sourceUrl = new URL(source)
-  const sourcePath = sourceUrl.pathname + sourceUrl.search
-  const response = await requestBuffer(sourcePath)
+  const response = await requestBuffer(sourceUrl.pathname + sourceUrl.search)
   if (response.status !== 200) return { skipped: true, reason: `HTTP ${response.status}`, source }
 
-  const ext = path.extname(sourceUrl.pathname) || '.bin'
-  const tempFile = path.join(tempDir, `${crypto.createHash('sha1').update(source).digest('hex')}${ext}`)
-  await fs.writeFile(tempFile, response.body)
-
-  const contentType = item.mime_type || 'application/octet-stream'
-  await execFileAsync('npx', [
-    'wrangler', 'r2', 'object', 'put', `${bucket}/${key}`,
-    '--file', tempFile,
-    '--content-type', contentType,
-    '--remote',
-  ], { env: process.env, maxBuffer: 10 * 1024 * 1024 })
-
-  await fs.rm(tempFile, { force: true })
-  return { uploaded: true, source, key, bytes: response.body.length }
+  const target = new URL(importUrl)
+  target.searchParams.set('key', key)
+  const upload = await fetch(target, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${importToken}`,
+      'Content-Type': item.mime_type || 'application/octet-stream',
+    },
+    body: response.body,
+  })
+  if (!upload.ok) throw new Error(`R2 upload ${upload.status}: ${key}`)
+  return { uploaded: true, key, bytes: response.body.length }
 }
 
 const media = await fetchAllMedia()
 console.log(`Found ${media.length} WordPress media items.`)
+let cursor = 0
 let uploaded = 0
 let skipped = 0
 
-for (const item of media) {
-  try {
-    const result = await uploadOne(item)
-    if (result.uploaded) {
-      uploaded += 1
-      console.log(`Uploaded ${uploaded}/${media.length}: ${result.key} (${result.bytes} bytes)`)
-    } else {
+async function worker() {
+  while (true) {
+    const index = cursor++
+    if (index >= media.length) return
+    const item = media[index]
+    try {
+      const result = await uploadOne(item)
+      if (result.uploaded) {
+        uploaded += 1
+        console.log(`Uploaded ${uploaded}/${media.length}: ${result.key} (${result.bytes} bytes)`)
+      } else {
+        skipped += 1
+        console.warn(`Skipped: ${result.source} — ${result.reason}`)
+      }
+    } catch (error) {
       skipped += 1
-      console.warn(`Skipped: ${result.source} — ${result.reason}`)
+      console.error(`Failed: ${item.source_url}`)
+      console.error(error instanceof Error ? error.message : error)
     }
-  } catch (error) {
-    skipped += 1
-    console.error(`Failed: ${item.source_url}`)
-    console.error(error instanceof Error ? error.message : error)
   }
 }
 
-await fs.rm(tempDir, { recursive: true, force: true })
+await Promise.all(Array.from({ length: Math.min(concurrency, media.length) }, () => worker()))
 console.log(`Media migration complete: ${uploaded} uploaded, ${skipped} skipped.`)
