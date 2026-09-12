@@ -1,18 +1,23 @@
 import fs from 'node:fs/promises'
+import path from 'node:path'
+import os from 'node:os'
+import crypto from 'node:crypto'
+import { execFile } from 'node:child_process'
+import { promisify } from 'node:util'
 import https from 'node:https'
 import { URL } from 'node:url'
 
+const execFileAsync = promisify(execFile)
 const base = (process.env.WP_URL || 'https://blog.suhanurrahman.com').replace(/\/$/, '')
 const host = new URL(base).hostname
 const legacyIp = process.env.LEGACY_WP_IP
 const legacyServerName = process.env.LEGACY_SERVER_NAME || 'premium120.web-hosting.com'
-const importUrl = process.env.MEDIA_IMPORT_URL || `${base}/api/media-import`
-const importToken = process.env.MEDIA_IMPORT_TOKEN
+const bucket = 'suhanur-blog-media'
 const perPage = 100
-const concurrency = 8
+const concurrency = 4
+const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'wp-media-'))
 
 if (!legacyIp) throw new Error('LEGACY_WP_IP is required')
-if (!importToken) throw new Error('MEDIA_IMPORT_TOKEN is required')
 
 function lookupLegacy(_hostname, options, callback) {
   if (options?.all) return callback(null, [{ address: legacyIp, family: 4 }])
@@ -76,17 +81,18 @@ async function uploadOne(item) {
   const response = await requestBuffer(sourceUrl.pathname + sourceUrl.search)
   if (response.status !== 200) return { skipped: true, reason: `HTTP ${response.status}`, source }
 
-  const target = new URL(importUrl)
-  target.searchParams.set('key', key)
-  const upload = await fetch(target, {
-    method: 'PUT',
-    headers: {
-      Authorization: `Bearer ${importToken}`,
-      'Content-Type': item.mime_type || 'application/octet-stream',
-    },
-    body: response.body,
-  })
-  if (!upload.ok) throw new Error(`R2 upload ${upload.status}: ${key}`)
+  const ext = path.extname(sourceUrl.pathname) || '.bin'
+  const tempFile = path.join(tempDir, `${crypto.createHash('sha1').update(source).digest('hex')}${ext}`)
+  await fs.writeFile(tempFile, response.body)
+
+  await execFileAsync('npx', [
+    'wrangler', 'r2', 'object', 'put', `${bucket}/media/${key}`,
+    '--file', tempFile,
+    '--content-type', item.mime_type || 'application/octet-stream',
+    '--remote',
+  ], { env: process.env, maxBuffer: 10 * 1024 * 1024 })
+
+  await fs.rm(tempFile, { force: true })
   return { uploaded: true, source, key, bytes: response.body.length }
 }
 
@@ -126,4 +132,5 @@ async function worker() {
 await Promise.all(Array.from({ length: Math.min(concurrency, media.length) }, () => worker()))
 await fs.mkdir('migration-data', { recursive: true })
 await fs.writeFile('migration-data/media-manifest.json', JSON.stringify(manifest, null, 2))
+await fs.rm(tempDir, { recursive: true, force: true })
 console.log(`Media migration complete: ${uploaded} uploaded, ${skipped} skipped.`)
