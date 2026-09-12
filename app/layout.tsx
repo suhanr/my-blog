@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import './ckeditor-admin.css'
 import './admin-ui.css'
+import './admin-reference.css'
 
 const SITE = 'https://blog.suhanurrahman.com'
 
