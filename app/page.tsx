@@ -1,12 +1,16 @@
 import Link from 'next/link'
+import { listPublishedPosts } from '@/lib/db'
 
-const featured = [
-  { title: 'Your first article will live here', slug: '#', date: 'Coming soon', category: 'Journal', excerpt: 'This starter homepage is ready for the WordPress migration and publishing CMS.' },
-  { title: 'A publishing system built around your own data', slug: '#', date: 'Coming soon', category: 'Technology', excerpt: 'The final system will support posts, categories, tags, media, comments and SEO metadata.' },
-  { title: 'From WordPress to a modern publishing stack', slug: '#', date: 'Coming soon', category: 'Research', excerpt: 'Existing WordPress content can be imported while keeping the public URLs as stable as possible.' },
-]
+function formatDate(value: string | null) {
+  if (!value) return ''
+  return new Intl.DateTimeFormat('en', { dateStyle: 'medium' }).format(new Date(value))
+}
 
-export default function Home() {
+export default async function Home() {
+  const posts = await listPublishedPosts(18)
+  const featured = posts[0]
+  const rest = posts.slice(1)
+
   return (
     <main>
       <header className="header"><div className="container header-inner"><Link className="brand" href="/">SUHANUR RAHMAN / JOURNAL</Link><nav className="nav"><Link href="/">Journal</Link><Link href="/admin/">Admin</Link><a href="https://suhanurrahman.com/">Portfolio ↗</a></nav></div></header>
@@ -14,13 +18,12 @@ export default function Home() {
         <section className="hero">
           <p className="kicker">Independent journal</p>
           <h1 className="serif">Technology, research, investigations and ideas.</h1>
-          <p>A personal publishing space by Suhanur Rahman. The public side is designed like an editorial journal; the private side will provide a focused publishing workflow for posts, categories, tags, media and comments.</p>
+          <p>A personal publishing space by Suhanur Rahman, built around long-form writing, research notes and technical work.</p>
         </section>
-        <section className="section">
-          <div className="meta">01 / Latest stories</div>
-          <h2 className="section-title">Latest writing</h2>
-          <div className="grid">{featured.map((post) => <article className="card border" key={post.title}><div className="card-body"><span className="tag">{post.category}</span><h2>{post.title}</h2><p className="meta">{post.date}</p><p className="muted">{post.excerpt}</p><Link className="meta" href={post.slug}>Read article ↗</Link></div></article>)}</div>
-        </section>
+
+        {featured ? <section className="featured border"><div className="featured-copy"><span className="tag">{featured.categoryName || 'Journal'}</span><h2 className="serif"><Link href={`/${featured.slug}/`}>{featured.title}</Link></h2><p>{featured.excerpt || ''}</p><div className="meta">{formatDate(featured.publishedAt)}</div><Link className="read" href={`/${featured.slug}/`}>Read story ↗</Link></div>{featured.coverImage ? <img src={featured.coverImage} alt={featured.title} /> : null}</section> : null}
+
+        <section className="section"><div className="meta">01 / Latest stories</div><h2 className="section-title">Latest writing</h2>{posts.length ? <div className="grid">{rest.map((post) => <article className="card border" key={post.id}>{post.coverImage ? <img src={post.coverImage} alt={post.title} loading="lazy" /> : null}<div className="card-body"><span className="tag">{post.categoryName || 'Journal'}</span><h2><Link href={`/${post.slug}/`}>{post.title}</Link></h2><p className="meta">{formatDate(post.publishedAt)}</p><p className="muted">{post.excerpt || ''}</p><Link className="meta" href={`/${post.slug}/`}>Read article ↗</Link></div></article>)}</div> : <div className="empty border">No published posts yet. Publish your first story from the admin portal.</div>}</section>
       </div>
       <footer className="footer"><div className="container">© 2026 Suhanur Rahman · Journal</div></footer>
     </main>
