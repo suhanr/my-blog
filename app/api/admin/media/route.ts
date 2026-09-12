@@ -11,7 +11,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   if (!(await isAdmin(request))) return Response.json({ error: 'Unauthorized' }, { status: 401 })
   const form = await request.formData()
-  const file = form.get('file')
+  const file = form.get('file') || form.get('upload')
   if (!(file instanceof File)) return Response.json({ error: 'File required' }, { status: 400 })
   if (file.size > 10 * 1024 * 1024) return Response.json({ error: 'Maximum file size is 10MB' }, { status: 413 })
   const type = file.type || 'application/octet-stream'
