@@ -3,13 +3,14 @@ import fs from 'node:fs/promises'
 const base = (process.env.WP_URL || 'https://blog.suhanurrahman.com').replace(/\/$/, '')
 const perPage = 100
 
-async function fetchAll(path) {
+async function fetchAll(resource, query = '') {
   const rows = []
   let page = 1
   while (true) {
-    const response = await fetch(`${base}/wp-json/wp/v2/${path}?per_page=${perPage}&page=${page}`)
+    const separator = query ? '&' : ''
+    const response = await fetch(`${base}/wp-json/wp/v2/${resource}?per_page=${perPage}&page=${page}${separator}${query}`)
     if (response.status === 400) break
-    if (!response.ok) throw new Error(`WordPress API ${response.status}: ${path}`)
+    if (!response.ok) throw new Error(`WordPress API ${response.status}: ${resource}`)
     const data = await response.json()
     rows.push(...data)
     const totalPages = Number(response.headers.get('X-WP-TotalPages') || 1)
@@ -19,7 +20,7 @@ async function fetchAll(path) {
   return rows
 }
 
-const posts = await fetchAll('posts&context=view&_embed=1')
+const posts = await fetchAll('posts', 'context=view&_embed=1')
 const categories = await fetchAll('categories')
 const tags = await fetchAll('tags')
 
