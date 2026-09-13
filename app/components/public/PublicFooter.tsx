@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { ChevronDown } from 'lucide-react'
 import { getHeaderMenu } from '@/lib/db'
 
 type MenuItem = {
@@ -35,6 +36,13 @@ export default async function PublicFooter({ categories }: { categories: { id: s
           display: inline-flex;
           align-items: baseline;
           white-space: nowrap;
+          color: var(--fg) !important;
+        }
+        .site-public .mag-footer-brand b {
+          color: var(--accent) !important;
+        }
+        .site-public .mag-footer-brand span {
+          color: var(--accent) !important;
         }
         .site-public .mag-footer-dept-nav {
           display: flex;
@@ -66,8 +74,12 @@ export default async function PublicFooter({ categories }: { categories: { id: s
           transition: color 0.18s ease;
         }
         .site-public .mag-footer-dept-parent:hover,
-        .site-public .mag-footer-dept-item[open] .mag-footer-dept-parent {
+        .site-public .mag-footer-dept-details[open] ~ .mag-footer-dept-parent {
           color: var(--accent);
+        }
+        .site-public .mag-footer-dept-details {
+          flex: 0 0 auto;
+          position: relative;
         }
         .site-public .mag-footer-dept-toggle {
           flex: 0 0 auto;
@@ -80,18 +92,24 @@ export default async function PublicFooter({ categories }: { categories: { id: s
           color: var(--muted);
           cursor: pointer;
           border-radius: 7px;
+          list-style: none;
           transition: color 0.18s ease, background 0.18s ease;
+        }
+        .site-public .mag-footer-dept-toggle::-webkit-details-marker {
+          display: none;
+        }
+        .site-public .mag-footer-dept-toggle::marker {
+          display: none;
+          content: '';
         }
         .site-public .mag-footer-dept-toggle:hover {
           background: var(--bg-2);
           color: var(--accent);
         }
         .site-public .mag-footer-dept-chevron {
-          font-size: 13px;
-          line-height: 1;
           transition: transform 0.18s ease;
         }
-        .site-public .mag-footer-dept-item[open] .mag-footer-dept-chevron {
+        .site-public .mag-footer-dept-details[open] .mag-footer-dept-chevron {
           transform: rotate(180deg);
         }
         .site-public .mag-footer-dept-dropdown {
@@ -129,7 +147,7 @@ export default async function PublicFooter({ categories }: { categories: { id: s
       <div className="mag-container mag-footer-grid">
         <div>
           <Link href="/" className="mag-footer-brand">
-            সোহানুর{' '}<b>রহমান</b><span style={{ fontSize: '0.5em', color: 'var(--accent)', marginLeft: 6, fontWeight: 600 }}>জার্নাল</span>
+            সোহানুর{'\u00a0'}<b>রহমান</b><span style={{ fontSize: '0.5em', color: 'var(--accent)', marginLeft: 6, fontWeight: 600 }}>জার্নাল</span>
           </Link>
           <p>প্রযুক্তি, গবেষণা, অনুসন্ধান, ডিজিটাল সংস্কৃতি ও ভাবনা নিয়ে একটি স্বাধীন জার্নাল।</p>
         </div>
@@ -144,7 +162,7 @@ export default async function PublicFooter({ categories }: { categories: { id: s
                   {item.children.length ? (
                     <details className="mag-footer-dept-details">
                       <summary className="mag-footer-dept-toggle" aria-label={`${item.name} submenu`}>
-                        <span className="mag-footer-dept-chevron" aria-hidden="true">⌄</span>
+                        <ChevronDown className="mag-footer-dept-chevron" size={14} strokeWidth={1.8} aria-hidden="true" />
                       </summary>
                       <div className="mag-footer-dept-dropdown">
                         {item.children.map((child) => (
