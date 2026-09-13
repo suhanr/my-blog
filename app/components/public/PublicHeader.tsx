@@ -42,7 +42,7 @@ export default function PublicHeader({ categories }: { categories: Category[] })
             <Menu size={19} strokeWidth={1.9} />
           </button>
           <Link href="/" className="mag-logo">
-            সুহানুর <b>রহমান</b>
+            সোহানুর <b>রহমান</b>
           </Link>
           <nav className="mag-nav" aria-label="Sections">
             {nav.map((c) => (
@@ -65,7 +65,7 @@ export default function PublicHeader({ categories }: { categories: Category[] })
           <div className="mag-drawer-scrim" onClick={() => setDrawer(false)} />
           <div className="mag-drawer-panel">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <span className="mag-logo">সুহানুর <b>রহমান</b></span>
+              <span className="mag-logo">সোহানুর <b>রহমান</b></span>
               <button className="mag-icon-btn" aria-label="Close" onClick={() => setDrawer(false)}><X size={18} /></button>
             </div>
             <Link href="/" onClick={() => setDrawer(false)}>হোম</Link>
