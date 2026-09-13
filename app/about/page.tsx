@@ -4,17 +4,40 @@ import { getCategories, getHeaderMenu } from '@/lib/db'
 import PublicHeader from '@/app/components/public/PublicHeader'
 import PublicFooter from '@/app/components/public/PublicFooter'
 import { RevealInit } from '@/app/components/public/enhancers'
+import { AUTHOR_NAME, AUTHOR_URL, GLOBAL_KEYWORDS, PROFILE_IMAGE, SITE, SITE_NAME } from '@/lib/seo'
 
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'আমার সম্পর্কে — Journal',
-  description: 'সোহানুর রহমান সম্পর্কে জানুন। প্রযুক্তি, গবেষণা, ডেটা, ডিজিটাল সংস্কৃতি ও লেখালেখি নিয়ে কাজের সংক্ষিপ্ত পরিচয়।',
-  alternates: { canonical: 'https://blog.suhanurrahman.com/about/' },
+  title: 'আমার সম্পর্কে — সোহানুর রহমান',
+  description: 'সোহানুর রহমান সম্পর্কে জানুন—প্রযুক্তি, গবেষণা, ডেটা, এআই, ডিজিটাল সংস্কৃতি ও ওয়েব নিয়ে কাজ এবং লেখালেখির পরিচয়।',
+  keywords: [...GLOBAL_KEYWORDS, 'সোহানুর রহমান সম্পর্কে', 'Suhanur Rahman profile'],
+  alternates: { canonical: `${SITE}/about/` },
+  openGraph: {
+    type: 'profile',
+    url: `${SITE}/about/`,
+    title: 'আমার সম্পর্কে — সোহানুর রহমান',
+    description: 'সোহানুর রহমান সম্পর্কে জানুন—প্রযুক্তি, গবেষণা, ডেটা, এআই ও ডিজিটাল সংস্কৃতি নিয়ে কাজের পরিচয়।',
+    siteName: SITE_NAME,
+    images: [{ url: PROFILE_IMAGE, width: 512, height: 512, alt: AUTHOR_NAME }],
+  },
 }
 
 export default async function AboutPage() {
   const [categories, menu] = await Promise.all([getCategories(), getHeaderMenu()])
+  const profileLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    name: `আমার সম্পর্কে — ${AUTHOR_NAME}`,
+    url: `${SITE}/about/`,
+    mainEntity: {
+      '@type': 'Person',
+      name: AUTHOR_NAME,
+      url: AUTHOR_URL,
+      image: PROFILE_IMAGE,
+      description: 'প্রযুক্তি, গবেষণা, ডেটা, এআই, ডিজিটাল সংস্কৃতি ও ওয়েব নিয়ে কাজ করা প্রযুক্তি ও গবেষণা পেশাজীবী।',
+    },
+  }
 
   return (
     <div className="site-public">
@@ -46,6 +69,7 @@ export default async function AboutPage() {
       <PublicHeader categories={categories} menu={menu} />
       <main className="mag-main about-page">
         <div className="mag-container">
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(profileLd) }} />
           <div className="about-layout">
             <article className="reveal">
               <div className="about-kicker">About</div>
@@ -54,7 +78,7 @@ export default async function AboutPage() {
               <div className="about-body">
                 <p>আমি প্রযুক্তি ও গবেষণার মাঝের জায়গাটায় বেশি স্বচ্ছন্দ। ওয়েব, ডেটা, ডিজিটাল টুল এবং গবেষণাভিত্তিক কাজের মাধ্যমে জটিল বিষয়কে ব্যবহারযোগ্য ও বোধগম্য করে তোলার চেষ্টা করি।</p>
                 <p>এই জার্নালে আমি প্রযুক্তি ও এআই, গবেষণা ও ডেটা, ডিজিটাল সংস্কৃতি, অনুসন্ধান এবং নিজের কাজ থেকে পাওয়া অভিজ্ঞতা নিয়ে লিখি। সব লেখা একই ধরনের নয়, তবে একটি বিষয় গুরুত্বপূর্ণ: কৌতূহল, প্রমাণ এবং নিজের মতো করে ভাবার জায়গা।</p>
-                <p>আমার পেশাগত কাজ ও অন্যান্য প্রজেক্ট সম্পর্কে জানতে <a href="https://suhanurrahman.com/" target="_blank" rel="noreferrer">suhanurrahman.com</a> দেখতে পারেন।</p>
+                <p>আমার পেশাগত কাজ ও অন্যান্য প্রজেক্ট সম্পর্কে জানতে <a href={AUTHOR_URL} target="_blank" rel="noreferrer">suhanurrahman.com</a> দেখতে পারেন।</p>
               </div>
             </article>
 
@@ -66,7 +90,7 @@ export default async function AboutPage() {
               <div className="about-card">
                 <h2>অনলাইনে</h2>
                 <div className="about-links">
-                  <a href="https://suhanurrahman.com/" target="_blank" rel="noreferrer">Portfolio ↗</a>
+                  <a href={AUTHOR_URL} target="_blank" rel="noreferrer">Portfolio ↗</a>
                   <Link href="/search/">জার্নাল সার্চ ↗</Link>
                 </div>
               </div>
