@@ -24,6 +24,7 @@ export default function SearchPageClient({ categories, menu, initialQuery = '' }
   const [results, setResults] = useState<Result[]>([])
   const [loading, setLoading] = useState(false)
   const [searched, setSearched] = useState(Boolean(initialQuery.trim()))
+  const [error, setError] = useState('')
 
   useEffect(() => {
     const term = query.trim().slice(0, 100)
@@ -31,21 +32,29 @@ export default function SearchPageClient({ categories, menu, initialQuery = '' }
       setResults([])
       setSearched(false)
       setLoading(false)
+      setError('')
       return
     }
 
     setLoading(true)
+    setError('')
     const controller = new AbortController()
     const timer = window.setTimeout(async () => {
       try {
-        const response = await fetch(`/api/search?q=${encodeURIComponent(term)}`, { signal: controller.signal, cache: 'no-store' })
-        const data = await response.json()
+        const response = await fetch(`/api/search?q=${encodeURIComponent(term)}`, {
+          signal: controller.signal,
+          cache: 'no-store',
+          headers: { Accept: 'application/json' },
+        })
+        const data = await response.json().catch(() => null)
+        if (!response.ok || !data?.ok) throw new Error(data?.error || 'Search is temporarily unavailable.')
         setResults(Array.isArray(data.results) ? data.results : [])
         setSearched(true)
-      } catch (error) {
-        if ((error as DOMException).name !== 'AbortError') {
+      } catch (fetchError) {
+        if ((fetchError as DOMException).name !== 'AbortError') {
           setResults([])
           setSearched(true)
+          setError(fetchError instanceof Error ? fetchError.message : 'Search is temporarily unavailable.')
         }
       } finally {
         if (!controller.signal.aborted) setLoading(false)
@@ -90,6 +99,7 @@ export default function SearchPageClient({ categories, menu, initialQuery = '' }
         .site-public .search-loading { display: flex; align-items: center; gap: 9px; padding: 26px 0; color: var(--muted); border-top: 1px solid var(--line-2); }
         .site-public .search-empty { padding: 40px 0; border-top: 1px solid var(--line-2); color: var(--muted); font-size: 16px; }
         .site-public .search-empty strong { color: var(--fg); }
+        .site-public .search-error { padding: 22px 0; border-top: 1px solid var(--line-2); color: #b91c1c; font-size: 15px; }
         .site-public .search-spin { animation: search-spin .8s linear infinite; }
         @keyframes search-spin { to { transform: rotate(360deg); } }
         @media (max-width: 720px) {
@@ -105,7 +115,7 @@ export default function SearchPageClient({ categories, menu, initialQuery = '' }
           <section className="search-hero reveal">
             <div className="search-kicker">Search</div>
             <h1 className="search-title">লেখা খুঁজুন</h1>
-            <p className="search-dek">শিরোনাম বা সংক্ষিপ্ত বর্ণনা দিয়ে জার্নালের লেখা খুঁজে দেখুন। লিখতে শুরু করলেই ফলাফল স্বয়ংক্রিয়ভাবে আপডেট হবে।</p>
+            <p className="search-dek">শিরোনাম, সংক্ষিপ্ত বর্ণনা বা লেখার ভেতরের শব্দ দিয়ে জার্নালের লেখা খুঁজে দেখুন। লিখতে শুরু করলেই ফলাফল স্বয়ংক্রিয়ভাবে আপডেট হবে।</p>
             <form className="search-form" onSubmit={(event) => event.preventDefault()}>
               <span className="search-icon" aria-hidden="true"><Search size={20} strokeWidth={1.9} /></span>
               <input className="search-input" value={query} onChange={(event) => onChange(event.target.value)} placeholder="যা খুঁজছেন লিখুন…" aria-label="Search query" autoComplete="off" />
@@ -118,6 +128,8 @@ export default function SearchPageClient({ categories, menu, initialQuery = '' }
               <p className="search-summary">{loading ? 'ফলাফল খোঁজা হচ্ছে…' : `${results.length}টি ফলাফল`} · “{query.trim()}”</p>
               {loading ? (
                 <div className="search-loading"><Loader2 className="search-spin" size={18} strokeWidth={1.9} /> ফলাফল আপডেট হচ্ছে…</div>
+              ) : error ? (
+                <div className="search-error">সার্চ চালাতে সমস্যা হয়েছে। একটু পরে আবার চেষ্টা করুন।</div>
               ) : results.length ? (
                 <div className="search-results">
                   {results.map((post) => (
@@ -132,7 +144,7 @@ export default function SearchPageClient({ categories, menu, initialQuery = '' }
                   ))}
                 </div>
               ) : searched ? (
-                <div className="search-empty">“<strong>{query.trim()}</strong>” নামে বা বর্ণনায় কোনো প্রকাশিত লেখা পাওয়া যায়নি।</div>
+                <div className="search-empty">“<strong>{query.trim()}</strong>” নামে, বর্ণনায় বা লেখার ভেতরে কোনো প্রকাশিত লেখা পাওয়া যায়নি।</div>
               ) : null}
             </section>
           ) : (
