@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { countPublishedPosts, getCategories, getHeaderMenu, listPublishedPosts } from '@/lib/db'
 import { catColor, formatDate, shortText } from '@/lib/publicUi'
@@ -5,8 +6,24 @@ import PublicHeader from '@/app/components/public/PublicHeader'
 import PublicFooter from '@/app/components/public/PublicFooter'
 import PostGrid, { type Card } from '@/app/components/public/PostGrid'
 import { RevealInit } from '@/app/components/public/enhancers'
+import { DEFAULT_DESCRIPTION, GLOBAL_KEYWORDS, PROFILE_IMAGE, SITE, SITE_NAME } from '@/lib/seo'
 
 export const dynamic = 'force-dynamic'
+
+export const metadata: Metadata = {
+  title: 'সোহানুর রহমান জার্নাল | প্রযুক্তি, এআই, গবেষণা ও ডিজিটাল সংস্কৃতি',
+  description: DEFAULT_DESCRIPTION,
+  keywords: GLOBAL_KEYWORDS,
+  alternates: { canonical: `${SITE}/` },
+  openGraph: {
+    type: 'website',
+    url: `${SITE}/`,
+    title: 'সোহানুর রহমান জার্নাল | প্রযুক্তি, এআই, গবেষণা ও ডিজিটাল সংস্কৃতি',
+    description: DEFAULT_DESCRIPTION,
+    siteName: SITE_NAME,
+    images: [{ url: PROFILE_IMAGE, width: 512, height: 512, alt: 'সোহানুর রহমান' }],
+  },
+}
 
 export default async function Home() {
   const [posts, categories, total, menu] = await Promise.all([listPublishedPosts(12), getCategories(), countPublishedPosts(), getHeaderMenu()])
@@ -20,13 +37,8 @@ export default async function Home() {
       <PublicHeader categories={categories} menu={menu} />
       <style>{`
         @media (max-width: 767px) {
-          .site-public .mag-main {
-            padding-top: 0 !important;
-          }
-
-          .site-public .mobile-home-hero {
-            padding-top: 0 !important;
-          }
+          .site-public .mag-main { padding-top: 0 !important; }
+          .site-public .mobile-home-hero { padding-top: 0 !important; }
         }
       `}</style>
 
@@ -37,7 +49,7 @@ export default async function Home() {
               <div className="mag-hero">
                 <article className="mag-hero-lead reveal is-visible" style={{ ['--cat' as string]: catColor(featured.categoryName) }}>
                   <Link href={`/${featured.slug}/`} className="mag-hero-media">
-                    {featured.coverImage ? <img src={featured.coverImage} alt={featured.title} /> : null}
+                    {featured.coverImage ? <img src={featured.coverImage} alt={featured.title} decoding="async" fetchPriority="high" /> : null}
                   </Link>
                   {featured.categoryName && featured.categorySlug ? <Link className="mag-chip" href={`/category/${featured.categorySlug}/`}>{featured.categoryName}</Link> : <span className="mag-chip">বিশেষ প্রতিবেদন</span>}
                   <h1 className="mag-hero-title"><Link href={`/${featured.slug}/`}>{featured.title}</Link></h1>
@@ -56,7 +68,7 @@ export default async function Home() {
               </div>
             </section>
           ) : (
-            <section className="mag-section"><p className="mag-hero-dek">এখনো কোনো লেখা প্রকাশিত হয়নি।</p></section>
+            <section className="mag-section"><h1 className="mag-article-title">সোহানুর রহমান জার্নাল</h1><p className="mag-hero-dek">এখনো কোনো লেখা প্রকাশিত হয়নি।</p></section>
           )}
 
           {gridPosts.length ? (
@@ -72,8 +84,8 @@ export default async function Home() {
           <section className="mag-section" style={{ borderBottom: 'none' }}>
             <div className="mag-cta reveal">
               <h2>নতুন লেখা মিস করতে চান না?</h2>
-              <p>প্রযুক্তি, গবেষণা ও অনুসন্ধানের সেরা লেখাগুলো সরাসরি আপনার ইনবক্সে পেতে যোগাযোগ করুন।</p>
-              <a className="mag-btn" href="mailto:suhanurrahman.r@gmail.com">যোগাযোগ করুন →</a>
+              <p>প্রযুক্তি, গবেষণা ও অনুসন্ধানের সেরা লেখাগুলো সম্পর্কে জানতে যোগাযোগ করুন।</p>
+              <Link className="mag-btn" href="https://suhanurrahman.com/contact/" target="_blank" rel="noreferrer">যোগাযোগ করুন →</Link>
             </div>
           </section>
         </div>
