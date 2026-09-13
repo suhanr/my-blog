@@ -111,14 +111,26 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
         .ck-editor-post-form { display:flex; flex-direction:column; min-height:calc(100vh - 130px); max-height:calc(100vh - 130px); }
         .ck-editor-post-form:not(.ck-editor-post-form--fullscreen) { overflow:hidden; }
         .ck-editor-post-form--fullscreen { max-height:none; }
-        .ck-editor-post-heading { display:grid; grid-template-columns:minmax(0,1.55fr) minmax(250px,.8fr); gap:18px; padding:18px 26px 14px; border-bottom:1px solid var(--e-border); background:var(--e-card); flex:0 0 auto; }
+        .ck-editor-post-heading { display:flex; flex-direction:column; gap:10px; padding:18px 26px 14px; border-bottom:1px solid var(--e-border); background:var(--e-card); flex:0 0 auto; }
         .ck-editor-post-heading label { display:grid; gap:7px; color:var(--e-text); font-size:14px; font-weight:700; }
         .ck-editor-post-heading input { width:100%; min-width:0; height:54px; border:1px solid #cbd5e1; border-radius:10px; padding:0 15px; background:#fff; color:var(--e-text); font-family:inherit; font-size:18px; font-weight:600; outline:none; box-shadow:0 0 0 1px rgba(13,148,136,.05); transition:border-color .15s ease,box-shadow .15s ease; }
         .ck-editor-post-heading label:first-child input { font-size:20px; }
         .ck-editor-post-heading input::placeholder { color:#94a3b8; font-weight:500; }
         .ck-editor-post-heading input:focus { border-color:var(--e-primary); box-shadow:0 0 0 3px var(--e-ring); }
         .ck-editor-post-heading label:first-child { color:var(--e-primary-hover); }
-        .ck-editor-post-heading label:last-child { color:#475569; }
+        .ck-editor-post-meta-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:14px; align-items:center; }
+        .ck-editor-post-meta-slug { width:100%; min-width:0; height:48px; border:1px solid #cbd5e1; border-radius:10px; padding:0 14px; background:#fff; color:var(--e-text); font-family:inherit; font-size:16px; font-weight:600; outline:none; transition:border-color .15s ease,box-shadow .15s ease; }
+        .ck-editor-post-meta-slug::placeholder { color:#94a3b8; font-weight:500; }
+        .ck-editor-post-meta-slug:focus { border-color:var(--e-primary); box-shadow:0 0 0 3px var(--e-ring); }
+        .ck-editor-post-meta-actions { display:flex; align-items:center; justify-content:flex-end; gap:10px; flex-wrap:wrap; }
+        .ck-editor-post-meta-actions button { height:40px; border-radius:8px; padding:0 16px; cursor:pointer; font-family:inherit; font-size:13px; font-weight:600; transition:background .15s ease,box-shadow .15s ease,transform .1s ease; }
+        .ck-editor-post-meta-actions button:active { transform:translateY(1px); }
+        .ck-editor-post-meta-actions .primary-action { background:#1f2937; color:#fff; border:1px solid #1f2937; }
+        .ck-editor-post-meta-actions .primary-action:hover { background:#111827; }
+        .ck-editor-post-meta-actions .publish-action { background:var(--e-primary); color:#fff; border:1px solid var(--e-primary); }
+        .ck-editor-post-meta-actions .publish-action:hover { background:var(--e-primary-hover); border-color:var(--e-primary-hover); }
+        .ck-editor-post-meta-actions .danger-action { background:#a52f33; color:#fff; border:1px solid #a52f33; }
+        .ck-editor-post-meta-actions .danger-action:hover { background:#8f272b; border-color:#8f272b; }
         .ck-editor-post-grid { flex:1 1 auto; min-height:0; overflow:hidden; }
         .ck-editor-post-main { display:flex; flex-direction:column; min-width:0; min-height:0; height:100%; }
         .ck-editor-post-editor-shell { flex:1 1 auto; min-height:0; display:flex; flex-direction:column; }
@@ -134,15 +146,16 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
         .ck-editor-post-card select[multiple] { font-size:15px; }
         .ck-editor-help { margin-top:-3px; color:var(--e-muted-foreground); font-size:12px; line-height:1.45; }
         .ck-editor-seo-hint { margin:-2px 0 11px; padding:8px 10px; border-left:3px solid var(--e-primary); border-radius:0 7px 7px 0; background:#f0fdfa; color:#475569; font-size:12px; line-height:1.5; }
-        .ck-editor-post-actions { flex:0 0 auto; }
+        .ck-editor-post-actions { display:none; }
         .ck-editor-notice { position:fixed; right:24px; bottom:24px; z-index:3200; display:flex; align-items:center; gap:10px; min-width:300px; max-width:460px; padding:14px 16px; border-radius:12px; border:1px solid var(--e-border); background:#fff; box-shadow:0 12px 32px rgba(16,24,40,.16); color:var(--e-text); font-size:14px; font-weight:600; animation:ck-editor-notice-in .18s ease-out; }
         .ck-editor-notice--success { border-color:#99f6e4; }
         .ck-editor-notice--success::before { content:'✓'; display:grid; place-items:center; width:22px; height:22px; flex:0 0 auto; border-radius:999px; background:#ccfbf1; color:#0f766e; font-size:13px; font-weight:800; }
         .ck-editor-notice--error { border-color:#fecaca; color:#991b1b; }
         .ck-editor-notice--error::before { content:'!'; display:grid; place-items:center; width:22px; height:22px; flex:0 0 auto; border-radius:999px; background:#fee2e2; color:#b91c1c; font-size:13px; font-weight:800; }
         @keyframes ck-editor-notice-in { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-        @media (max-width:900px) { .ck-editor-post-form{min-height:auto;max-height:none;overflow:visible}.ck-editor-post-heading{grid-template-columns:1fr;padding:16px}.ck-editor-post-grid{overflow:visible}.ck-editor-post-main{height:auto}.ck-editor-post-editor-shell{min-height:560px}.ck-editor-post-editor-shell .ck-editor__main>.ck-editor__editable{height:560px}.ck-editor-post-sidebar{height:auto;max-height:none;overflow:visible}.ck-editor-notice{right:14px;left:14px;bottom:14px;min-width:0;max-width:none} }
-        @media (max-width:640px) { .ck-editor-post-heading input,.ck-editor-post-heading label:first-child input{font-size:16px;height:50px} }
+        @media (max-width:1100px) { .ck-editor-post-meta-row{grid-template-columns:1fr}.ck-editor-post-meta-actions{justify-content:flex-start} }
+        @media (max-width:900px) { .ck-editor-post-form{min-height:auto;max-height:none;overflow:visible}.ck-editor-post-heading{padding:16px}.ck-editor-post-grid{overflow:visible}.ck-editor-post-main{height:auto}.ck-editor-post-editor-shell{min-height:560px}.ck-editor-post-editor-shell .ck-editor__main>.ck-editor__editable{height:560px}.ck-editor-post-sidebar{height:auto;max-height:none;overflow:visible}.ck-editor-notice{right:14px;left:14px;bottom:14px;min-width:0;max-width:none} }
+        @media (max-width:640px) { .ck-editor-post-heading input,.ck-editor-post-heading label:first-child input{font-size:16px;height:50px}.ck-editor-post-meta-slug{height:48px;font-size:15px}.ck-editor-post-meta-actions{gap:8px}.ck-editor-post-meta-actions button{flex:1 1 auto} }
       `}</style>
 
       <input type="hidden" name="intent" value={saveIntent} />
@@ -155,7 +168,14 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
 
       <div className="ck-editor-post-heading">
         <label>Title<input name="title" defaultValue={initial.title} placeholder="লেখার শিরোনাম লিখুন…" required disabled={submitting} aria-label="Post title" /></label>
-        <label>Slug<input name="slug" defaultValue={initial.slug} placeholder="post-url-slug" disabled={submitting} aria-label="Post slug" /><span className="ck-editor-help">URL-এর জন্য সংক্ষিপ্ত ইংরেজি slug ব্যবহার করুন।</span></label>
+        <div className="ck-editor-post-meta-row">
+          <input className="ck-editor-post-meta-slug" name="slug" defaultValue={initial.slug} placeholder="post-url-slug" disabled={submitting} aria-label="Post slug" />
+          <div className="ck-editor-post-meta-actions">
+            <button className="primary-action" name="status" value="DRAFT" type="submit" disabled={submitting}>{submitting ? 'Saving…' : 'Save draft'}</button>
+            <button className="publish-action" name="status" value="PUBLISHED" type="submit" disabled={submitting}>{submitting ? 'Saving…' : 'Publish'}</button>
+            {postId && <button className="danger-action" name="action" value="trash" type="submit" formNoValidate disabled={submitting}>{submitting ? 'Saving…' : 'Move to Trash'}</button>}
+          </div>
+        </div>
       </div>
 
       <div className="ck-editor-post-grid"><main className="ck-editor-post-main"><div className="ck-editor-post-editor-shell"><CKEditor editor={ClassicEditor} data={data} config={config} onReady={(editor) => { editorRef.current = editor; const wordCount = editor.plugins.get('WordCount'); if (wordCountRef.current && !wordCountRef.current.firstChild) wordCountRef.current.appendChild(wordCount.wordCountContainer) }} onChange={(_, editor) => { setData(editor.getData()); setDirty(true) }} onAfterDestroy={() => { editorRef.current = null; if (wordCountRef.current) wordCountRef.current.innerHTML = '' }} /></div><div className="ck-editor-post-statusbar"><div ref={wordCountRef} /><span>{dirty ? 'Autosave enabled' : 'All changes saved'}</span></div></main>
@@ -170,7 +190,6 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
         </aside>
       </div>
 
-      <div className="ck-editor-post-actions"><div><button className="primary-action" name="status" value="DRAFT" type="submit" disabled={submitting}>{submitting ? 'Saving…' : 'Save draft'}</button><button className="publish-action" name="status" value="PUBLISHED" type="submit" disabled={submitting}>{submitting ? 'Saving…' : 'Publish'}</button>{postId && <button className="danger-action" name="action" value="trash" type="submit" formNoValidate disabled={submitting}>{submitting ? 'Saving…' : 'Move to Trash'}</button>}</div></div>
       {notice && <div className={`ck-editor-notice ck-editor-notice--${notice.type}`} role="status" aria-live="polite">{notice.message}</div>}
       {pickerFor && <MediaLibrary mode="picker" onPick={handlePick} onClose={() => setPickerFor(null)} />}
     </form>
