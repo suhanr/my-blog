@@ -24,8 +24,8 @@ export async function listPublishedPosts(limit = 20, offset = 0): Promise<Post[]
 export async function searchPublishedPosts(query: string, limit = 12): Promise<Post[]> {
   const q = query.trim()
   if (!q) return []
-  const like = `%${q.replace(/[%_]/g, (m) => `\\${m}`)}%`
-  const result = await db.prepare(`SELECT ${postSelect}, c.name AS categoryName,c.slug AS categorySlug FROM posts p LEFT JOIN categories c ON c.id=p.category_id AND c.deleted_at IS NULL WHERE p.status='PUBLISHED' AND p.deleted_at IS NULL AND (p.title LIKE ?1 ESCAPE '\\' OR p.excerpt LIKE ?1 ESCAPE '\\') ORDER BY datetime(p.published_at) DESC LIMIT ?2`).bind(like, limit).all<Post>()
+  const like = `%${q}%`
+  const result = await db.prepare(`SELECT ${postSelect}, c.name AS categoryName,c.slug AS categorySlug FROM posts p LEFT JOIN categories c ON c.id=p.category_id AND c.deleted_at IS NULL WHERE p.status='PUBLISHED' AND p.published_at IS NOT NULL AND p.deleted_at IS NULL AND (p.title LIKE ?1 OR p.excerpt LIKE ?1 OR p.slug LIKE ?1 OR c.name LIKE ?1 OR c.slug LIKE ?1) ORDER BY datetime(p.published_at) DESC LIMIT ?2`).bind(like, limit).all<Post>()
   return result.results
 }
 
