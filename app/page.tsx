@@ -22,7 +22,7 @@ export default async function Home() {
       <main className="mag-main">
         <div className="mag-container">
           {featured ? (
-            <section className="mag-section" style={{ paddingTop: 26 }}>
+            <section className="mag-section" style={{ paddingTop: 0 }}>
               <div className="mag-hero">
                 <article className="mag-hero-lead reveal" style={{ ['--cat' as string]: catColor(featured.categoryName) }}>
                   <Link href={`/${featured.slug}/`} className="mag-hero-media">
