@@ -44,12 +44,24 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
     }
     setPickerFor(null)
   }
+
   const wordCountRef = useRef<HTMLDivElement | null>(null)
   const editorRef = useRef<ClassicEditor | null>(null)
   const draftKey = useMemo(() => getDraftKey(postId), [postId])
 
-  useEffect(() => { const saved = localStorage.getItem(draftKey); if (saved) setData(saved) }, [draftKey])
-  useEffect(() => { if (!dirty) return; const timer = window.setTimeout(() => { localStorage.setItem(draftKey, data); setSavedAt(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })) }, 900); return () => window.clearTimeout(timer) }, [data, dirty, draftKey])
+  useEffect(() => {
+    const saved = localStorage.getItem(draftKey)
+    if (saved) setData(saved)
+  }, [draftKey])
+
+  useEffect(() => {
+    if (!dirty) return
+    const timer = window.setTimeout(() => {
+      localStorage.setItem(draftKey, data)
+      setSavedAt(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }))
+    }, 900)
+    return () => window.clearTimeout(timer)
+  }, [data, dirty, draftKey])
 
   const plugins = [Essentials, Paragraph, Heading, Bold, Italic, Underline, Strikethrough, Code, CodeBlock, Subscript, Superscript, RemoveFormat, Font, Highlight, Alignment, BlockQuote, HorizontalLine, List, ListProperties, TodoList, Indent, Link, AutoLink, Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, ImageUpload, ImageInsert, AutoImage, SimpleUploadAdapter, MediaEmbed, AutoMediaEmbed, Table, TableToolbar, TableProperties, TableCellProperties, TableColumnResize, TableCaption, PasteFromOffice, FindAndReplace, WordCount, SpecialCharacters, SpecialCharactersEssentials, PageBreak, SourceEditing, SelectAll, TextTransformation, GeneralHtmlSupport]
 
@@ -115,16 +127,95 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
       <input type="hidden" name="content" value={data} />
       <input type="hidden" name="contentFormat" value="HTML" />
       <input type="hidden" name="coverImage" value={cover} />
-      <div className="ck-editor-post-topbar"><div><div className="ck-editor-post-kicker">Publishing</div><div className="ck-editor-post-status">{submitting ? 'Saving changes…' : dirty ? 'Unsaved changes' : 'All changes saved'}{savedAt ? ` · saved ${savedAt}` : ''}</div></div><div style={{ display: 'flex', gap: 8 }}><button type="button" onClick={() => setPickerFor('content')} disabled={submitting}><ImagePlus size={15} strokeWidth={1.75} style={{ verticalAlign: '-3px', marginRight: 6 }} />Insert image</button><button type="button" onClick={() => setFullscreen(v => !v)} disabled={submitting}>{fullscreen ? 'Exit fullscreen' : 'Fullscreen'}</button></div></div>
+
+      <div className="ck-editor-post-topbar">
+        <div>
+          <div className="ck-editor-post-kicker">Publishing</div>
+          <div className="ck-editor-post-status">{submitting ? 'Saving changes…' : dirty ? 'Unsaved changes' : 'All changes saved'}{savedAt ? ` · saved ${savedAt}` : ''}</div>
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button type="button" onClick={() => setPickerFor('content')} disabled={submitting}><ImagePlus size={15} strokeWidth={1.75} style={{ verticalAlign: '-3px', marginRight: 6 }} />Insert image</button>
+          <button type="button" onClick={() => setFullscreen(v => !v)} disabled={submitting}>{fullscreen ? 'Exit fullscreen' : 'Fullscreen'}</button>
+        </div>
+      </div>
+
+      <div className="ck-editor-post-heading">
+        <label>
+          Title
+          <input name="title" defaultValue={initial.title} required disabled={submitting} />
+        </label>
+        <label>
+          Slug
+          <input name="slug" defaultValue={initial.slug} disabled={submitting} />
+        </label>
+      </div>
+
       <div className="ck-editor-post-grid">
-        <main className="ck-editor-post-main"><div className="ck-editor-post-editor-shell"><CKEditor editor={ClassicEditor} data={data} config={config} onReady={(editor) => { editorRef.current = editor; const wordCount = editor.plugins.get('WordCount'); if (wordCountRef.current && !wordCountRef.current.firstChild) wordCountRef.current.appendChild(wordCount.wordCountContainer) }} onChange={(_, editor) => { setData(editor.getData()); setDirty(true) }} onAfterDestroy={() => { editorRef.current = null; if (wordCountRef.current) wordCountRef.current.innerHTML = '' }} /></div><div className="ck-editor-post-statusbar"><div ref={wordCountRef} /><span>{dirty ? 'Autosave enabled' : 'All changes saved'}</span></div></main>
+        <main className="ck-editor-post-main">
+          <div className="ck-editor-post-editor-shell">
+            <CKEditor
+              editor={ClassicEditor}
+              data={data}
+              config={config}
+              onReady={(editor) => {
+                editorRef.current = editor
+                const wordCount = editor.plugins.get('WordCount')
+                if (wordCountRef.current && !wordCountRef.current.firstChild) wordCountRef.current.appendChild(wordCount.wordCountContainer)
+              }}
+              onChange={(_, editor) => {
+                setData(editor.getData())
+                setDirty(true)
+              }}
+              onAfterDestroy={() => {
+                editorRef.current = null
+                if (wordCountRef.current) wordCountRef.current.innerHTML = ''
+              }}
+            />
+          </div>
+          <div className="ck-editor-post-statusbar">
+            <div ref={wordCountRef} />
+            <span>{dirty ? 'Autosave enabled' : 'All changes saved'}</span>
+          </div>
+        </main>
+
         <aside className="ck-editor-post-sidebar">
-          <section className="ck-editor-post-card"><div className="ck-editor-post-card-title">Document</div><label>Title<input name="title" defaultValue={initial.title} required disabled={submitting} /></label><label>Slug<input name="slug" defaultValue={initial.slug} disabled={submitting} /></label><label>Excerpt<textarea name="excerpt" defaultValue={initial.excerpt || ''} maxLength={500} disabled={submitting} /></label><label>Categories<select name="categoryIds" multiple defaultValue={initial.categoryIds || []} disabled={submitting}>{categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></label><label>Tags<input name="tags" defaultValue={(initial.tags || []).join(', ')} placeholder="tag, another-tag" disabled={submitting} /></label></section>
-          <section className="ck-editor-post-card"><div className="ck-editor-post-card-title">Featured image</div>{cover && <img className="ck-editor-cover" src={cover} alt="" />}<div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', margin: '0 0 10px' }}><button type="button" onClick={() => setPickerFor('cover')} disabled={submitting}><ImagePlus size={15} strokeWidth={1.75} style={{ verticalAlign: '-3px', marginRight: 6 }} />{cover ? 'Change image' : 'Choose from library'}</button>{cover && <button type="button" onClick={() => setCover('')} disabled={submitting}>Remove</button>}</div><label>Image URL<input value={cover} onChange={e => setCover(e.target.value)} placeholder="https://..." disabled={submitting} /></label></section>
-          <section className="ck-editor-post-card"><div className="ck-editor-post-card-title">SEO</div><label>SEO title<input name="seoTitle" defaultValue={initial.seoTitle || ''} maxLength={60} disabled={submitting} /></label><label>Meta description<textarea name="seoDescription" defaultValue={initial.seoDescription || ''} maxLength={160} disabled={submitting} /></label><label>Keywords<input name="seoKeywords" defaultValue={initial.seoKeywords || ''} disabled={submitting} /></label><label>Canonical URL<input name="canonicalUrl" defaultValue={initial.canonicalUrl || ''} disabled={submitting} /></label><label>Open Graph image<input name="ogImage" defaultValue={initial.ogImage || ''} disabled={submitting} /></label><label className="ck-editor-check"><input type="checkbox" name="noindex" value="1" defaultChecked={initial.noindex === 1} disabled={submitting} /> Prevent indexing</label></section>
+          <section className="ck-editor-post-card">
+            <div className="ck-editor-post-card-title">Document</div>
+            <label>Excerpt<textarea name="excerpt" defaultValue={initial.excerpt || ''} maxLength={500} disabled={submitting} /></label>
+            <label>Categories<select name="categoryIds" multiple defaultValue={initial.categoryIds || []} disabled={submitting}>{categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></label>
+            <label>Tags<input name="tags" defaultValue={(initial.tags || []).join(', ')} placeholder="tag, another-tag" disabled={submitting} /></label>
+          </section>
+
+          <section className="ck-editor-post-card">
+            <div className="ck-editor-post-card-title">Featured image</div>
+            {cover && <img className="ck-editor-cover" src={cover} alt="" />}
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', margin: '0 0 10px' }}>
+              <button type="button" onClick={() => setPickerFor('cover')} disabled={submitting}><ImagePlus size={15} strokeWidth={1.75} style={{ verticalAlign: '-3px', marginRight: 6 }} />{cover ? 'Change image' : 'Choose from library'}</button>
+              {cover && <button type="button" onClick={() => setCover('')} disabled={submitting}>Remove</button>}
+            </div>
+            <label>Image URL<input value={cover} onChange={e => setCover(e.target.value)} placeholder="https://..." disabled={submitting} /></label>
+          </section>
+
+          <section className="ck-editor-post-card">
+            <div className="ck-editor-post-card-title">SEO</div>
+            <label>SEO title<input name="seoTitle" defaultValue={initial.seoTitle || ''} maxLength={60} disabled={submitting} /></label>
+            <label>Meta description<textarea name="seoDescription" defaultValue={initial.seoDescription || ''} maxLength={160} disabled={submitting} /></label>
+            <label>Keywords<input name="seoKeywords" defaultValue={initial.seoKeywords || ''} disabled={submitting} /></label>
+            <label>Canonical URL<input name="canonicalUrl" defaultValue={initial.canonicalUrl || ''} disabled={submitting} /></label>
+            <label>Open Graph image<input name="ogImage" defaultValue={initial.ogImage || ''} disabled={submitting} /></label>
+            <label className="ck-editor-check"><input type="checkbox" name="noindex" value="1" defaultChecked={initial.noindex === 1} disabled={submitting} /> Prevent indexing</label>
+          </section>
         </aside>
       </div>
-      <div className="ck-editor-post-actions"><div><button className="primary-action" name="status" value="DRAFT" type="submit" disabled={submitting}>{submitting ? 'Saving…' : 'Save draft'}</button><button className="publish-action" name="status" value="PUBLISHED" type="submit" disabled={submitting}>{submitting ? 'Saving…' : 'Publish'}</button>{postId && <button className="danger-action" name="action" value="trash" type="submit" formNoValidate disabled={submitting}>{submitting ? 'Saving…' : 'Move to Trash'}</button>}</div></div>
+
+      <div className="ck-editor-post-actions">
+        <div>
+          <button className="primary-action" name="status" value="DRAFT" type="submit" disabled={submitting}>{submitting ? 'Saving…' : 'Save draft'}</button>
+          <button className="publish-action" name="status" value="PUBLISHED" type="submit" disabled={submitting}>{submitting ? 'Saving…' : 'Publish'}</button>
+          {postId && <button className="danger-action" name="action" value="trash" type="submit" formNoValidate disabled={submitting}>{submitting ? 'Saving…' : 'Move to Trash'}</button>}
+        </div>
+      </div>
+
       {pickerFor && <MediaLibrary mode="picker" onPick={handlePick} onClose={() => setPickerFor(null)} />}
     </form>
   )
