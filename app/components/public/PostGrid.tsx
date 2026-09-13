@@ -24,12 +24,12 @@ export function PostCard({ post, instant }: { post: Card; instant?: boolean }) {
         {post.coverImage ? <img src={post.coverImage} alt={post.title} loading="lazy" /> : null}
       </Link>
       <div className="mag-card-body">
-        <span className="mag-chip">{post.categoryName || 'Journal'}</span>
+        {post.categoryName && post.categorySlug ? <Link className="mag-chip" href={`/category/${post.categorySlug}/`}>{post.categoryName}</Link> : <span className="mag-chip">Journal</span>}
         <h3 className="mag-card-title"><Link href={`/${post.slug}/`}>{post.title}</Link></h3>
         <p className="mag-card-dek">{shortText(post.excerpt, 130)}</p>
         <div className="mag-card-foot">
           <span className="mag-meta">{formatDate(post.publishedAt)}</span>
-          <span className="mag-meta">সোহানুর রহমান</span>
+          <a className="mag-meta" href="https://suhanurrahman.com/" target="_blank" rel="noreferrer">সোহানুর রহমান</a>
         </div>
       </div>
     </article>
