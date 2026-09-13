@@ -16,6 +16,7 @@ type Tag = { id: string; name: string }
 type Initial = {
   id?: string; title?: string; slug?: string; excerpt?: string | null; content?: string; contentFormat?: 'HTML' | 'MARKDOWN'; coverImage?: string | null; categoryIds?: string[]; tags?: string[]; seoTitle?: string | null; seoDescription?: string | null; seoKeywords?: string | null; ogImage?: string | null; canonicalUrl?: string | null; noindex?: number
 }
+type Notice = { type: 'success' | 'error'; message: string } | null
 
 const getDraftKey = (id?: string) => `blog-ckeditor-draft:${id || 'new'}`
 
@@ -28,6 +29,12 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
   const [fullscreen, setFullscreen] = useState(false)
   const [pickerFor, setPickerFor] = useState<null | 'cover' | 'content'>(null)
   const [submitting, setSubmitting] = useState(false)
+  const [notice, setNotice] = useState<Notice>(null)
+
+  function showNotice(type: 'success' | 'error', message: string, duration = 2600) {
+    setNotice({ type, message })
+    window.setTimeout(() => setNotice(null), duration)
+  }
 
   function handlePick(item: MediaItem) {
     if (pickerFor === 'cover') setCover(item.url)
@@ -69,16 +76,32 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
     const formData = new FormData(event.currentTarget)
     const submitter = (event.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null
     if (submitter?.name) formData.set(submitter.name, submitter.value)
+    const requestedStatus = String(formData.get('status') || '')
+    const requestedAction = String(formData.get('action') || '')
     setSubmitting(true)
+    setNotice(null)
     try {
       const response = await fetch('/api/admin/posts', { method: 'POST', body: formData, headers: { Accept: 'application/json' } })
-      const result = await response.json().catch(() => null) as { ok?: boolean; error?: string; id?: string; redirectTo?: string }
+      const result = await response.json().catch(() => null) as { ok?: boolean; error?: string; id?: string; redirectTo?: string; status?: string }
       if (!response.ok || !result?.ok) throw new Error(result?.error || 'Could not save the post.')
       try { localStorage.removeItem(draftKey) } catch {}
       setDirty(false); setSavedAt(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }))
+
+      if (requestedAction === 'trash') {
+        showNotice('success', 'পোস্টটি Trash-এ সরানো হয়েছে।', 900)
+        window.setTimeout(() => { window.location.href = result.redirectTo || '/admin/' }, 900)
+        return
+      }
+
+      if (requestedStatus === 'PUBLISHED') {
+        showNotice('success', 'পোস্টটি সফলভাবে Publish হয়েছে।')
+      } else {
+        showNotice('success', 'পোস্টটি Draft হিসেবে Save হয়েছে।')
+      }
+
       if (result.redirectTo && !postId && result.id) { setPostId(result.id); window.history.replaceState(window.history.state, '', result.redirectTo) }
     } catch (error) {
-      console.error('post save failed', error); setSavedAt(null); window.alert(error instanceof Error ? error.message : 'Could not save the post.')
+      console.error('post save failed', error); setSavedAt(null); showNotice('error', error instanceof Error ? error.message : 'Could not save the post.')
     } finally { setSubmitting(false) }
   }
 
@@ -112,7 +135,13 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
         .ck-editor-help { margin-top:-3px; color:var(--e-muted-foreground); font-size:12px; line-height:1.45; }
         .ck-editor-seo-hint { margin:-2px 0 11px; padding:8px 10px; border-left:3px solid var(--e-primary); border-radius:0 7px 7px 0; background:#f0fdfa; color:#475569; font-size:12px; line-height:1.5; }
         .ck-editor-post-actions { flex:0 0 auto; }
-        @media (max-width:900px) { .ck-editor-post-form{min-height:auto;max-height:none;overflow:visible}.ck-editor-post-heading{grid-template-columns:1fr;padding:16px}.ck-editor-post-grid{overflow:visible}.ck-editor-post-main{height:auto}.ck-editor-post-editor-shell{min-height:560px}.ck-editor-post-editor-shell .ck-editor__main>.ck-editor__editable{height:560px}.ck-editor-post-sidebar{height:auto;max-height:none;overflow:visible} }
+        .ck-editor-notice { position:fixed; right:24px; bottom:24px; z-index:3200; display:flex; align-items:center; gap:10px; min-width:300px; max-width:460px; padding:14px 16px; border-radius:12px; border:1px solid var(--e-border); background:#fff; box-shadow:0 12px 32px rgba(16,24,40,.16); color:var(--e-text); font-size:14px; font-weight:600; animation:ck-editor-notice-in .18s ease-out; }
+        .ck-editor-notice--success { border-color:#99f6e4; }
+        .ck-editor-notice--success::before { content:'✓'; display:grid; place-items:center; width:22px; height:22px; flex:0 0 auto; border-radius:999px; background:#ccfbf1; color:#0f766e; font-size:13px; font-weight:800; }
+        .ck-editor-notice--error { border-color:#fecaca; color:#991b1b; }
+        .ck-editor-notice--error::before { content:'!'; display:grid; place-items:center; width:22px; height:22px; flex:0 0 auto; border-radius:999px; background:#fee2e2; color:#b91c1c; font-size:13px; font-weight:800; }
+        @keyframes ck-editor-notice-in { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+        @media (max-width:900px) { .ck-editor-post-form{min-height:auto;max-height:none;overflow:visible}.ck-editor-post-heading{grid-template-columns:1fr;padding:16px}.ck-editor-post-grid{overflow:visible}.ck-editor-post-main{height:auto}.ck-editor-post-editor-shell{min-height:560px}.ck-editor-post-editor-shell .ck-editor__main>.ck-editor__editable{height:560px}.ck-editor-post-sidebar{height:auto;max-height:none;overflow:visible}.ck-editor-notice{right:14px;left:14px;bottom:14px;min-width:0;max-width:none} }
         @media (max-width:640px) { .ck-editor-post-heading input,.ck-editor-post-heading label:first-child input{font-size:16px;height:50px} }
       `}</style>
 
@@ -142,6 +171,7 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
       </div>
 
       <div className="ck-editor-post-actions"><div><button className="primary-action" name="status" value="DRAFT" type="submit" disabled={submitting}>{submitting ? 'Saving…' : 'Save draft'}</button><button className="publish-action" name="status" value="PUBLISHED" type="submit" disabled={submitting}>{submitting ? 'Saving…' : 'Publish'}</button>{postId && <button className="danger-action" name="action" value="trash" type="submit" formNoValidate disabled={submitting}>{submitting ? 'Saving…' : 'Move to Trash'}</button>}</div></div>
+      {notice && <div className={`ck-editor-notice ck-editor-notice--${notice.type}`} role="status" aria-live="polite">{notice.message}</div>}
       {pickerFor && <MediaLibrary mode="picker" onPick={handlePick} onClose={() => setPickerFor(null)} />}
     </form>
   )
