@@ -1,29 +1,18 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useRef, useState } from 'react'
 import { BriefcaseBusiness, ChevronDown, Loader2, Menu, Moon, Search, Sun, X } from 'lucide-react'
 
 type MenuItem = { id: string; categoryId: string; name: string; slug: string; parentId: string | null; sortOrder: number; children: MenuItem[] }
 type Result = { title: string; slug: string; excerpt: string | null; coverImage: string | null; categoryName: string | null }
 type Category = { id: string; name: string; slug: string }
 
-export default function PublicHeader({ categories }: { categories: Category[] }) {
-  const [menuItems, setMenuItems] = useState<MenuItem[] | null>(null)
-  const nav = (menuItems?.length ? menuItems : categories.slice(0, 7).map((c, index) => ({ id: `fallback-${c.id}`, categoryId: c.id, name: c.name, slug: c.slug, parentId: null, sortOrder: index, children: [] }))) as MenuItem[]
+export default function PublicHeader({ categories, menu }: { categories: Category[]; menu: MenuItem[] }) {
+  const nav = menu.length ? menu : categories.slice(0, 7).map((c, index) => ({ id: `fallback-${c.id}`, categoryId: c.id, name: c.name, slug: c.slug, parentId: null, sortOrder: index, children: [] }))
   const [scrolled, setScrolled] = useState(false)
   const [drawer, setDrawer] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [dark, setDark] = useState(false)
-
-  useEffect(() => {
-    let active = true
-    fetch('/api/header-menu', { cache: 'no-store' })
-      .then((response) => response.ok ? response.json() : null)
-      .then((data) => { if (active && Array.isArray(data?.menu)) setMenuItems(data.menu) })
-      .catch(() => {})
-    return () => { active = false }
-  }, [])
 
   useEffect(() => {
     const root = document.documentElement
@@ -58,7 +47,11 @@ export default function PublicHeader({ categories }: { categories: Category[] })
                   {item.name}
                   {item.children.length ? <ChevronDown className="mag-nav-chevron" size={13} strokeWidth={1.8} /> : null}
                 </Link>
-                {item.children.length ? <div className="mag-nav-submenu">{item.children.map((child) => <Link key={child.id} href={`/category/${child.slug}/`}>{child.name}</Link>)}</div> : null}
+                {item.children.length ? (
+                  <div className="mag-nav-submenu" role="menu">
+                    {item.children.map((child) => <Link key={child.id} href={`/category/${child.slug}/`} role="menuitem">{child.name}</Link>)}
+                  </div>
+                ) : null}
               </div>
             ))}
           </nav>
