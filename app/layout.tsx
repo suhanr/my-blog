@@ -1,7 +1,5 @@
 import type { Metadata } from 'next'
-import './globals.css'
 import './ckeditor-admin.css'
-import './netra-style.css'
 import './theme.css'
 
 const SITE = 'https://blog.suhanurrahman.com'

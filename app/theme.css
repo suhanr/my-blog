@@ -1,8 +1,14 @@
 /* Tailwind v4 entry for the admin panel — "Modern Minimalist SaaS".
    Preflight is intentionally NOT imported so the public journal
    (globals.css / netra-style.css) keeps its own base styles. */
-@layer theme, base, components, utilities;
+@layer legacy, theme, base, components, utilities;
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* Public journal + baseline styles live in a lower layer so Tailwind
+   utilities used in the admin always win generic name collisions
+   (e.g. .grid, .border). Public pages carry no utilities, so they are
+   unaffected. */
+@import './globals.css' layer(legacy);
+@import './netra-style.css' layer(legacy);
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities);
 
