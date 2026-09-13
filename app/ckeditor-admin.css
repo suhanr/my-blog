@@ -393,9 +393,9 @@
 /* Desktop editor viewport */
 @media (min-width: 901px) {
   .ck-editor-post-form:not(.ck-editor-post-form--fullscreen) {
-    height: calc(100vh - 72px) !important;
-    min-height: calc(100vh - 72px) !important;
-    max-height: calc(100vh - 72px) !important;
+    height: calc(100vh + 220px) !important;
+    min-height: calc(100vh + 220px) !important;
+    max-height: none !important;
     display: flex;
     flex-direction: column;
   }
@@ -405,8 +405,14 @@
     height: 100vh;
     max-height: 100vh;
   }
+  .ck-editor-post-grid {
+    min-height: 700px !important;
+  }
+  .ck-editor-post-editor-shell {
+    min-height: 660px;
+  }
   .ck-editor-post-editor-shell .ck-editor__main > .ck-editor__editable {
-    min-height: 560px;
+    min-height: 590px;
     resize: vertical;
   }
 }
