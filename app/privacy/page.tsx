@@ -3,17 +3,34 @@ import { getCategories, getHeaderMenu } from '@/lib/db'
 import PublicHeader from '@/app/components/public/PublicHeader'
 import PublicFooter from '@/app/components/public/PublicFooter'
 import { RevealInit } from '@/app/components/public/enhancers'
+import { SITE, SITE_NAME } from '@/lib/seo'
 
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'প্রাইভেসি পলিসি — Journal',
-  description: 'সুহানুর রহমান জার্নালের প্রাইভেসি পলিসি।',
-  alternates: { canonical: 'https://blog.suhanurrahman.com/privacy/' },
+  title: 'প্রাইভেসি পলিসি — সোহানুর রহমান জার্নাল',
+  description: 'সোহানুর রহমান জার্নালে মন্তব্য, স্থানীয় স্টোরেজ, ব্যক্তিগত তথ্য এবং গোপনীয়তা ব্যবস্থাপনা সম্পর্কে এই প্রাইভেসি পলিসিতে জানুন।',
+  keywords: ['প্রাইভেসি পলিসি', 'privacy policy', 'সোহানুর রহমান', 'সোহানুর রহমান জার্নাল'],
+  alternates: { canonical: `${SITE}/privacy/` },
+  openGraph: {
+    type: 'article',
+    url: `${SITE}/privacy/`,
+    title: 'প্রাইভেসি পলিসি — সোহানুর রহমান জার্নাল',
+    description: 'সোহানুর রহমান জার্নালে ব্যক্তিগত তথ্য ও গোপনীয়তা ব্যবস্থাপনা সম্পর্কে নীতিমালা।',
+    siteName: SITE_NAME,
+  },
 }
 
 export default async function PrivacyPage() {
   const [categories, menu] = await Promise.all([getCategories(), getHeaderMenu()])
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'হোম', item: `${SITE}/` },
+      { '@type': 'ListItem', position: 2, name: 'প্রাইভেসি পলিসি', item: `${SITE}/privacy/` },
+    ],
+  }
 
   return (
     <div className="site-public">
@@ -31,14 +48,13 @@ export default async function PrivacyPage() {
         .site-public .privacy-body ul { margin: 0; padding-left: 22px; color: var(--muted); }
         .site-public .privacy-body li { margin: 6px 0; }
         .site-public .privacy-body a { color: var(--accent); }
-        @media (max-width: 720px) {
-          .site-public .privacy-page { padding: 52px 0 80px; }
-        }
+        @media (max-width: 720px) { .site-public .privacy-page { padding: 52px 0 80px; } }
       `}</style>
 
       <PublicHeader categories={categories} menu={menu} />
       <main className="mag-main privacy-page">
         <div className="mag-container privacy-wrap">
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
           <article className="privacy-body reveal">
             <div className="privacy-kicker">Privacy</div>
             <h1 className="privacy-title">প্রাইভেসি পলিসি</h1>
@@ -46,7 +62,7 @@ export default async function PrivacyPage() {
 
             <section>
               <h2>এই নীতিমালা সম্পর্কে</h2>
-              <p>সুহানুর রহমান জার্নাল একটি ব্যক্তিগত প্রকাশনা প্ল্যাটফর্ম। এখানে আপনার গোপনীয়তা সম্মান করা হয় এবং প্রয়োজনের বাইরে ব্যক্তিগত তথ্য সংগ্রহ বা ব্যবহার না করার চেষ্টা করা হয়।</p>
+              <p>{SITE_NAME} একটি ব্যক্তিগত প্রকাশনা প্ল্যাটফর্ম। এখানে আপনার গোপনীয়তা সম্মান করা হয় এবং প্রয়োজনের বাইরে ব্যক্তিগত তথ্য সংগ্রহ বা ব্যবহার না করার চেষ্টা করা হয়।</p>
             </section>
 
             <section>
