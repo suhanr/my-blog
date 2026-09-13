@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { getCategories, getComments, getPostBySlug, listPublishedPosts } from '@/lib/db'
+import { getCategories, getComments, getHeaderMenu, getPostBySlug, listPublishedPosts } from '@/lib/db'
 import { markdownToHtml } from '@/lib/markdown'
 import { catColor, formatDate } from '@/lib/publicUi'
 import PublicHeader from '@/app/components/public/PublicHeader'
@@ -30,11 +30,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const p = await getPostBySlug(slug)
-  const categories = await getCategories()
+  const [categories, menu] = await Promise.all([getCategories(), getHeaderMenu()])
   if (!p) {
     return (
       <div className="site-public">
-        <PublicHeader categories={categories} />
+        <PublicHeader categories={categories} menu={menu} />
         <main className="mag-main"><div className="mag-container mag-article-head"><h1 className="mag-article-title">লেখাটি পাওয়া যায়নি</h1><p className="mag-article-dek"><Link href="/">← হোমে ফিরুন</Link></p></div></main>
         <PublicFooter categories={categories} />
       </div>
@@ -62,7 +62,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   return (
     <div className="site-public mag-article" style={{ ['--cat' as string]: color }}>
       <ReadingProgress />
-      <PublicHeader categories={categories} />
+      <PublicHeader categories={categories} menu={menu} />
 
       <main className="mag-main">
         <div className="mag-container">
