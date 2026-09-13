@@ -52,6 +52,29 @@ export const Button = forwardRef<
 ))
 Button.displayName = 'Button'
 
+/** Submit button that asks for confirmation before the form posts. */
+export function ConfirmSubmit({
+  message = 'Are you sure? This cannot be undone.',
+  className,
+  variant = 'destructive',
+  size,
+  children,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & { message?: string; variant?: ButtonVariant; size?: ButtonSize }) {
+  return (
+    <button
+      type="submit"
+      className={buttonVariants({ variant, size, className })}
+      onClick={(event) => {
+        if (!window.confirm(message)) event.preventDefault()
+      }}
+      {...props}
+    >
+      {children}
+    </button>
+  )
+}
+
 /* -------------------------------------------------------------------- Card */
 export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return <div className={cn('rounded-xl border border-border bg-card text-card-foreground shadow-sm', className)} {...props} />

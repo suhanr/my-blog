@@ -1,7 +1,7 @@
 import { requireAdmin } from '@/lib/admin'
 import { db } from '@/lib/db'
-import { Badge, Button, Card, CardHeader, CardTitle } from '@/app/admin/components/ui'
-import { RotateCcw } from 'lucide-react'
+import { Badge, Button, Card, CardHeader, CardTitle, ConfirmSubmit } from '@/app/admin/components/ui'
+import { RotateCcw, Trash2 } from 'lucide-react'
 
 export default async function TrashPage() {
   await requireAdmin()
@@ -23,17 +23,24 @@ export default async function TrashPage() {
         {items.length ? (
           items.map((x) => (
             <div key={x.id} className="flex items-center justify-between gap-4 border-t border-border px-6 py-3.5">
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium">{x.title || x.name || x.filename || 'Item'}</p>
                 <p className="truncate text-xs text-muted-foreground">{x.slug || x.body?.slice(0, 80) || x.url || ''}</p>
               </div>
-              <form action="/api/admin/trash" method="post">
+              <form action="/api/admin/trash" method="post" className="flex shrink-0 items-center gap-2">
                 <input type="hidden" name="type" value={type} />
                 <input type="hidden" name="id" value={x.id} />
-                <input type="hidden" name="action" value="restore" />
-                <Button type="submit" size="sm" variant="outline">
+                <Button type="submit" name="action" value="restore" size="sm" variant="outline">
                   <RotateCcw className="size-3.5" strokeWidth={1.75} /> Restore
                 </Button>
+                <ConfirmSubmit
+                  name="action"
+                  value="delete"
+                  size="sm"
+                  message={`Permanently delete this ${type}? This cannot be undone.`}
+                >
+                  <Trash2 className="size-3.5" strokeWidth={1.75} /> Delete forever
+                </ConfirmSubmit>
               </form>
             </div>
           ))
