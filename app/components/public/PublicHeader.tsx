@@ -79,7 +79,7 @@ export default function PublicHeader({ categories, menu }: { categories: Categor
           <button className="mag-icon-btn mag-menu-btn" aria-label="Menu" onClick={() => setDrawer(true)}>
             <Menu size={19} strokeWidth={1.9} />
           </button>
-          <Link href="/" className="mag-logo">সোহানুর <b>রহমান</b></Link>
+          <Link href="/" className="mag-logo">সোহানুর <b>রহমান</b><span style={{ fontSize: '0.5em', color: 'var(--accent)', marginLeft: 6, fontWeight: 600 }}>জার্নাল</span></Link>
           <nav className="mag-nav" aria-label="Sections">
             {nav.map((item) => (
               <div key={item.id} className={item.children.length ? 'mag-nav-dropdown' : 'mag-nav-item'}>
@@ -108,7 +108,7 @@ export default function PublicHeader({ categories, menu }: { categories: Categor
           <div className="mag-drawer-scrim" onClick={closeDrawer} />
           <div className="mag-drawer-panel">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <span className="mag-logo">সোহানুর <b>রহমান</b></span>
+              <span className="mag-logo">সোহানুর <b>রহমান</b><span style={{ fontSize: '0.5em', color: 'var(--accent)', marginLeft: 6, fontWeight: 600 }}>জার্নাল</span></span>
               <button className="mag-icon-btn" aria-label="Close" onClick={closeDrawer}><X size={18} /></button>
             </div>
 
