@@ -1,13 +1,16 @@
 import type { Metadata } from 'next'
 import { getCategories, getHeaderMenu } from '@/lib/db'
 import SearchPageClient from './SearchPageClient'
+import { SITE } from '@/lib/seo'
 
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'সার্চ — Journal',
-  description: 'সুহানুর রহমানের জার্নালে লেখা খুঁজুন।',
-  alternates: { canonical: 'https://blog.suhanurrahman.com/search/' },
+  title: 'সার্চ — সোহানুর রহমান জার্নাল',
+  description: 'সোহানুর রহমান জার্নালে প্রযুক্তি, এআই, গবেষণা, ডেটা ও ডিজিটাল সংস্কৃতি নিয়ে লেখা খুঁজুন।',
+  keywords: ['সার্চ', 'সোহানুর রহমান', 'জার্নাল', 'প্রযুক্তি', 'এআই', 'গবেষণা'],
+  alternates: { canonical: `${SITE}/search/` },
+  robots: { index: false, follow: true },
 }
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
