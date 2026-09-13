@@ -13,6 +13,8 @@ export default async function TrashPage() {
     db.prepare(`SELECT id,filename,url,deleted_at AS deletedAt FROM media_assets WHERE deleted_at IS NOT NULL ORDER BY datetime(deleted_at) DESC`).all<any>(),
   ])
 
+  const totalTrash = posts.results.length + comments.results.length + categories.results.length + tags.results.length + media.results.length
+
   const Section = ({ title, type, items }: { title: string; type: string; items: any[] }) => (
     <Card>
       <CardHeader className="flex-row items-center justify-between">
@@ -53,10 +55,24 @@ export default async function TrashPage() {
 
   return (
     <>
-      <div>
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-primary">Recycle bin</p>
-        <h1 className="mt-1.5 text-2xl font-semibold tracking-tight">Trash</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Items are soft-deleted so they can be restored without damaging migrated content.</p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-primary">Recycle bin</p>
+          <h1 className="mt-1.5 text-2xl font-semibold tracking-tight">Trash</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Items are soft-deleted so they can be restored without damaging migrated content.</p>
+        </div>
+        {totalTrash > 0 && (
+          <form action="/api/admin/trash" method="post" className="shrink-0">
+            <ConfirmSubmit
+              name="action"
+              value="delete-all"
+              variant="destructive"
+              message={`Permanently delete all ${totalTrash} items in Trash? This cannot be undone.`}
+            >
+              <Trash2 className="size-4" strokeWidth={1.75} /> Delete everything
+            </ConfirmSubmit>
+          </form>
+        )}
       </div>
 
       <div className="grid gap-5">
