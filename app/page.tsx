@@ -11,8 +11,8 @@ export const dynamic = 'force-dynamic'
 export default async function Home() {
   const [posts, categories, total, menu] = await Promise.all([listPublishedPosts(12), getCategories(), countPublishedPosts(), getHeaderMenu()])
   const featured = posts[0]
-  const side = posts.slice(1, 3)
-  const gridPosts = posts.slice(3) as unknown as Card[]
+  const side = posts.slice(1, 6)
+  const gridPosts = posts.slice(6) as unknown as Card[]
   const hasMore = total > posts.length
 
   return (
@@ -54,7 +54,7 @@ export default async function Home() {
                 <h2 className="mag-section-title">সাম্প্রতিক লেখা</h2>
                 <Link className="mag-all" href="/">সব লেখা <span className="arrow">→</span></Link>
               </div>
-              <PostGrid initialPosts={gridPosts} offsetStart={3} hasMore={hasMore} />
+              <PostGrid initialPosts={gridPosts} offsetStart={6} hasMore={hasMore} />
             </section>
           ) : null}
 
