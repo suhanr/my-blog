@@ -18,11 +18,22 @@ export default async function Home() {
   return (
     <div className="site-public">
       <PublicHeader categories={categories} menu={menu} />
+      <style>{`
+        @media (max-width: 767px) {
+          .site-public .mag-main {
+            padding-top: 0 !important;
+          }
+
+          .site-public .mobile-home-hero {
+            padding-top: 0 !important;
+          }
+        }
+      `}</style>
 
       <main className="mag-main">
         <div className="mag-container">
           {featured ? (
-            <section className="mag-section" style={{ paddingTop: 0 }}>
+            <section className="mag-section mobile-home-hero" style={{ paddingTop: 0 }}>
               <div className="mag-hero">
                 <article className="mag-hero-lead reveal" style={{ ['--cat' as string]: catColor(featured.categoryName) }}>
                   <Link href={`/${featured.slug}/`} className="mag-hero-media">
