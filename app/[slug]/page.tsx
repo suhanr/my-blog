@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { getCategories, getComments, getHeaderMenu, getPostBySlug, listPublishedPosts } from '@/lib/db'
+import { getCategories, getComments, getHeaderMenu, getPostBySlug, listPublishedPosts, type PublicComment } from '@/lib/db'
 import { markdownToHtml } from '@/lib/markdown'
 import { catColor, formatDate } from '@/lib/publicUi'
 import PublicHeader from '@/app/components/public/PublicHeader'
@@ -9,6 +9,47 @@ import { PostCard, type Card } from '@/app/components/public/PostGrid'
 import { Lightbox, ReadingProgress, RevealInit } from '@/app/components/public/enhancers'
 
 const SITE = 'https://blog.suhanurrahman.com'
+
+type CommentNode = PublicComment & { children: CommentNode[] }
+
+function buildCommentTree(comments: PublicComment[]): CommentNode[] {
+  const nodes = new Map<string, CommentNode>()
+  for (const comment of comments) nodes.set(comment.id, { ...comment, children: [] })
+
+  const roots: CommentNode[] = []
+  for (const node of nodes.values()) {
+    if (node.parentCommentId && nodes.has(node.parentCommentId)) nodes.get(node.parentCommentId)!.children.push(node)
+    else roots.push(node)
+  }
+  return roots
+}
+
+function CommentThread({ postId, comment }: { postId: string; comment: CommentNode }) {
+  return (
+    <div className="mag-comment" key={comment.id}>
+      <div className="mag-comment-author">{comment.name}</div>
+      <p>{comment.body}</p>
+      <details className="mag-reply-details">
+        <summary>Reply</summary>
+        <form className="mag-reply-form" action="/api/comments" method="post">
+          <input type="hidden" name="postId" value={postId} />
+          <input type="hidden" name="parentCommentId" value={comment.id} />
+          <input name="name" placeholder="আপনার নাম" required />
+          <input name="email" type="email" placeholder="ইমেইল (ঐচ্ছিক)" />
+          <textarea name="body" placeholder="আপনার উত্তর লিখুন…" required />
+          <button className="mag-btn primary" type="submit">রিপ্লাই পাঠান</button>
+          <small>রিপ্লাই প্রকাশের আগে মডারেশনের জন্য অপেক্ষা করবে।</small>
+        </form>
+      </details>
+
+      {comment.children.length ? (
+        <div className="mag-comment-children">
+          {comment.children.map((child) => <CommentThread key={child.id} postId={postId} comment={child} />)}
+        </div>
+      ) : null}
+    </div>
+  )
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
@@ -42,6 +83,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   }
 
   const [comments, allPosts] = await Promise.all([getComments(p.id), listPublishedPosts(8)])
+  const commentTree = buildCommentTree(comments)
   const related = allPosts.filter((post) => post.id !== p.id && (post.categoryId === p.categoryId || !p.categoryId)).slice(0, 3) as unknown as Card[]
   const html = p.contentFormat === 'HTML' ? p.content : markdownToHtml(p.content)
   const color = catColor(p.categoryName)
@@ -61,6 +103,27 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
   return (
     <div className="site-public mag-article" style={{ ['--cat' as string]: color }}>
+      <style>{`
+        .site-public .mag-comments { max-width:720px; margin:40px auto 0; }
+        .site-public .mag-comment { padding:18px 0; border-bottom:1px solid var(--line-2); }
+        .site-public .mag-comment-author { font-size:16px; font-weight:800; line-height:1.4; }
+        .site-public .mag-comment p { font-size:15.5px; line-height:1.75; margin:6px 0 8px; color:var(--fg); white-space:pre-wrap; }
+        .site-public .mag-comment-children { margin:12px 0 0 26px; padding-left:18px; border-left:2px solid var(--line-2); }
+        .site-public .mag-reply-details { margin-top:6px; }
+        .site-public .mag-reply-details > summary { display:inline-flex; align-items:center; cursor:pointer; color:var(--muted); font-size:14px; font-weight:700; list-style:none; }
+        .site-public .mag-reply-details > summary::-webkit-details-marker { display:none; }
+        .site-public .mag-reply-details > summary::before { content:'↳'; margin-right:6px; color:var(--faint); }
+        .site-public .mag-reply-details[open] > summary { color:var(--accent); }
+        .site-public .mag-reply-form { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:12px 0 4px; padding:14px; border:1px solid var(--line); border-radius:12px; background:var(--bg-2); }
+        .site-public .mag-reply-form textarea { grid-column:1 / -1; min-height:110px; resize:vertical; }
+        .site-public .mag-reply-form .mag-btn { width:max-content; }
+        .site-public .mag-reply-form small { grid-column:1 / -1; color:var(--muted); font-size:12px; }
+        @media (max-width:640px) {
+          .site-public .mag-comment-children { margin-left:14px; padding-left:12px; }
+          .site-public .mag-reply-form { grid-template-columns:1fr; }
+          .site-public .mag-reply-form textarea,.site-public .mag-reply-form small { grid-column:auto; }
+        }
+      `}</style>
       <ReadingProgress />
       <PublicHeader categories={categories} menu={menu} />
 
@@ -100,12 +163,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
           <section className="mag-comments">
             <h2>মন্তব্য <span className="mag-meta">({comments.length})</span></h2>
-            {comments.map((c) => (
-              <div className="mag-comment" key={c.id}>
-                <strong>{c.name}</strong>
-                <p>{c.body}</p>
-              </div>
-            ))}
+            {commentTree.length ? commentTree.map((comment) => <CommentThread key={comment.id} postId={p.id} comment={comment} />) : <p className="mag-meta">এখনও কোনো অনুমোদিত মন্তব্য নেই।</p>}
+
             <form className="mag-form" action="/api/comments" method="post">
               <input type="hidden" name="postId" value={p.id} />
               <input name="name" placeholder="আপনার নাম" required />
