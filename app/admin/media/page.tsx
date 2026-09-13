@@ -20,5 +20,21 @@ export default function MediaPage() {
       setMessage(error instanceof Error ? error.message : 'Upload failed')
     } finally { setBusy(false) }
   }
-  return <div className="admin-wrap"><div className="admin-shell"><aside className="admin-side"><Link className="brand" href="/admin/">SUHANUR RAHMAN / CMS</Link><nav className="admin-nav"><Link href="/admin/">Dashboard</Link><Link href="/admin/posts/new/">New post</Link><Link href="/admin/media/">Media</Link><Link href="/admin/comments/">Comments</Link></nav></aside><main className="admin-main"><p className="kicker">Media library</p><h1 className="serif">Upload image</h1><form className="admin-form" onSubmit={upload}><input name="file" type="file" accept="image/*" required/><button className="button" type="submit" disabled={busy}>{busy ? 'Uploading…' : 'Upload to R2'}</button>{message ? <p className="success">{message}</p> : null}{url ? <label>Image URL<input readOnly value={url} onFocus={(e)=>e.currentTarget.select()} /></label> : null}</form></main></div></div>
+  return (
+    <>
+      <div className="admin-page-head">
+        <div>
+          <p className="kicker">Media library</p>
+          <h1>Upload image</h1>
+          <p>Send an image to R2, then copy its URL into a post.</p>
+        </div>
+      </div>
+      <form className="admin-form" style={{ maxWidth: 620 }} onSubmit={upload}>
+        <label>Image file<input name="file" type="file" accept="image/*" required /></label>
+        <div><button className="button" type="submit" disabled={busy}>{busy ? 'Uploading…' : 'Upload to R2'}</button></div>
+        {message ? <p className="success">{message}</p> : null}
+        {url ? <label>Image URL<input readOnly value={url} onFocus={(e) => e.currentTarget.select()} /></label> : null}
+      </form>
+    </>
+  )
 }
