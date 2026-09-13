@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const p = await getPostBySlug(slug)
   if (!p) return { title: 'Not Found' }
   const title = p.seoTitle || p.title
-  const description = p.seoDescription || p.excerpt || `${p.title} by Suhanur Rahman.`
+  const description = p.seoDescription || p.excerpt || `${p.title} by Sohanur Rahman.`
   const canonical = p.canonicalUrl || `${SITE}/${p.slug}/`
   return {
     title,
@@ -54,7 +54,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     datePublished: p.publishedAt || undefined,
     dateModified: p.updatedAt,
     mainEntityOfPage: shareUrl,
-    author: { '@type': 'Person', name: 'Suhanur Rahman', url: 'https://suhanurrahman.com/' },
+    author: { '@type': 'Person', name: 'Sohanur Rahman', url: 'https://suhanurrahman.com/' },
     image: (p.ogImage || p.coverImage) ? [p.ogImage || p.coverImage!] : undefined,
     articleSection: p.categoryName || undefined,
   }
@@ -73,7 +73,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             <h1 className="mag-article-title">{p.title}</h1>
             {p.excerpt ? <p className="mag-article-dek">{p.excerpt}</p> : null}
             <div className="mag-article-meta">
-              <b>সুহানুর রহমান</b>
+              <b>সোহানুর রহমান</b>
               <span className="dot" />
               <span>{formatDate(p.publishedAt)}</span>
               {p.updatedAt ? <><span className="dot" /><span>হালনাগাদ {formatDate(p.updatedAt)}</span></> : null}
