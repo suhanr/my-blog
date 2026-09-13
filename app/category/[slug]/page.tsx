@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { getCategories, getCategoryBySlug } from '@/lib/db'
+import { getCategories, getCategoryBySlug, getHeaderMenu } from '@/lib/db'
 import { catColor } from '@/lib/publicUi'
 import PublicHeader from '@/app/components/public/PublicHeader'
 import PublicFooter from '@/app/components/public/PublicFooter'
@@ -17,11 +17,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const [data, categories] = await Promise.all([getCategoryBySlug(slug), getCategories()])
+  const [data, categories, menu] = await Promise.all([getCategoryBySlug(slug), getCategories(), getHeaderMenu()])
 
   return (
     <div className="site-public" style={{ ['--cat' as string]: catColor(data?.category.name) }}>
-      <PublicHeader categories={categories} />
+      <PublicHeader categories={categories} menu={menu} />
       <main className="mag-main">
         <div className="mag-container">
           <section className="mag-section">
