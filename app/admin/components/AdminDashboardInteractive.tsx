@@ -6,15 +6,19 @@ import {
   Archive,
   Check,
   Eye,
+  FileText,
+  FilePen,
   Grid2X2,
   LayoutList,
+  MessageSquare,
   Pencil,
   Plus,
   Search,
+  SendHorizontal,
   Trash2,
-  Upload,
   X,
 } from 'lucide-react'
+import { Badge, Button, buttonVariants, cn } from '@/app/admin/components/ui'
 
 type Post = {
   id: string
@@ -37,12 +41,23 @@ type Counts = {
 
 type Tab = 'all' | 'published' | 'drafts'
 
-type Props = {
-  posts: Post[]
-  counts: Counts
+const fmtDate = (value: string) => new Date(value).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+
+function StatCard({ icon: Icon, tint, label, value }: { icon: typeof FileText; tint: string; label: string; value: number }) {
+  return (
+    <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-5 shadow-sm">
+      <span className={cn('grid size-11 shrink-0 place-items-center rounded-xl', tint)}>
+        <Icon className="size-5" strokeWidth={1.75} />
+      </span>
+      <div className="min-w-0">
+        <p className="text-[13px] font-medium text-muted-foreground">{label}</p>
+        <p className="mt-0.5 text-2xl font-semibold tabular-nums tracking-tight">{value}</p>
+      </div>
+    </div>
+  )
 }
 
-export default function AdminDashboardInteractive({ posts, counts }: Props) {
+export default function AdminDashboardInteractive({ posts, counts }: { posts: Post[]; counts: Counts }) {
   const [query, setQuery] = useState('')
   const [tab, setTab] = useState<Tab>('all')
   const [selected, setSelected] = useState<string[]>([])
@@ -62,9 +77,8 @@ export default function AdminDashboardInteractive({ posts, counts }: Props) {
   const allVisibleSelected = filtered.length > 0 && filtered.every((post) => selected.includes(post.id))
 
   function toggle(id: string) {
-    setSelected((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id])
+    setSelected((current) => (current.includes(id) ? current.filter((item) => item !== id) : [...current, id]))
   }
-
   function selectAll() {
     setSelected(allVisibleSelected ? [] : filtered.map((post) => post.id))
   }
@@ -97,90 +111,224 @@ export default function AdminDashboardInteractive({ posts, counts }: Props) {
     window.location.href = `/admin/posts/${selected[0]}/edit/`
   }
 
+  const tabs: { key: Tab; label: string; count: number }[] = [
+    { key: 'all', label: 'All', count: counts.all },
+    { key: 'published', label: 'Published', count: counts.published },
+    { key: 'drafts', label: 'Drafts', count: counts.drafts },
+  ]
+
   return (
     <>
-      <div className="admin-page-head">
+      {/* Page head */}
+      <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="kicker">Publishing</p>
-          <h1>Posts</h1>
-          <p>Manage your journal posts and publishing workflow.</p>
+          <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Manage your journal posts and publishing workflow.</p>
         </div>
-        <Link className="admin-primary-button" href="/admin/posts/new/"><Plus size={15} /> Add post</Link>
+        <Link href="/admin/posts/new/" className={buttonVariants()}>
+          <Plus className="size-4" strokeWidth={2} /> Add post
+        </Link>
       </div>
 
-      <div className="admin-toolbar">
-        <label className="admin-global-search">
-          <Search size={15} />
-          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search posts by title or slug…" aria-label="Search posts" />
-          {query && <button type="button" onClick={() => setQuery('')} aria-label="Clear search"><X size={14} /></button>}
-        </label>
+      {/* Stat cards */}
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <StatCard icon={FileText} tint="bg-primary/10 text-primary" label="Total posts" value={counts.all} />
+        <StatCard icon={SendHorizontal} tint="bg-emerald-50 text-emerald-600" label="Published" value={counts.published} />
+        <StatCard icon={FilePen} tint="bg-amber-50 text-amber-600" label="Drafts" value={counts.drafts} />
+        <StatCard icon={MessageSquare} tint="bg-rose-50 text-rose-600" label="Pending comments" value={counts.comments} />
       </div>
 
-      <div className="admin-tabs">
-        <button className={tab === 'all' ? 'is-active' : ''} onClick={() => setTab('all')}>All posts <b>{counts.all}</b></button>
-        <button className={tab === 'published' ? 'is-active' : ''} onClick={() => setTab('published')}>Published <b>{counts.published}</b></button>
-        <button className={tab === 'drafts' ? 'is-active' : ''} onClick={() => setTab('drafts')}>Drafts <b>{counts.drafts}</b></button>
-        <Link href="/admin/comments/">Comments <b>{counts.comments}</b></Link>
-      </div>
+      {/* Posts card */}
+      <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+        <div className="flex flex-wrap items-center gap-3 border-b border-border px-4 py-3 sm:px-5">
+          <div className="inline-flex items-center gap-1 rounded-lg bg-muted p-1">
+            {tabs.map((t) => (
+              <button
+                key={t.key}
+                onClick={() => setTab(t.key)}
+                className={cn(
+                  'inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors',
+                  tab === t.key ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground',
+                )}
+              >
+                {t.label}
+                <span className={cn('tabular-nums', tab === t.key ? 'text-primary' : 'text-muted-foreground/70')}>{t.count}</span>
+              </button>
+            ))}
+          </div>
 
-      <div className="admin-bulkbar">
-        <button className="admin-ghost-button" type="button" onClick={selectAll}>
-          {allVisibleSelected ? <Check size={13} /> : <span className="admin-select-dot" />}
-          {allVisibleSelected ? 'Clear selection' : 'Select all'}
-        </button>
-        <div className="admin-bulk-actions">
-          <button type="button" onClick={editSelected} disabled={selected.length !== 1}><Pencil size={13} /> Edit</button>
-          <button type="button" onClick={() => bulkAction('publish')} disabled={!selected.length || busy}><Upload size={13} /> Publish</button>
-          <button type="button" onClick={() => bulkAction('draft')} disabled={!selected.length || busy}><Archive size={13} /> Draft</button>
-          <button type="button" onClick={() => bulkAction('trash')} disabled={!selected.length || busy}><Trash2 size={13} /> Delete</button>
+          <div className="relative ml-auto w-full sm:w-72">
+            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" strokeWidth={1.75} />
+            <input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search posts…"
+              aria-label="Search posts"
+              className="h-9 w-full rounded-lg border border-input bg-card pl-9 pr-8 text-sm shadow-xs placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
+            />
+            {query && (
+              <button type="button" onClick={() => setQuery('')} aria-label="Clear search" className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                <X className="size-4" />
+              </button>
+            )}
+          </div>
+
+          <div className="inline-flex items-center gap-1 rounded-lg bg-muted p-1">
+            <button
+              type="button"
+              onClick={() => setView('grid')}
+              aria-label="Grid view"
+              className={cn('grid size-8 place-items-center rounded-md transition-colors', view === 'grid' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground')}
+            >
+              <Grid2X2 className="size-4" strokeWidth={1.75} />
+            </button>
+            <button
+              type="button"
+              onClick={() => setView('list')}
+              aria-label="List view"
+              className={cn('grid size-8 place-items-center rounded-md transition-colors', view === 'list' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground')}
+            >
+              <LayoutList className="size-4" strokeWidth={1.75} />
+            </button>
+          </div>
         </div>
-        <div className="admin-view-toggle">
-          <button type="button" className={view === 'grid' ? 'is-active' : ''} onClick={() => setView('grid')} aria-label="Grid view"><Grid2X2 size={15} /></button>
-          <button type="button" className={view === 'list' ? 'is-active' : ''} onClick={() => setView('list')} aria-label="List view"><LayoutList size={15} /></button>
+
+        {/* Bulk bar */}
+        <div className="flex flex-wrap items-center gap-2 border-b border-border bg-muted/30 px-4 py-2.5 sm:px-5">
+          <button
+            type="button"
+            onClick={selectAll}
+            className="inline-flex items-center gap-2 rounded-lg px-2 py-1 text-[13px] font-medium text-muted-foreground hover:text-foreground"
+          >
+            <span className={cn('grid size-4 place-items-center rounded border', allVisibleSelected ? 'border-primary bg-primary text-primary-foreground' : 'border-input')}>
+              {allVisibleSelected && <Check className="size-3" strokeWidth={3} />}
+            </span>
+            {allVisibleSelected ? 'Clear' : 'Select all'}
+          </button>
+          {selected.length > 0 && <span className="text-[13px] text-muted-foreground">{selected.length} selected</span>}
+          <div className="ml-auto flex flex-wrap items-center gap-2">
+            <Button variant="outline" size="sm" onClick={editSelected} disabled={selected.length !== 1}>
+              <Pencil className="size-3.5" strokeWidth={1.75} /> Edit
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => bulkAction('publish')} disabled={!selected.length || busy}>
+              <SendHorizontal className="size-3.5" strokeWidth={1.75} /> Publish
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => bulkAction('draft')} disabled={!selected.length || busy}>
+              <Archive className="size-3.5" strokeWidth={1.75} /> Draft
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => bulkAction('trash')} disabled={!selected.length || busy} className="text-destructive hover:bg-rose-50 hover:text-destructive">
+              <Trash2 className="size-3.5" strokeWidth={1.75} /> Delete
+            </Button>
+          </div>
         </div>
-      </div>
 
-      {notice && <div className="admin-dashboard-notice">{notice}</div>}
+        {notice && <div className="mx-4 mt-3 rounded-lg border border-primary/20 bg-accent px-3 py-2 text-[13px] text-accent-foreground sm:mx-5">{notice}</div>}
 
-      {view === 'grid' ? (
-        <div className="admin-post-grid">
-          {filtered.map((post) => (
-            <article className={`admin-post-card${selected.includes(post.id) ? ' is-selected' : ''}`} key={post.id}>
-              <div className="admin-post-card-toolbar">
-                <input type="checkbox" checked={selected.includes(post.id)} onChange={() => toggle(post.id)} aria-label={`Select ${post.title}`} />
-                <div>
-                  <Link href={`/admin/posts/${post.id}/edit/`} aria-label={`Edit ${post.title}`}><Pencil size={13} /></Link>
-                  <Link href={`/${post.slug}/`} aria-label={`View ${post.title}`}><Eye size={13} /></Link>
-                </div>
+        {/* Posts */}
+        <div className="p-4 sm:p-5">
+          {!filtered.length ? (
+            <div className="flex flex-col items-center gap-3 py-16 text-center">
+              <span className="grid size-12 place-items-center rounded-full bg-muted text-muted-foreground">
+                <Search className="size-5" strokeWidth={1.75} />
+              </span>
+              <div>
+                <p className="text-sm font-semibold">No posts found</p>
+                <p className="text-sm text-muted-foreground">Try a different search or status filter.</p>
               </div>
-              <Link className="admin-post-card-image" href={`/admin/posts/${post.id}/edit/`}>
-                {post.coverImage ? <img src={post.coverImage} alt="" /> : <div className="admin-post-placeholder" />}
+              <Link href="/admin/posts/new/" className={buttonVariants({ size: 'sm' })}>
+                <Plus className="size-4" strokeWidth={2} /> New post
               </Link>
-              <div className="admin-post-card-body">
-                <Link href={`/admin/posts/${post.id}/edit/`} className="admin-post-card-title">{post.title}</Link>
-                <div className="admin-post-card-meta"><span>{post.status === 'PUBLISHED' ? 'Published' : 'Draft'}</span><span>{new Date(post.updatedAt).toLocaleDateString('en-GB')}</span></div>
-              </div>
-            </article>
-          ))}
-        </div>
-      ) : (
-        <div className="admin-post-list">
-          {filtered.map((post) => (
-            <div className={`admin-post-list-row${selected.includes(post.id) ? ' is-selected' : ''}`} key={post.id}>
-              <input type="checkbox" checked={selected.includes(post.id)} onChange={() => toggle(post.id)} aria-label={`Select ${post.title}`} />
-              <div className="admin-post-list-thumb">{post.coverImage ? <img src={post.coverImage} alt="" /> : null}</div>
-              <div className="admin-post-list-main"><Link href={`/admin/posts/${post.id}/edit/`}>{post.title}</Link><span>/{post.slug}</span></div>
-              <span className={`admin-status-pill ${post.status === 'PUBLISHED' ? 'is-published' : 'is-draft'}`}>{post.status === 'PUBLISHED' ? 'Published' : 'Draft'}</span>
-              <span className="admin-post-list-date">{new Date(post.updatedAt).toLocaleDateString('en-GB')}</span>
-              <Link className="admin-icon-link" href={`/admin/posts/${post.id}/edit/`} aria-label={`Edit ${post.title}`}><Pencil size={14} /></Link>
             </div>
-          ))}
+          ) : view === 'grid' ? (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {filtered.map((post) => {
+                const isSel = selected.includes(post.id)
+                return (
+                  <article
+                    key={post.id}
+                    className={cn(
+                      'group flex flex-col overflow-hidden rounded-xl border bg-card shadow-xs transition-all hover:shadow-md',
+                      isSel ? 'border-primary ring-2 ring-ring/30' : 'border-border',
+                    )}
+                  >
+                    <div className="flex h-11 items-center justify-between border-b border-border px-3">
+                      <input type="checkbox" checked={isSel} onChange={() => toggle(post.id)} aria-label={`Select ${post.title}`} className="size-4 rounded accent-primary" />
+                      <div className="flex items-center gap-1">
+                        <Link href={`/admin/posts/${post.id}/edit/`} aria-label={`Edit ${post.title}`} className="grid size-7 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
+                          <Pencil className="size-3.5" strokeWidth={1.75} />
+                        </Link>
+                        <Link href={`/${post.slug}/`} aria-label={`View ${post.title}`} className="grid size-7 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
+                          <Eye className="size-3.5" strokeWidth={1.75} />
+                        </Link>
+                      </div>
+                    </div>
+                    <Link href={`/admin/posts/${post.id}/edit/`} className="block aspect-[1.7/1] overflow-hidden bg-muted">
+                      {post.coverImage ? (
+                        <img src={post.coverImage} alt="" className="size-full object-cover transition-transform duration-300 group-hover:scale-[1.03]" />
+                      ) : (
+                        <span className="grid size-full place-items-center bg-gradient-to-br from-muted to-secondary text-muted-foreground/50">
+                          <FileText className="size-6" strokeWidth={1.5} />
+                        </span>
+                      )}
+                    </Link>
+                    <div className="flex flex-col gap-2.5 p-3.5">
+                      <Link href={`/admin/posts/${post.id}/edit/`} className="line-clamp-1 text-sm font-semibold tracking-tight hover:text-primary">
+                        {post.title}
+                      </Link>
+                      <div className="flex items-center justify-between gap-2">
+                        <Badge variant={post.status === 'PUBLISHED' ? 'success' : 'secondary'}>{post.status === 'PUBLISHED' ? 'Published' : 'Draft'}</Badge>
+                        <span className="text-xs text-muted-foreground">{fmtDate(post.updatedAt)}</span>
+                      </div>
+                    </div>
+                  </article>
+                )
+              })}
+            </div>
+          ) : (
+            <div className="overflow-hidden rounded-xl border border-border">
+              {filtered.map((post, i) => {
+                const isSel = selected.includes(post.id)
+                return (
+                  <div
+                    key={post.id}
+                    className={cn(
+                      'grid grid-cols-[auto_44px_minmax(0,1fr)_auto_auto] items-center gap-3 px-3 py-2.5 sm:px-4',
+                      i > 0 && 'border-t border-border',
+                      isSel ? 'bg-accent' : 'hover:bg-muted/40',
+                    )}
+                  >
+                    <input type="checkbox" checked={isSel} onChange={() => toggle(post.id)} aria-label={`Select ${post.title}`} className="size-4 rounded accent-primary" />
+                    <span className="hidden size-11 overflow-hidden rounded-md bg-muted sm:block">
+                      {post.coverImage ? <img src={post.coverImage} alt="" className="size-full object-cover" /> : null}
+                    </span>
+                    <div className="min-w-0">
+                      <Link href={`/admin/posts/${post.id}/edit/`} className="block truncate text-sm font-semibold tracking-tight hover:text-primary">
+                        {post.title}
+                      </Link>
+                      <span className="block truncate text-xs text-muted-foreground">/{post.slug}</span>
+                    </div>
+                    <Badge variant={post.status === 'PUBLISHED' ? 'success' : 'secondary'} className="hidden sm:inline-flex">
+                      {post.status === 'PUBLISHED' ? 'Published' : 'Draft'}
+                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <span className="hidden text-xs text-muted-foreground md:block">{fmtDate(post.updatedAt)}</span>
+                      <Link href={`/admin/posts/${post.id}/edit/`} aria-label={`Edit ${post.title}`} className="grid size-8 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
+                        <Pencil className="size-4" strokeWidth={1.75} />
+                      </Link>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
         </div>
-      )}
 
-      {!filtered.length && <div className="admin-empty-state"><Search size={20} /><strong>No posts found</strong><span>Try a different search or switch the status filter.</span></div>}
-
-      <div className="admin-dashboard-footer"><span>{counts.categories} categories</span><span>{counts.tags} tags</span><Link href="/admin/trash/">{counts.trash} in trash</Link></div>
+        <div className="flex flex-wrap gap-x-5 gap-y-1 border-t border-border bg-muted/20 px-4 py-3 text-xs text-muted-foreground sm:px-5">
+          <span>{counts.categories} categories</span>
+          <span>{counts.tags} tags</span>
+          <Link href="/admin/trash/" className="hover:text-primary">{counts.trash} in trash</Link>
+        </div>
+      </div>
     </>
   )
 }

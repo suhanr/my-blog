@@ -1,29 +1,64 @@
 import { requireAdmin } from '@/lib/admin'
 import { db } from '@/lib/db'
+import { Badge, Button, Card, CardHeader, CardTitle } from '@/app/admin/components/ui'
+import { RotateCcw } from 'lucide-react'
 
-export default async function TrashPage(){
- await requireAdmin(); const [posts,comments,categories,tags,media]=await Promise.all([
-  db.prepare(`SELECT id,title,slug,deleted_at AS deletedAt FROM posts WHERE deleted_at IS NOT NULL ORDER BY datetime(deleted_at) DESC`).all<any>(),
-  db.prepare(`SELECT id,name,body,deleted_at AS deletedAt FROM comments WHERE deleted_at IS NOT NULL ORDER BY datetime(deleted_at) DESC`).all<any>(),
-  db.prepare(`SELECT id,name,slug,deleted_at AS deletedAt FROM categories WHERE deleted_at IS NOT NULL ORDER BY datetime(deleted_at) DESC`).all<any>(),
-  db.prepare(`SELECT id,name,slug,deleted_at AS deletedAt FROM tags WHERE deleted_at IS NOT NULL ORDER BY datetime(deleted_at) DESC`).all<any>(),
-  db.prepare(`SELECT id,filename,url,deleted_at AS deletedAt FROM media_assets WHERE deleted_at IS NOT NULL ORDER BY datetime(deleted_at) DESC`).all<any>()
- ])
- const Section=({title,type,items}:{title:string;type:string;items:any[]})=><section className="border" style={{padding:20,marginBottom:18}}><div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:12}}><h2>{title}</h2><span className="admin-status-pill is-draft">{items.length}</span></div>{items.length?items.map(x=><div className="trash-card" key={x.id}><div><strong>{x.title||x.name||x.filename||'Item'}</strong><div className="meta">{x.slug||x.body?.slice(0,80)||x.url||''}</div></div><form action="/api/admin/trash" method="post"><input type="hidden" name="type" value={type}/><input type="hidden" name="id" value={x.id}/><input type="hidden" name="action" value="restore"/><button className="button" type="submit">Restore</button></form></div>):<p className="muted" style={{margin:'12px 0 0'}}>Trash is empty.</p>}</section>
- return (
-    <>
-      <div className="admin-page-head">
-        <div>
-          <p className="kicker">Recycle bin</p>
-          <h1>Trash</h1>
-          <p>Items are soft-deleted so they can be restored without damaging migrated content.</p>
-        </div>
+export default async function TrashPage() {
+  await requireAdmin()
+  const [posts, comments, categories, tags, media] = await Promise.all([
+    db.prepare(`SELECT id,title,slug,deleted_at AS deletedAt FROM posts WHERE deleted_at IS NOT NULL ORDER BY datetime(deleted_at) DESC`).all<any>(),
+    db.prepare(`SELECT id,name,body,deleted_at AS deletedAt FROM comments WHERE deleted_at IS NOT NULL ORDER BY datetime(deleted_at) DESC`).all<any>(),
+    db.prepare(`SELECT id,name,slug,deleted_at AS deletedAt FROM categories WHERE deleted_at IS NOT NULL ORDER BY datetime(deleted_at) DESC`).all<any>(),
+    db.prepare(`SELECT id,name,slug,deleted_at AS deletedAt FROM tags WHERE deleted_at IS NOT NULL ORDER BY datetime(deleted_at) DESC`).all<any>(),
+    db.prepare(`SELECT id,filename,url,deleted_at AS deletedAt FROM media_assets WHERE deleted_at IS NOT NULL ORDER BY datetime(deleted_at) DESC`).all<any>(),
+  ])
+
+  const Section = ({ title, type, items }: { title: string; type: string; items: any[] }) => (
+    <Card>
+      <CardHeader className="flex-row items-center justify-between">
+        <CardTitle>{title}</CardTitle>
+        <Badge variant="secondary">{items.length}</Badge>
+      </CardHeader>
+      <div className="divide-y divide-border">
+        {items.length ? (
+          items.map((x) => (
+            <div key={x.id} className="flex items-center justify-between gap-4 px-6 py-3.5">
+              <div className="min-w-0">
+                <p className="truncate text-sm font-medium">{x.title || x.name || x.filename || 'Item'}</p>
+                <p className="truncate text-xs text-muted-foreground">{x.slug || x.body?.slice(0, 80) || x.url || ''}</p>
+              </div>
+              <form action="/api/admin/trash" method="post">
+                <input type="hidden" name="type" value={type} />
+                <input type="hidden" name="id" value={x.id} />
+                <input type="hidden" name="action" value="restore" />
+                <Button type="submit" size="sm" variant="outline">
+                  <RotateCcw className="size-3.5" strokeWidth={1.75} /> Restore
+                </Button>
+              </form>
+            </div>
+          ))
+        ) : (
+          <p className="px-6 py-5 text-sm text-muted-foreground">Trash is empty.</p>
+        )}
       </div>
-      {Section({title:'Posts',type:'post',items:posts.results})}
-      {Section({title:'Comments',type:'comment',items:comments.results})}
-      {Section({title:'Categories',type:'category',items:categories.results})}
-      {Section({title:'Tags',type:'tag',items:tags.results})}
-      {Section({title:'Media',type:'media',items:media.results})}
+    </Card>
+  )
+
+  return (
+    <>
+      <div>
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-primary">Recycle bin</p>
+        <h1 className="mt-1.5 text-2xl font-semibold tracking-tight">Trash</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Items are soft-deleted so they can be restored without damaging migrated content.</p>
+      </div>
+
+      <div className="grid gap-5">
+        <Section title="Posts" type="post" items={posts.results} />
+        <Section title="Comments" type="comment" items={comments.results} />
+        <Section title="Categories" type="category" items={categories.results} />
+        <Section title="Tags" type="tag" items={tags.results} />
+        <Section title="Media" type="media" items={media.results} />
+      </div>
     </>
   )
 }
