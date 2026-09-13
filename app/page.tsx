@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { countPublishedPosts, getCategories, listPublishedPosts } from '@/lib/db'
+import { countPublishedPosts, getCategories, getHeaderMenu, listPublishedPosts } from '@/lib/db'
 import { catColor, formatDate, shortText } from '@/lib/publicUi'
 import PublicHeader from '@/app/components/public/PublicHeader'
 import PublicFooter from '@/app/components/public/PublicFooter'
@@ -9,7 +9,7 @@ import { RevealInit } from '@/app/components/public/enhancers'
 export const dynamic = 'force-dynamic'
 
 export default async function Home() {
-  const [posts, categories, total] = await Promise.all([listPublishedPosts(12), getCategories(), countPublishedPosts()])
+  const [posts, categories, total, menu] = await Promise.all([listPublishedPosts(12), getCategories(), countPublishedPosts(), getHeaderMenu()])
   const featured = posts[0]
   const side = posts.slice(1, 3)
   const gridPosts = posts.slice(3) as unknown as Card[]
@@ -17,7 +17,7 @@ export default async function Home() {
 
   return (
     <div className="site-public">
-      <PublicHeader categories={categories} />
+      <PublicHeader categories={categories} menu={menu} />
 
       <main className="mag-main">
         <div className="mag-container">
