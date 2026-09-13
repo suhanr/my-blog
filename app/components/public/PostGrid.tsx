@@ -29,7 +29,7 @@ export function PostCard({ post, instant }: { post: Card; instant?: boolean }) {
         <p className="mag-card-dek">{shortText(post.excerpt, 130)}</p>
         <div className="mag-card-foot">
           <span className="mag-meta">{formatDate(post.publishedAt)}</span>
-          <span className="mag-meta">সুহানুর রহমান</span>
+          <span className="mag-meta">সোহানুর রহমান</span>
         </div>
       </div>
     </article>
@@ -58,7 +58,6 @@ export default function PostGrid({
       const data = await res.json()
       setPosts((prev) => [...prev, ...(data.posts || [])])
       setHasMore(Boolean(data.hasMore))
-      // Newly added .reveal cards animate in on next scroll; nudge the observer.
       requestAnimationFrame(() => window.dispatchEvent(new Event('scroll')))
     } catch {
       setHasMore(false)
