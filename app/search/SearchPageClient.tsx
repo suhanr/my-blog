@@ -2,8 +2,10 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { Loader2, Search } from 'lucide-react'
+import PublicHeader from '@/app/components/public/PublicHeader'
+import PublicFooter from '@/app/components/public/PublicFooter'
+import { RevealInit } from '@/app/components/public/enhancers'
 
 type Result = {
   id: string
@@ -17,18 +19,11 @@ type Result = {
 type Category = { id: string; name: string; slug: string }
 type MenuItem = { id: string; categoryId: string; name: string; slug: string; parentId: string | null; sortOrder: number; children: MenuItem[] }
 
-export default function SearchPageClient({ categories, menu }: { categories: Category[]; menu: MenuItem[] }) {
-  const searchParams = useSearchParams()
-  const initialQuery = (searchParams.get('q') || '').slice(0, 100)
-  const [query, setQuery] = useState(initialQuery)
+export default function SearchPageClient({ categories, menu, initialQuery = '' }: { categories: Category[]; menu: MenuItem[]; initialQuery?: string }) {
+  const [query, setQuery] = useState(initialQuery.slice(0, 100))
   const [results, setResults] = useState<Result[]>([])
   const [loading, setLoading] = useState(false)
   const [searched, setSearched] = useState(Boolean(initialQuery.trim()))
-
-  useEffect(() => {
-    const nextQuery = (searchParams.get('q') || '').slice(0, 100)
-    setQuery(nextQuery)
-  }, [searchParams])
 
   useEffect(() => {
     const term = query.trim().slice(0, 100)
@@ -72,6 +67,7 @@ export default function SearchPageClient({ categories, menu }: { categories: Cat
 
   return (
     <>
+      <PublicHeader categories={categories} menu={menu} />
       <style>{`
         .site-public .search-page { padding: 76px 0 110px; }
         .site-public .search-hero { max-width: 920px; margin: 0 auto 52px; }
@@ -104,7 +100,6 @@ export default function SearchPageClient({ categories, menu }: { categories: Cat
         }
       `}</style>
 
-      <PublicHeader categories={categories} menu={menu} />
       <main className="mag-main search-page">
         <div className="mag-container">
           <section className="search-hero reveal">
