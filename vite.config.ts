@@ -11,4 +11,9 @@ export default defineConfig({
       viteEnvironment: { name: 'rsc', childEnvironments: ['ssr'] },
     }),
   ],
+  build: {
+    rolldownOptions: {
+      external: ['cloudflare:workers'],
+    },
+  },
 })
