@@ -69,6 +69,7 @@ export default function PublicHeader({ categories, menu }: { categories: Categor
         .site-public .mag-drawer-children-inner { min-height: 0; overflow: hidden; padding-left: 12px; }
         .site-public .mag-drawer-children-inner a { font-size: 17px; padding: 10px 0 10px 14px; border-bottom: 0; color: var(--muted); }
         .site-public .mag-drawer-children-inner a:hover { color: var(--accent); }
+        .site-public .mag-search-all { display: block; margin-top: 10px; padding: 12px 2px 2px; border-top: 1px solid var(--line-2); color: var(--accent); font-size: 13px; font-weight: 600; text-align: center; }
         @media (max-width: 720px) {
           .site-public .mag-nav { display: none; }
         }
@@ -200,6 +201,7 @@ function SearchOverlay({ onClose }: { onClose: () => void }) {
           </Link>
         ))}</div>}
         {touched && !loading && !results.length && q.trim() && <div className="mag-search-results"><div className="mag-search-empty">“{q}” — কোনো ফলাফল পাওয়া যায়নি।</div></div>}
+        {q.trim() && !loading && <Link className="mag-search-all" href={`/search/?q=${encodeURIComponent(q.trim())}`} onClick={onClose}>সব ফলাফল দেখুন ↗</Link>}
       </div>
     </div>
   )
