@@ -5,3 +5,6 @@
 
 /* Mobile: keep the homepage content closer to the fixed header. */
 @media (max-width:720px){.site-public .mag-main{padding-top:0}.site-public .mag-main>.mag-container>.mag-section:first-child{padding-top:12px!important}}
+
+/* Homepage hero: reduce the vertical gap before the first post on desktop and mobile. */
+.site-public .mag-hero-lead{padding-top:20px}
