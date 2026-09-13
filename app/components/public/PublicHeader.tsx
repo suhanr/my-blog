@@ -14,6 +14,7 @@ export default function PublicHeader({ categories, menu }: { categories: Categor
   const [drawer, setDrawer] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [dark, setDark] = useState(false)
+  const [expandedMobile, setExpandedMobile] = useState<string | null>(null)
 
   useEffect(() => {
     const root = document.documentElement
@@ -33,8 +34,45 @@ export default function PublicHeader({ categories, menu }: { categories: Categor
     setDark(!dark)
   }
 
+  function closeDrawer() {
+    setDrawer(false)
+    setExpandedMobile(null)
+  }
+
   return (
     <>
+      <style dangerouslySetInnerHTML={{ __html: `
+        .site-public .mag-nav { overflow: visible; }
+        .site-public .mag-nav-dropdown { position: relative; }
+        .site-public .mag-nav-link { display: inline-flex; align-items: center; gap: 4px; }
+        .site-public .mag-nav-chevron { transition: transform .18s ease; }
+        .site-public .mag-nav-dropdown:hover .mag-nav-chevron,
+        .site-public .mag-nav-dropdown:focus-within .mag-nav-chevron { transform: rotate(180deg); }
+        .site-public .mag-nav-submenu { position: absolute; top: calc(100% + 8px); left: 50%; min-width: 190px; padding: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow-lg); opacity: 0; visibility: hidden; pointer-events: none; transform: translate(-50%, -6px); transition: opacity .16s ease, transform .16s ease, visibility .16s ease; z-index: 260; }
+        .site-public .mag-nav-submenu::before { content: ''; position: absolute; left: 50%; top: -6px; width: 10px; height: 10px; background: var(--surface); border-left: 1px solid var(--line); border-top: 1px solid var(--line); transform: translateX(-50%) rotate(45deg); }
+        .site-public .mag-nav-submenu a { display: block; padding: 9px 11px; border-radius: 8px; font-size: 14px; line-height: 1.35; color: var(--fg); }
+        .site-public .mag-nav-submenu a::after { display: none; }
+        .site-public .mag-nav-submenu a:hover { background: var(--bg-2); color: var(--accent); }
+        .site-public .mag-nav-dropdown:hover .mag-nav-submenu,
+        .site-public .mag-nav-dropdown:focus-within .mag-nav-submenu { opacity: 1; visibility: visible; pointer-events: auto; transform: translate(-50%, 0); }
+        .site-public .mag-drawer-portfolio { display: flex !important; align-items: center; justify-content: center; gap: 8px; margin: 0 0 14px; padding: 11px 14px !important; border: 1px solid var(--line) !important; border-radius: 10px; background: var(--surface); color: var(--fg); font-size: 17px !important; }
+        .site-public .mag-drawer-group { border-bottom: 1px solid var(--line-2); }
+        .site-public .mag-drawer-row { display: flex; align-items: center; gap: 8px; }
+        .site-public .mag-drawer-row > a { flex: 1; border-bottom: 0 !important; }
+        .site-public .mag-drawer-toggle { flex: 0 0 auto; width: 40px; height: 40px; display: inline-grid; place-items: center; border: 0; background: transparent; color: var(--muted); cursor: pointer; border-radius: 8px; }
+        .site-public .mag-drawer-toggle:hover { background: var(--bg-2); color: var(--fg); }
+        .site-public .mag-drawer-toggle svg { transition: transform .18s ease; }
+        .site-public .mag-drawer-group.is-expanded .mag-drawer-toggle svg { transform: rotate(180deg); }
+        .site-public .mag-drawer-children { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .2s ease; }
+        .site-public .mag-drawer-group.is-expanded .mag-drawer-children { grid-template-rows: 1fr; }
+        .site-public .mag-drawer-children-inner { min-height: 0; overflow: hidden; padding-left: 12px; }
+        .site-public .mag-drawer-children-inner a { font-size: 17px; padding: 10px 0 10px 14px; border-bottom: 0; color: var(--muted); }
+        .site-public .mag-drawer-children-inner a:hover { color: var(--accent); }
+        @media (max-width: 720px) {
+          .site-public .mag-nav { display: none; }
+        }
+      ` }} />
+
       <header className={`mag-header${scrolled ? ' is-scrolled' : ''}`}>
         <div className="mag-container mag-header-inner">
           <button className="mag-icon-btn mag-menu-btn" aria-label="Menu" onClick={() => setDrawer(true)}>
@@ -66,20 +104,46 @@ export default function PublicHeader({ categories, menu }: { categories: Categor
 
       {drawer && (
         <div className="mag-drawer is-open" role="dialog" aria-modal="true">
-          <div className="mag-drawer-scrim" onClick={() => setDrawer(false)} />
+          <div className="mag-drawer-scrim" onClick={closeDrawer} />
           <div className="mag-drawer-panel">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <span className="mag-logo">সোহানুর <b>রহমান</b></span>
-              <button className="mag-icon-btn" aria-label="Close" onClick={() => setDrawer(false)}><X size={18} /></button>
+              <button className="mag-icon-btn" aria-label="Close" onClick={closeDrawer}><X size={18} /></button>
             </div>
-            <Link href="/" onClick={() => setDrawer(false)}>হোম</Link>
+
+            <a className="mag-drawer-portfolio" href="https://suhanurrahman.com/" target="_blank" rel="noreferrer">
+              <BriefcaseBusiness size={17} strokeWidth={1.8} />
+              Portfolio
+            </a>
+
+            <Link href="/" onClick={closeDrawer}>হোম</Link>
             {nav.map((item) => (
-              <div key={item.id} className="mag-drawer-group">
-                <Link href={`/category/${item.slug}/`} onClick={() => setDrawer(false)}>{item.name}</Link>
-                {item.children.length ? item.children.map((child) => <Link key={child.id} className="mag-drawer-child" href={`/category/${child.slug}/`} onClick={() => setDrawer(false)}>{child.name}</Link>) : null}
+              <div key={item.id} className={`mag-drawer-group${expandedMobile === item.id ? ' is-expanded' : ''}`}>
+                <div className="mag-drawer-row">
+                  <Link href={`/category/${item.slug}/`} onClick={closeDrawer}>{item.name}</Link>
+                  {item.children.length ? (
+                    <button
+                      type="button"
+                      className="mag-drawer-toggle"
+                      aria-label={`${item.name} submenu`}
+                      aria-expanded={expandedMobile === item.id}
+                      onClick={() => setExpandedMobile((current) => current === item.id ? null : item.id)}
+                    >
+                      <ChevronDown size={19} strokeWidth={1.9} />
+                    </button>
+                  ) : null}
+                </div>
+                {item.children.length ? (
+                  <div className="mag-drawer-children">
+                    <div className="mag-drawer-children-inner">
+                      {item.children.map((child) => (
+                        <Link key={child.id} href={`/category/${child.slug}/`} onClick={closeDrawer}>{child.name}</Link>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
               </div>
             ))}
-            <a className="mag-drawer-portfolio" href="https://suhanurrahman.com/" target="_blank" rel="noreferrer">Portfolio</a>
           </div>
         </div>
       )}
