@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import { ChevronDown } from 'lucide-react'
 import { getHeaderMenu } from '@/lib/db'
+import FooterDepartmentNav from '@/app/components/public/FooterDepartmentNav'
 
 type MenuItem = {
   id: string
@@ -48,98 +48,87 @@ export default async function PublicFooter({ categories }: { categories: { id: s
           display: flex;
           flex-direction: column;
           align-items: stretch;
-          gap: 2px;
+          gap: 0;
         }
-        .site-public .mag-footer-dept-item {
+        .site-public .mag-footer-dept-group {
           border-bottom: 1px solid var(--line-2);
         }
-        .site-public .mag-footer-dept-item:last-child {
+        .site-public .mag-footer-dept-group:last-child {
           border-bottom: 0;
         }
         .site-public .mag-footer-dept-row {
           display: flex;
           align-items: center;
-          justify-content: space-between;
-          gap: 10px;
-          width: 100%;
+          gap: 8px;
         }
         .site-public .mag-footer-dept-parent {
           flex: 1;
           min-width: 0;
-          padding: 8px 0;
+          padding: 10px 0;
+          border-bottom: 0 !important;
           color: var(--muted);
           font-size: 15px;
           font-weight: 600;
           line-height: 1.35;
           transition: color 0.18s ease;
         }
-        .site-public .mag-footer-dept-parent:hover,
-        .site-public .mag-footer-dept-details[open] ~ .mag-footer-dept-parent {
+        .site-public .mag-footer-dept-parent:hover {
           color: var(--accent);
-        }
-        .site-public .mag-footer-dept-details {
-          flex: 0 0 auto;
-          position: relative;
         }
         .site-public .mag-footer-dept-toggle {
           flex: 0 0 auto;
-          width: 34px;
-          height: 34px;
+          width: 40px;
+          height: 40px;
           display: inline-grid;
           place-items: center;
           border: 0;
           background: transparent;
           color: var(--muted);
           cursor: pointer;
-          border-radius: 7px;
-          list-style: none;
-          transition: color 0.18s ease, background 0.18s ease;
-        }
-        .site-public .mag-footer-dept-toggle::-webkit-details-marker {
-          display: none;
-        }
-        .site-public .mag-footer-dept-toggle::marker {
-          display: none;
-          content: '';
+          border-radius: 8px;
+          transition: background 0.18s ease, color 0.18s ease;
         }
         .site-public .mag-footer-dept-toggle:hover {
           background: var(--bg-2);
-          color: var(--accent);
+          color: var(--fg);
         }
-        .site-public .mag-footer-dept-chevron {
+        .site-public .mag-footer-dept-toggle svg {
           transition: transform 0.18s ease;
         }
-        .site-public .mag-footer-dept-details[open] .mag-footer-dept-chevron {
+        .site-public .mag-footer-dept-group.is-expanded .mag-footer-dept-toggle svg {
           transform: rotate(180deg);
         }
-        .site-public .mag-footer-dept-dropdown {
-          display: flex;
-          flex-direction: column;
-          gap: 2px;
-          padding: 0 0 8px 14px;
+        .site-public .mag-footer-dept-children {
+          display: grid;
+          grid-template-rows: 0fr;
+          transition: grid-template-rows 0.2s ease;
         }
-        .site-public .mag-footer-dept-dropdown a {
+        .site-public .mag-footer-dept-group.is-expanded .mag-footer-dept-children {
+          grid-template-rows: 1fr;
+        }
+        .site-public .mag-footer-dept-children-inner {
+          min-height: 0;
+          overflow: hidden;
+          padding-left: 12px;
+        }
+        .site-public .mag-footer-dept-children-inner a {
           display: block;
-          padding: 5px 0;
+          padding: 10px 0 10px 14px;
+          border-bottom: 0;
           color: var(--muted);
           font-size: 14px;
           line-height: 1.35;
           transition: color 0.18s ease;
         }
-        .site-public .mag-footer-dept-dropdown a:hover {
+        .site-public .mag-footer-dept-children-inner a:hover {
           color: var(--accent);
         }
         @media (max-width: 720px) {
           .site-public .mag-footer-dept-parent {
             font-size: 16px;
           }
-          .site-public .mag-footer-dept-toggle {
-            width: 40px;
-            height: 40px;
-          }
-          .site-public .mag-footer-dept-dropdown a {
+          .site-public .mag-footer-dept-children-inner a {
             font-size: 15px;
-            padding: 6px 0;
           }
         }
       `}</style>
@@ -154,27 +143,7 @@ export default async function PublicFooter({ categories }: { categories: { id: s
 
         <div>
           <h4>বিভাগ</h4>
-          <nav className="mag-footer-dept-nav" aria-label="Footer sections">
-            {footerMenu.map((item) => (
-              <div key={item.id} className="mag-footer-dept-item">
-                <div className="mag-footer-dept-row">
-                  <Link href={`/category/${item.slug}/`} className="mag-footer-dept-parent">{item.name}</Link>
-                  {item.children.length ? (
-                    <details className="mag-footer-dept-details">
-                      <summary className="mag-footer-dept-toggle" aria-label={`${item.name} submenu`}>
-                        <ChevronDown className="mag-footer-dept-chevron" size={14} strokeWidth={1.8} aria-hidden="true" />
-                      </summary>
-                      <div className="mag-footer-dept-dropdown">
-                        {item.children.map((child) => (
-                          <Link key={child.id} href={`/category/${child.slug}/`}>{child.name}</Link>
-                        ))}
-                      </div>
-                    </details>
-                  ) : null}
-                </div>
-              </div>
-            ))}
-          </nav>
+          <FooterDepartmentNav items={footerMenu} />
         </div>
 
         <div>
