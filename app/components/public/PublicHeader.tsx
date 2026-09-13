@@ -19,7 +19,8 @@ export default function PublicHeader({ categories, menu }: { categories: Categor
   useEffect(() => {
     const root = document.documentElement
     const current = root.dataset.theme
-    setDark(current ? current === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches)
+    if (!current) root.dataset.theme = 'light'
+    setDark(current === 'dark')
     const onScroll = () => setScrolled(window.scrollY > 8)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
