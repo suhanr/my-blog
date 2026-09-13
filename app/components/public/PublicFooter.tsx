@@ -36,7 +36,7 @@ export default async function PublicFooter({ categories }: { categories: { id: s
           display: inline-flex;
           align-items: baseline;
           white-space: nowrap;
-          color: var(--fg) !important;
+          color: var(--muted) !important;
         }
         .site-public .mag-footer-brand b {
           color: var(--accent) !important;
@@ -64,7 +64,7 @@ export default async function PublicFooter({ categories }: { categories: { id: s
         .site-public .mag-footer-dept-parent {
           flex: 1;
           min-width: 0;
-          padding: 10px 0;
+          padding: 6px 0;
           border-bottom: 0 !important;
           color: var(--muted);
           font-size: 15px;
@@ -77,8 +77,8 @@ export default async function PublicFooter({ categories }: { categories: { id: s
         }
         .site-public .mag-footer-dept-toggle {
           flex: 0 0 auto;
-          width: 40px;
-          height: 40px;
+          width: 34px;
+          height: 34px;
           display: inline-grid;
           place-items: center;
           border: 0;
@@ -113,10 +113,11 @@ export default async function PublicFooter({ categories }: { categories: { id: s
         }
         .site-public .mag-footer-dept-children-inner a {
           display: block;
-          padding: 10px 0 10px 14px;
+          padding: 4px 0 4px 14px;
           border-bottom: 0;
           color: var(--muted);
-          font-size: 14px;
+          font-size: 15px;
+          font-weight: 600;
           line-height: 1.35;
           transition: color 0.18s ease;
         }
@@ -124,11 +125,9 @@ export default async function PublicFooter({ categories }: { categories: { id: s
           color: var(--accent);
         }
         @media (max-width: 720px) {
-          .site-public .mag-footer-dept-parent {
-            font-size: 16px;
-          }
+          .site-public .mag-footer-dept-parent,
           .site-public .mag-footer-dept-children-inner a {
-            font-size: 15px;
+            font-size: 16px;
           }
         }
       `}</style>
