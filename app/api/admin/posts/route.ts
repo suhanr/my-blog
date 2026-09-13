@@ -6,8 +6,16 @@ function values(form: FormData, name: string) {
   return form.getAll(name).map(v => String(v).trim()).filter(Boolean)
 }
 
+function wantsJson(request: Request) {
+  return request.headers.get('accept')?.includes('application/json')
+}
+
+function json(data: Record<string, unknown>, status = 200) {
+  return Response.json(data, { status, headers: { 'Cache-Control': 'no-store' } })
+}
+
 export async function POST(request: Request) {
-  if (!(await isAdmin(request))) return new Response('Unauthorized', { status: 401 })
+  if (!(await isAdmin(request))) return wantsJson(request) ? json({ ok: false, error: 'Unauthorized' }, 401) : new Response('Unauthorized', { status: 401 })
 
   try {
     const form = await request.formData()
@@ -16,11 +24,11 @@ export async function POST(request: Request) {
     const id = String(form.get('id') || crypto.randomUUID())
 
     if (action === 'trash' || intent === 'trash' || intent === 'delete') {
-      if (!String(form.get('id') || '').trim()) return new Response('Post ID is required', { status: 400 })
+      if (!String(form.get('id') || '').trim()) return wantsJson(request) ? json({ ok: false, error: 'Post ID is required' }, 400) : new Response('Post ID is required', { status: 400 })
       const existing = await db.prepare(`SELECT id FROM posts WHERE id=? LIMIT 1`).bind(id).first<{ id: string }>()
-      if (!existing) return Response.redirect(new URL('/admin/', request.url), 303)
+      if (!existing) return wantsJson(request) ? json({ ok: true, redirectTo: '/admin/' }) : Response.redirect(new URL('/admin/', request.url), 303)
       await db.prepare(`UPDATE posts SET deleted_at=?, updated_at=? WHERE id=?`).bind(new Date().toISOString(), new Date().toISOString(), id).run()
-      return Response.redirect(new URL('/admin/', request.url), 303)
+      return wantsJson(request) ? json({ ok: true, redirectTo: '/admin/' }) : Response.redirect(new URL('/admin/', request.url), 303)
     }
 
     const title = String(form.get('title') || '').trim().slice(0, 240)
@@ -40,7 +48,7 @@ export async function POST(request: Request) {
     const noindex = form.get('noindex') ? 1 : 0
     const now = new Date().toISOString()
 
-    if (!title || !content) return new Response('Title and content are required', { status: 400 })
+    if (!title || !content) return wantsJson(request) ? json({ ok: false, error: 'Title and content are required' }, 400) : new Response('Title and content are required', { status: 400 })
 
     if (intent === 'update') {
       await db.prepare(`UPDATE posts SET title=?,slug=?,excerpt=?,content=?,content_format=?,cover_image=?,status=?,published_at=CASE WHEN ?='PUBLISHED' THEN COALESCE(published_at,?) ELSE NULL END,updated_at=?,category_id=?,seo_title=?,seo_description=?,seo_keywords=?,og_image=?,canonical_url=?,noindex=?,deleted_at=NULL WHERE id=?`)
@@ -63,9 +71,10 @@ export async function POST(request: Request) {
       await db.prepare(`INSERT OR IGNORE INTO post_tags (post_id,tag_id) VALUES (?,?)`).bind(id, tagId).run()
     }
 
-    return Response.redirect(new URL(`/admin/posts/${id}/edit/`, request.url), 303)
+    const redirectTo = `/admin/posts/${id}/edit/`
+    return wantsJson(request) ? json({ ok: true, id, redirectTo, status }) : Response.redirect(new URL(redirectTo, request.url), 303)
   } catch (error) {
     console.error('post mutation failed', error)
-    return new Response('Could not save the post.', { status: 500 })
+    return wantsJson(request) ? json({ ok: false, error: 'Could not save the post.' }, 500) : new Response('Could not save the post.', { status: 500 })
   }
 }
