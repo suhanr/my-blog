@@ -7,7 +7,7 @@ import PublicHeader from '@/app/components/public/PublicHeader'
 import PublicFooter from '@/app/components/public/PublicFooter'
 import { PostCard, type Card } from '@/app/components/public/PostGrid'
 import { RevealInit } from '@/app/components/public/enhancers'
-import { SITE, breadcrumbJsonLd } from '@/lib/seo'
+import { PROFILE_IMAGE, SITE, breadcrumbJsonLd } from '@/lib/seo'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     keywords: [data.category.name, 'সোহানুর রহমান', 'প্রযুক্তি', 'গবেষণা', 'এআই'],
     alternates: { canonical: `${SITE}/category/${slug}/` },
     robots: hasPosts ? undefined : { index: false, follow: true },
-    openGraph: { type: 'website', url: `${SITE}/category/${slug}/`, title, description, images: [{ url: `${SITE}/` }] },
+    openGraph: { type: 'website', url: `${SITE}/category/${slug}/`, title, description, images: [{ url: PROFILE_IMAGE, alt: 'সোহানুর রহমান' }] },
   }
 }
 
