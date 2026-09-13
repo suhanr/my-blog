@@ -5,7 +5,7 @@ export default function PublicFooter({ categories }: { categories: { id: string;
     <footer className="mag-footer">
       <div className="mag-container mag-footer-grid">
         <div>
-          <div className="mag-footer-brand">সুহানুর <b>রহমান</b></div>
+          <div className="mag-footer-brand">সোহানুর <b>রহমান</b></div>
           <p>প্রযুক্তি, গবেষণা, অনুসন্ধান, ডিজিটাল সংস্কৃতি ও ভাবনা নিয়ে একটি স্বাধীন জার্নাল।</p>
         </div>
         <div>
@@ -25,7 +25,7 @@ export default function PublicFooter({ categories }: { categories: { id: string;
         </div>
       </div>
       <div className="mag-container mag-footer-bottom">
-        <span>© 2026 Suhanur Rahman</span>
+        <span>© 2026 Sohanur Rahman</span>
         <span>Independent journal · Bangladesh</span>
       </div>
     </footer>
