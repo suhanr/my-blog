@@ -147,9 +147,10 @@ export default async function PublicFooter({ categories }: { categories: { id: s
 
         <div>
           <h4>লিংকস</h4>
-          <Link href="/">হোম</Link>
-          <Link href="/admin/">CMS</Link>
-          <a href="https://suhanurrahman.com/" target="_blank" rel="noreferrer">Portfolio ↗</a>
+          <Link href="/about/">আমার সম্পর্কে ↗</Link>
+          <Link href="/privacy/">প্রাইভেসি পলিসি ↗</Link>
+          <a href="https://suhanurrahman.com/" target="_blank" rel="noreferrer">পোর্টফলিও ↗</a>
+          <Link href="/admin/">সিএমএস ↗</Link>
         </div>
 
         <div>
