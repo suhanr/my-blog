@@ -6,6 +6,16 @@ const db = (env as BlogEnv).BLOG_DB
 
 const postSelect = `p.id,p.title,p.slug,p.excerpt,p.content,p.content_format AS contentFormat,p.cover_image AS coverImage,p.status,p.published_at AS publishedAt,p.created_at AS createdAt,p.updated_at AS updatedAt,p.category_id AS categoryId,p.seo_title AS seoTitle,p.seo_description AS seoDescription,p.seo_keywords AS seoKeywords,p.og_image AS ogImage,p.canonical_url AS canonicalUrl,p.noindex`
 
+export type HeaderMenuItem = {
+  id: string
+  categoryId: string
+  name: string
+  slug: string
+  parentId: string | null
+  sortOrder: number
+  children: HeaderMenuItem[]
+}
+
 export async function listPublishedPosts(limit = 20, offset = 0): Promise<Post[]> {
   const result = await db.prepare(`SELECT ${postSelect}, c.name AS categoryName,c.slug AS categorySlug FROM posts p LEFT JOIN categories c ON c.id=p.category_id AND c.deleted_at IS NULL WHERE p.status='PUBLISHED' AND p.published_at IS NOT NULL AND p.deleted_at IS NULL ORDER BY datetime(p.published_at) DESC LIMIT ? OFFSET ?`).bind(limit, offset).all<Post>()
   return result.results
@@ -31,6 +41,33 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
 export async function getCategories(): Promise<Category[]> {
   const result = await db.prepare(`SELECT id,name,slug FROM categories WHERE deleted_at IS NULL ORDER BY name`).all<Category>()
   return result.results
+}
+
+export async function getHeaderMenu(): Promise<HeaderMenuItem[]> {
+  try {
+    const result = await db.prepare(`SELECT m.id,m.category_id AS categoryId,c.name,c.slug,m.parent_id AS parentId,m.sort_order AS sortOrder FROM header_menu_items m JOIN categories c ON c.id=m.category_id AND c.deleted_at IS NULL ORDER BY CASE WHEN m.parent_id IS NULL THEN 0 ELSE 1 END,m.parent_id,m.sort_order,m.id`).all<Omit<HeaderMenuItem, 'children'>>()
+    const rows = result.results
+    if (!rows.length) return []
+
+    const nodes = new Map<string, HeaderMenuItem>()
+    for (const row of rows) nodes.set(row.id, { ...row, children: [] })
+    const roots: HeaderMenuItem[] = []
+    for (const node of nodes.values()) {
+      if (node.parentId && nodes.has(node.parentId)) nodes.get(node.parentId)!.children.push(node)
+      else roots.push(node)
+    }
+    return roots
+  } catch {
+    return (await getCategories()).slice(0, 7).map((category, index) => ({
+      id: `fallback-${category.id}`,
+      categoryId: category.id,
+      name: category.name,
+      slug: category.slug,
+      parentId: null,
+      sortOrder: index,
+      children: [],
+    }))
+  }
 }
 
 export async function getCategoryBySlug(slug: string) {

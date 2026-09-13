@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './ckeditor-admin.css'
 import './theme.css'
 import './scroll-to-top.css'
+import './header-menu.css'
 import ScrollToTop from './components/public/ScrollToTop'
 
 const SITE = 'https://blog.suhanurrahman.com'
