@@ -2,7 +2,9 @@
    Preflight is intentionally NOT imported so the public journal
    (globals.css / netra-style.css) keeps its own base styles. */
 @layer legacy, theme, base, components, utilities;
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* Fonts are declared in the document head so the browser can discover them
+   earlier and the build tool does not have to transform CSS @import rules. */
+
 /* Public journal + baseline styles live in a lower layer so Tailwind
    utilities used in the admin always win generic name collisions
    (e.g. .grid, .border). Public pages carry no utilities, so they are
