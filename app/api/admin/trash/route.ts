@@ -8,4 +8,4 @@ export async function POST(request:Request){if(!(await isAdmin(request)))return 
  if(type==='category') await db.prepare(`UPDATE categories SET deleted_at=NULL WHERE id=?`).bind(id).run()
  if(type==='tag') await db.prepare(`UPDATE tags SET deleted_at=NULL WHERE id=?`).bind(id).run()
  if(type==='media') await db.prepare(`UPDATE media_assets SET deleted_at=NULL WHERE id=?`).bind(id).run()
- return Response.redirect(new URL('/admin/trash/',request.url),{status:303})}
+ return Response.redirect(new URL('/admin/trash/',request.url),303)}

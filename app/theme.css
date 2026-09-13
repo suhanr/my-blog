@@ -43,6 +43,21 @@
     grid-template-columns: none;
     gap: 0;
   }
+  /* Reset browser default margins (headings/paragraphs) and list markers
+     that preflight would normally remove — otherwise admin pages get
+     inflated vertical spacing and stray bullets in the nav. The rich-text
+     editor content (.ck-content) sets its own spacing via unlayered
+     CKEditor CSS and is unaffected. */
+  .admin-app :is(h1, h2, h3, h4, h5, h6, p, blockquote, figure, figcaption, dl, dd, pre, fieldset, hr),
+  .admin-login :is(h1, h2, h3, h4, h5, h6, p, blockquote, figure, figcaption, dl, dd, pre, fieldset, hr) {
+    margin: 0;
+  }
+  .admin-app :is(ul, ol),
+  .admin-login :is(ul, ol) {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
   /* Native controls inside admin should inherit the SaaS font. */
   .admin-app button,
   .admin-app input,

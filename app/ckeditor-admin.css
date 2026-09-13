@@ -112,6 +112,37 @@
 .ck-editor-post-editor-shell .ck-content h3 {
   line-height: 1.25;
 }
+/* Restore rich-text content spacing/markers inside the editor (the admin
+   base reset strips default margins and list styles globally). */
+.ck-editor-post-form .ck-content p {
+  margin: 0 0 1em;
+}
+.ck-editor-post-form .ck-content h1,
+.ck-editor-post-form .ck-content h2,
+.ck-editor-post-form .ck-content h3,
+.ck-editor-post-form .ck-content h4 {
+  margin: 1.4em 0 0.5em;
+}
+.ck-editor-post-form .ck-content ul,
+.ck-editor-post-form .ck-content ol {
+  margin: 0 0 1em;
+  padding-left: 1.6em;
+}
+.ck-editor-post-form .ck-content ul {
+  list-style: disc;
+}
+.ck-editor-post-form .ck-content ol {
+  list-style: decimal;
+}
+.ck-editor-post-form .ck-content li {
+  margin: 0.3em 0;
+}
+.ck-editor-post-form .ck-content blockquote {
+  margin: 1em 0;
+  padding: 4px 0 4px 18px;
+  border-left: 3px solid var(--e-primary);
+  color: var(--e-muted-foreground);
+}
 
 /* CKEditor toolbar buttons -> teal accents */
 .ck-editor-post-form .ck.ck-button,

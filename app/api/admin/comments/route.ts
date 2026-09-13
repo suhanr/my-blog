@@ -7,5 +7,5 @@ export async function POST(request: Request) {
   if (!id || !['APPROVED','PENDING','SPAM','TRASH'].includes(status)) return new Response('Invalid request',{status:400})
   const now=new Date().toISOString()
   await db.prepare(`UPDATE comments SET status=?,deleted_at=? WHERE id=?`).bind(status,status==='TRASH'?now:null,id).run()
-  return Response.redirect(new URL('/admin/comments/',request.url),{status:303})
+  return Response.redirect(new URL('/admin/comments/',request.url),303)
 }
