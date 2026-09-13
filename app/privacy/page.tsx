@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { getCategories, getHeaderMenu } from '@/lib/db'
 import PublicHeader from '@/app/components/public/PublicHeader'
 import PublicFooter from '@/app/components/public/PublicFooter'
 import { RevealInit } from '@/app/components/public/enhancers'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'প্রাইভেসি পলিসি — Journal',
@@ -75,7 +76,7 @@ export default async function PrivacyPage() {
 
             <section>
               <h2>যোগাযোগ</h2>
-              <p>প্রাইভেসি বা আপনার তথ্য নিয়ে কোনো প্রশ্ন থাকলে <Link href="https://suhanurrahman.com/contact/" target="_blank" rel="noreferrer">যোগাযোগ পেজে</Link> গিয়ে যোগাযোগ করতে পারেন।</p>
+              <p>প্রাইভেসি বা আপনার তথ্য নিয়ে কোনো প্রশ্ন থাকলে <a href="https://suhanurrahman.com/contact/" target="_blank" rel="noreferrer">যোগাযোগ পেজে</a> লিখতে পারেন।</p>
             </section>
           </article>
         </div>
