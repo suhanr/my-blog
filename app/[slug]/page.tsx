@@ -119,7 +119,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           {related.length ? (
             <section className="mag-related">
               <div className="mag-section-head">
-                <h2 className="mag-section-title">আরও লেখা <span className="en">More</span></h2>
+                <h2 className="mag-section-title">আরও লেখা</h2>
                 <Link className="mag-all" href="/">সব লেখা <span className="arrow">→</span></Link>
               </div>
               <div className="mag-grid">
