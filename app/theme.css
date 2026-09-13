@@ -19,6 +19,11 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
+  /* Scoped, preflight-style reset for the admin only (public journal keeps
+     its own base styles). Neutralises generic public rules that leak in via
+     shared class names, and restores the border defaults Tailwind's
+     (omitted) preflight would normally provide, so border/divide utilities
+     work. CKEditor styles are unlayered and still win over this. */
   .admin-app *,
   .admin-app *::before,
   .admin-app *::after,
@@ -26,6 +31,17 @@
   .admin-login *::before,
   .admin-login *::after {
     box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: var(--color-border);
+  }
+  /* Bare `grid` (no grid-cols-*) must not inherit the public 12-column
+     template. Intentional grid-cols-* / gap-* utilities live in the
+     utilities layer and still win over this base rule. */
+  .admin-app .grid,
+  .admin-login .grid {
+    grid-template-columns: none;
+    gap: 0;
   }
   /* Native controls inside admin should inherit the SaaS font. */
   .admin-app button,

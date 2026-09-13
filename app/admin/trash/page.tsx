@@ -19,10 +19,10 @@ export default async function TrashPage() {
         <CardTitle>{title}</CardTitle>
         <Badge variant="secondary">{items.length}</Badge>
       </CardHeader>
-      <div className="divide-y divide-border">
+      <div>
         {items.length ? (
           items.map((x) => (
-            <div key={x.id} className="flex items-center justify-between gap-4 px-6 py-3.5">
+            <div key={x.id} className="flex items-center justify-between gap-4 border-t border-border px-6 py-3.5">
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium">{x.title || x.name || x.filename || 'Item'}</p>
                 <p className="truncate text-xs text-muted-foreground">{x.slug || x.body?.slice(0, 80) || x.url || ''}</p>

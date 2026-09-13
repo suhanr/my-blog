@@ -3,7 +3,7 @@ import Link from 'next/link'
 export default async function AdminLogin({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   const params = await searchParams
   return (
-    <main className="admin-login grid min-h-screen place-items-center bg-background p-6 text-foreground">
+    <main className="admin-login flex min-h-screen items-center justify-center bg-background p-6 text-foreground">
       <div className="w-full max-w-sm">
         <div className="mb-6 flex flex-col items-center gap-3 text-center">
           <span className="grid size-12 place-items-center rounded-xl bg-primary text-base font-bold text-primary-foreground shadow-sm">SR</span>
