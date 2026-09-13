@@ -6,9 +6,22 @@ const db = (env as BlogEnv).BLOG_DB
 
 const postSelect = `p.id,p.title,p.slug,p.excerpt,p.content,p.content_format AS contentFormat,p.cover_image AS coverImage,p.status,p.published_at AS publishedAt,p.created_at AS createdAt,p.updated_at AS updatedAt,p.category_id AS categoryId,p.seo_title AS seoTitle,p.seo_description AS seoDescription,p.seo_keywords AS seoKeywords,p.og_image AS ogImage,p.canonical_url AS canonicalUrl,p.noindex`
 
-export async function listPublishedPosts(limit = 20): Promise<Post[]> {
-  const result = await db.prepare(`SELECT ${postSelect}, c.name AS categoryName,c.slug AS categorySlug FROM posts p LEFT JOIN categories c ON c.id=p.category_id AND c.deleted_at IS NULL WHERE p.status='PUBLISHED' AND p.published_at IS NOT NULL AND p.deleted_at IS NULL ORDER BY datetime(p.published_at) DESC LIMIT ?`).bind(limit).all<Post>()
+export async function listPublishedPosts(limit = 20, offset = 0): Promise<Post[]> {
+  const result = await db.prepare(`SELECT ${postSelect}, c.name AS categoryName,c.slug AS categorySlug FROM posts p LEFT JOIN categories c ON c.id=p.category_id AND c.deleted_at IS NULL WHERE p.status='PUBLISHED' AND p.published_at IS NOT NULL AND p.deleted_at IS NULL ORDER BY datetime(p.published_at) DESC LIMIT ? OFFSET ?`).bind(limit, offset).all<Post>()
   return result.results
+}
+
+export async function searchPublishedPosts(query: string, limit = 12): Promise<Post[]> {
+  const q = query.trim()
+  if (!q) return []
+  const like = `%${q.replace(/[%_]/g, (m) => `\\${m}`)}%`
+  const result = await db.prepare(`SELECT ${postSelect}, c.name AS categoryName,c.slug AS categorySlug FROM posts p LEFT JOIN categories c ON c.id=p.category_id AND c.deleted_at IS NULL WHERE p.status='PUBLISHED' AND p.deleted_at IS NULL AND (p.title LIKE ?1 ESCAPE '\\' OR p.excerpt LIKE ?1 ESCAPE '\\') ORDER BY datetime(p.published_at) DESC LIMIT ?2`).bind(like, limit).all<Post>()
+  return result.results
+}
+
+export async function countPublishedPosts(): Promise<number> {
+  const row = await db.prepare(`SELECT COUNT(*) AS count FROM posts WHERE status='PUBLISHED' AND published_at IS NOT NULL AND deleted_at IS NULL`).first<{ count: number }>()
+  return Number(row?.count || 0)
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {

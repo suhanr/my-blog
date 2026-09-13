@@ -14,6 +14,15 @@ export const metadata: Metadata = {
   openGraph: { type: 'website', siteName: 'Suhanur Rahman — Journal', url: SITE, title: 'Suhanur Rahman — Journal', description: 'Technology, research, digital investigations, data and ideas.' },
 }
 
+const themeScript = `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light'){document.documentElement.dataset.theme=t}}catch(e){}})()`
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <html lang="en"><body>{children}</body></html>
+  return (
+    <html lang="bn">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body>{children}</body>
+    </html>
+  )
 }

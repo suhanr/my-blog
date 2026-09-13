@@ -1,16 +1,46 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { getTagBySlug } from '@/lib/db'
+import { getCategories, getTagBySlug } from '@/lib/db'
+import PublicHeader from '@/app/components/public/PublicHeader'
+import PublicFooter from '@/app/components/public/PublicFooter'
+import { PostCard, type Card } from '@/app/components/public/PostGrid'
+import { RevealInit } from '@/app/components/public/enhancers'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const data = await getTagBySlug(slug)
-  return data ? { title: `#${data.tag.name}`, description: `Articles tagged ${data.tag.name} by Suhanur Rahman.`, alternates: { canonical: `https://blog.suhanurrahman.com/tag/${slug}/` } } : { title: 'Tag not found' }
+  return data
+    ? { title: `#${data.tag.name}`, description: `Articles tagged ${data.tag.name} by Suhanur Rahman.`, alternates: { canonical: `https://blog.suhanurrahman.com/tag/${slug}/` } }
+    : { title: 'Tag not found' }
 }
 
 export default async function TagPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const data = await getTagBySlug(slug)
-  if (!data) return <main className="container article-shell"><h1 className="serif">Tag not found</h1></main>
-  return <main><header className="header"><div className="container header-inner"><Link className="brand" href="/">SUHANUR RAHMAN / JOURNAL</Link><nav className="nav"><Link href="/">Journal</Link><a href="https://suhanurrahman.com/">Portfolio ↗</a></nav></div></header><div className="container article-shell"><p className="kicker">Tag</p><h1 className="serif" style={{fontSize:'clamp(3rem,7vw,6.5rem)',lineHeight:.95,margin:'15px 0 45px'}}>#{data.tag.name}</h1><div className="grid">{data.posts.map((post:any)=><article className="card border" key={post.id}>{post.coverImage ? <img src={post.coverImage} alt={post.title} loading="lazy"/>:null}<div className="card-body"><h2><Link href={`/${post.slug}/`}>{post.title}</Link></h2><p className="muted">{post.excerpt || ''}</p><span className="meta">Read ↗</span></div></article>)}</div></div></main>
+  const [data, categories] = await Promise.all([getTagBySlug(slug), getCategories()])
+
+  return (
+    <div className="site-public">
+      <PublicHeader categories={categories} />
+      <main className="mag-main">
+        <div className="mag-container">
+          <section className="mag-section">
+            <div className="mag-section-head" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 8 }}>
+              <div className="mag-kicker">ট্যাগ</div>
+              <h1 className="mag-article-title" style={{ fontSize: 'clamp(30px,4vw,46px)' }}>#{data ? data.tag.name : 'পাওয়া যায়নি'}</h1>
+              {data ? <p className="mag-meta">{data.posts.length} টি লেখা</p> : <Link className="mag-all" href="/">← হোমে ফিরুন</Link>}
+            </div>
+            {data && data.posts.length ? (
+              <div className="mag-grid">
+                {(data.posts as unknown as Card[]).map((post) => <PostCard key={post.id} post={post} />)}
+              </div>
+            ) : data ? (
+              <p className="mag-hero-dek">এই ট্যাগে এখনো কোনো লেখা নেই।</p>
+            ) : null}
+          </section>
+        </div>
+      </main>
+      <PublicFooter categories={categories} />
+      <RevealInit />
+    </div>
+  )
 }
