@@ -28,6 +28,7 @@
   background: #f7f8fa;
 }
 
+/* Topbar */
 .ck-editor-post-topbar {
   display: flex;
   align-items: center;
@@ -66,6 +67,7 @@
   background: var(--e-muted);
 }
 
+/* Title + slug above the editor */
 .ck-editor-post-heading {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
@@ -117,6 +119,7 @@
   overflow: hidden;
 }
 
+/* Editor surface */
 .ck-editor-post-editor-shell {
   background: var(--e-card);
   border: 1px solid var(--e-border);
@@ -170,6 +173,8 @@
 .ck-editor-post-editor-shell .ck-content h3 {
   line-height: 1.25;
 }
+
+/* Restore rich-text content spacing/markers inside the editor */
 .ck-editor-post-form .ck-content p {
   margin: 0 0 1em;
 }
@@ -184,9 +189,15 @@
   margin: 0 0 1em;
   padding-left: 1.6em;
 }
-.ck-editor-post-form .ck-content ul { list-style: disc; }
-.ck-editor-post-form .ck-content ol { list-style: decimal; }
-.ck-editor-post-form .ck-content li { margin: 0.3em 0; }
+.ck-editor-post-form .ck-content ul {
+  list-style: disc;
+}
+.ck-editor-post-form .ck-content ol {
+  list-style: decimal;
+}
+.ck-editor-post-form .ck-content li {
+  margin: 0.3em 0;
+}
 .ck-editor-post-form .ck-content blockquote {
   margin: 1em 0;
   padding: 4px 0 4px 18px;
@@ -194,19 +205,34 @@
   color: var(--e-muted-foreground);
 }
 
+/* CKEditor toolbar buttons */
 .ck-editor-post-form .ck.ck-button,
 .ck-editor-post-form a.ck.ck-button {
   border-radius: 6px !important;
   transition: background 0.12s ease, color 0.12s ease;
 }
-.ck-editor-post-form .ck.ck-button:not(.ck-disabled):hover { background: #eef2f2 !important; }
-.ck-editor-post-form .ck.ck-button.ck-on { background: #f0fdfa !important; color: var(--e-primary-hover) !important; }
-.ck-editor-post-form .ck.ck-button.ck-on:hover { background: #ccfbf1 !important; }
-.ck-editor-post-form .ck.ck-toolbar .ck.ck-toolbar__separator { background: var(--e-border) !important; }
+.ck-editor-post-form .ck.ck-button:not(.ck-disabled):hover {
+  background: #eef2f2 !important;
+}
+.ck-editor-post-form .ck.ck-button.ck-on {
+  background: #f0fdfa !important;
+  color: var(--e-primary-hover) !important;
+}
+.ck-editor-post-form .ck.ck-button.ck-on:hover {
+  background: #ccfbf1 !important;
+}
+.ck-editor-post-form .ck.ck-toolbar .ck.ck-toolbar__separator {
+  background: var(--e-border) !important;
+}
 .ck-editor-post-form .ck-content .ck-widget.ck-widget_selected,
-.ck-editor-post-form .ck-content .ck-widget.ck-widget_selected:hover { outline-color: var(--e-primary) !important; }
-.ck-editor-post-form .ck.ck-editor__editable .ck-widget__selection-handle { background: var(--e-primary) !important; }
+.ck-editor-post-form .ck-content .ck-widget.ck-widget_selected:hover {
+  outline-color: var(--e-primary) !important;
+}
+.ck-editor-post-form .ck.ck-editor__editable .ck-widget__selection-handle {
+  background: var(--e-primary) !important;
+}
 
+/* Status bar */
 .ck-editor-post-statusbar {
   display: flex;
   align-items: center;
@@ -230,6 +256,7 @@
   font-size: 11px;
 }
 
+/* Sidebar cards */
 .ck-editor-post-sidebar {
   display: grid;
   gap: 16px;
@@ -275,14 +302,19 @@
   outline: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
-.ck-editor-post-card textarea { min-height: 96px; resize: vertical; }
+.ck-editor-post-card textarea {
+  min-height: 96px;
+  resize: vertical;
+}
 .ck-editor-post-card input:focus,
 .ck-editor-post-card textarea:focus,
 .ck-editor-post-card select:focus {
   border-color: var(--e-primary);
   box-shadow: 0 0 0 3px var(--e-ring);
 }
-.ck-editor-post-card select[multiple] { min-height: 150px; }
+.ck-editor-post-card select[multiple] {
+  min-height: 150px;
+}
 .ck-editor-cover {
   display: block;
   width: 100%;
@@ -297,8 +329,12 @@
   align-items: center;
   gap: 8px;
 }
-.ck-editor-check input { width: auto !important; accent-color: var(--e-primary); }
+.ck-editor-check input {
+  width: auto !important;
+  accent-color: var(--e-primary);
+}
 
+/* Action bar */
 .ck-editor-post-actions {
   display: flex;
   align-items: center;
@@ -309,7 +345,11 @@
   background: #f7f8fa;
   flex: 0 0 auto;
 }
-.ck-editor-post-actions > div { display: flex; gap: 10px; flex-wrap: wrap; }
+.ck-editor-post-actions > div {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 .ck-editor-post-actions button {
   height: 40px;
   border-radius: 8px;
@@ -320,86 +360,137 @@
   font-weight: 600;
   transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
 }
-.ck-editor-post-actions button:active { transform: translateY(1px); }
-.ck-editor-post-actions .primary-action { background: var(--e-card); color: var(--e-text); border: 1px solid var(--e-input); }
-.ck-editor-post-actions .primary-action:hover { background: var(--e-muted); }
-.ck-editor-post-actions .publish-action { background: var(--e-primary); color: #fff; border: 1px solid var(--e-primary); box-shadow: 0 1px 2px rgb(16 24 40 / 0.04); }
-.ck-editor-post-actions .publish-action:hover { background: var(--e-primary-hover); border-color: var(--e-primary-hover); }
-.ck-editor-post-actions .danger-action { background: var(--e-card); color: #e11d48; border: 1px solid #f3cdcb; }
-.ck-editor-post-actions .danger-action:hover { background: #fef2f2; }
+.ck-editor-post-actions button:active {
+  transform: translateY(1px);
+}
+.ck-editor-post-actions .primary-action {
+  background: var(--e-card);
+  color: var(--e-text);
+  border: 1px solid var(--e-input);
+}
+.ck-editor-post-actions .primary-action:hover {
+  background: var(--e-muted);
+}
+.ck-editor-post-actions .publish-action {
+  background: var(--e-primary);
+  color: #fff;
+  border: 1px solid var(--e-primary);
+  box-shadow: 0 1px 2px rgb(16 24 40 / 0.04);
+}
+.ck-editor-post-actions .publish-action:hover {
+  background: var(--e-primary-hover);
+  border-color: var(--e-primary-hover);
+}
+.ck-editor-post-actions .danger-action {
+  background: var(--e-card);
+  color: #e11d48;
+  border: 1px solid #f3cdcb;
+}
+.ck-editor-post-actions .danger-action:hover {
+  background: #fef2f2;
+}
 
+/* Desktop editor viewport */
 @media (min-width: 901px) {
   .ck-editor-post-form:not(.ck-editor-post-form--fullscreen) {
-    height: calc(100vh - 104px);
-    max-height: calc(100vh - 104px);
+    height: calc(100vh - 72px) !important;
+    min-height: calc(100vh - 72px) !important;
+    max-height: calc(100vh - 72px) !important;
     display: flex;
     flex-direction: column;
   }
-  .ck-editor-post-form--fullscreen { display: flex; flex-direction: column; height: 100vh; max-height: 100vh; }
-}
-
-/* Larger desktop writing surface. The content itself keeps scrolling inside the editor. */
-@media (min-width: 1101px) {
-  .ck-editor-post-editor-shell {
-    min-height: 520px !important;
+  .ck-editor-post-form--fullscreen {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-height: 100vh;
   }
   .ck-editor-post-editor-shell .ck-editor__main > .ck-editor__editable {
-    height: 520px !important;
-    min-height: 520px !important;
-    max-height: none !important;
-    overflow-y: auto !important;
-    resize: vertical !important;
+    min-height: 560px;
+    resize: vertical;
   }
-}
-
-/* Native resize handle: drag the lower-right corner to make the writing area taller or shorter. */
-.ck-editor-post-editor-shell .ck-editor__main > .ck-editor__editable {
-  resize: vertical !important;
-  overflow-y: auto !important;
-  scrollbar-gutter: stable;
 }
 
 @media (max-width: 1100px) {
-  .ck-editor-post-grid { grid-template-columns: minmax(0, 1fr) 300px; gap: 16px; padding: 16px; }
-  .ck-editor-post-editor-shell .ck-editor__main > .ck-editor__editable {
-    height: 450px !important;
-    min-height: 450px !important;
-    max-height: none !important;
+  .ck-editor-post-grid {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 16px;
+    padding: 16px;
   }
 }
 @media (max-width: 900px) {
   .ck-editor-post-form,
-  .ck-editor-post-form--fullscreen { height: auto; max-height: none; overflow: visible; }
-  .ck-editor-post-heading { grid-template-columns: 1fr; }
-  .ck-editor-post-grid { grid-template-columns: 1fr; overflow: visible; }
-  .ck-editor-post-main { overflow: visible; }
-  .ck-editor-post-editor-shell { min-height: 520px; }
-  .ck-editor-post-editor-shell .ck-editor__main { overflow: visible; }
-  .ck-editor-post-editor-shell .ck-editor__main > .ck-editor__editable {
-    min-height: 520px !important;
-    height: 520px !important;
-    max-height: none !important;
-    overflow-y: auto !important;
+  .ck-editor-post-form--fullscreen {
+    height: auto;
+    max-height: none;
+    overflow: visible;
   }
-  .ck-editor-post-sidebar { position: static; max-height: none; overflow: visible; }
+  .ck-editor-post-heading {
+    grid-template-columns: 1fr;
+  }
+  .ck-editor-post-grid {
+    grid-template-columns: 1fr;
+    overflow: visible;
+  }
+  .ck-editor-post-main {
+    overflow: visible;
+  }
+  .ck-editor-post-editor-shell {
+    min-height: 560px;
+  }
+  .ck-editor-post-editor-shell .ck-editor__main {
+    overflow: visible;
+  }
+  .ck-editor-post-editor-shell .ck-editor__main > .ck-editor__editable {
+    min-height: 480px;
+    height: auto;
+    max-height: none;
+    overflow-y: visible;
+    resize: vertical;
+  }
+  .ck-editor-post-sidebar {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
 }
 @media (max-width: 640px) {
-  .ck-editor-post-topbar { align-items: flex-start; flex-direction: column; }
-  .ck-editor-post-heading { padding: 12px 10px 0; }
-  .ck-editor-post-heading label { font-size: 13px; }
-  .ck-editor-post-heading input { font-size: 15px; }
-  .ck-editor-post-grid { padding: 10px; }
-  .ck-editor-post-editor-shell { min-height: 460px; }
+  .ck-editor-post-topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .ck-editor-post-heading {
+    padding: 12px 10px 0;
+  }
+  .ck-editor-post-heading label {
+    font-size: 13px;
+  }
+  .ck-editor-post-heading input {
+    font-size: 15px;
+  }
+  .ck-editor-post-grid {
+    padding: 10px;
+  }
+  .ck-editor-post-editor-shell {
+    min-height: 420px;
+  }
   .ck-editor-post-editor-shell .ck-editor__main > .ck-editor__editable {
-    min-height: 460px !important;
-    height: 460px !important;
+    min-height: 420px;
     padding: 18px;
     font-size: 16px;
   }
-  .ck-editor-post-card label { font-size: 13.5px; }
+  .ck-editor-post-card label {
+    font-size: 13.5px;
+  }
   .ck-editor-post-card input,
   .ck-editor-post-card textarea,
-  .ck-editor-post-card select { font-size: 15px; }
-  .ck-editor-post-actions { padding: 12px; }
-  .ck-editor-post-statusbar { padding-inline: 2px; }
+  .ck-editor-post-card select {
+    font-size: 15px;
+  }
+  .ck-editor-post-actions {
+    padding: 12px;
+  }
+  .ck-editor-post-statusbar {
+    padding-inline: 2px;
+  }
 }
