@@ -7,7 +7,7 @@ import { RevealInit } from '@/app/components/public/enhancers'
 
 export const metadata: Metadata = {
   title: 'আমার সম্পর্কে — Journal',
-  description: 'সুহানুর রহমান সম্পর্কে জানুন। প্রযুক্তি, গবেষণা, ডেটা, ডিজিটাল সংস্কৃতি ও লেখালেখি নিয়ে কাজের সংক্ষিপ্ত পরিচয়।',
+  description: 'সোহানুর রহমান সম্পর্কে জানুন। প্রযুক্তি, গবেষণা, ডেটা, ডিজিটাল সংস্কৃতি ও লেখালেখি নিয়ে কাজের সংক্ষিপ্ত পরিচয়।',
   alternates: { canonical: 'https://blog.suhanurrahman.com/about/' },
 }
 
@@ -47,7 +47,7 @@ export default async function AboutPage() {
           <div className="about-layout">
             <article className="reveal">
               <div className="about-kicker">About</div>
-              <h1 className="about-title">সুহানুর রহমান</h1>
+              <h1 className="about-title">সোহানুর রহমান</h1>
               <p className="about-lead">প্রযুক্তি, গবেষণা, ডেটা, ডিজিটাল সংস্কৃতি এবং লেখালেখি নিয়ে কাজ করি। এই জার্নাল আমার শেখা, ভাবনা, অনুসন্ধান আর কাজের নোট রাখার একটি স্বাধীন জায়গা।</p>
               <div className="about-body">
                 <p>আমি প্রযুক্তি ও গবেষণার মাঝের জায়গাটায় বেশি স্বচ্ছন্দ। ওয়েব, ডেটা, ডিজিটাল টুল এবং গবেষণাভিত্তিক কাজের মাধ্যমে জটিল বিষয়কে ব্যবহারযোগ্য ও বোধগম্য করে তোলার চেষ্টা করি।</p>
