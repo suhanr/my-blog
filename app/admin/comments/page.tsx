@@ -61,6 +61,8 @@ export default async function CommentsPage() {
                       type="submit"
                       size="sm"
                       variant={s === 'APPROVED' ? 'default' : s === 'TRASH' ? 'destructive' : 'outline'}
+                      disabled={c.status === s}
+                      aria-disabled={c.status === s}
                     >
                       {s === 'APPROVED' ? 'Approve' : s === 'PENDING' ? 'Pending' : s === 'SPAM' ? 'Spam' : 'Trash'}
                     </Button>
