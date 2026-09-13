@@ -9,6 +9,7 @@
    unaffected. */
 @import './globals.css' layer(legacy);
 @import './netra-style.css' layer(legacy);
+@import './default-light-theme.css' layer(legacy);
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities);
 
