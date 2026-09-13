@@ -69,11 +69,11 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
           <header className="mag-article-head reveal">
-            <div className="mag-kicker">{p.categoryName || 'Journal'}</div>
+            {p.categoryName && p.categorySlug ? <Link className="mag-kicker" href={`/category/${p.categorySlug}/`}>{p.categoryName}</Link> : <div className="mag-kicker">Journal</div>}
             <h1 className="mag-article-title">{p.title}</h1>
             {p.excerpt ? <p className="mag-article-dek">{p.excerpt}</p> : null}
             <div className="mag-article-meta">
-              <b>সোহানুর রহমান</b>
+              <a href="https://suhanurrahman.com/" target="_blank" rel="noreferrer"><b>সোহানুর রহমান</b></a>
               <span className="dot" />
               <span>{formatDate(p.publishedAt)}</span>
               {p.updatedAt ? <><span className="dot" /><span>হালনাগাদ {formatDate(p.updatedAt)}</span></> : null}
