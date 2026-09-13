@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getCategories, getComments, getHeaderMenu, getPostBySlug, listPublishedPosts, type PublicComment } from '@/lib/db'
 import { markdownToHtml } from '@/lib/markdown'
@@ -7,8 +8,9 @@ import PublicHeader from '@/app/components/public/PublicHeader'
 import PublicFooter from '@/app/components/public/PublicFooter'
 import { PostCard, type Card } from '@/app/components/public/PostGrid'
 import { Lightbox, ReadingProgress, RevealInit } from '@/app/components/public/enhancers'
+import { AUTHOR_NAME, AUTHOR_URL, PROFILE_IMAGE, SITE, breadcrumbJsonLd, postDescription, postKeywords } from '@/lib/seo'
 
-const SITE = 'https://blog.suhanurrahman.com'
+const SITE_ORIGIN = SITE
 
 type CommentNode = PublicComment & { children: CommentNode[] }
 
@@ -54,17 +56,36 @@ function CommentThread({ postId, comment }: { postId: string; comment: CommentNo
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const p = await getPostBySlug(slug)
-  if (!p) return { title: 'Not Found' }
+  if (!p) return { title: 'লেখাটি পাওয়া যায়নি', robots: { index: false, follow: false } }
+
   const title = p.seoTitle || p.title
-  const description = p.seoDescription || p.excerpt || `${p.title} by Sohanur Rahman.`
-  const canonical = p.canonicalUrl || `${SITE}/${p.slug}/`
+  const description = postDescription(p.title, p.seoDescription || p.excerpt)
+  const canonical = p.canonicalUrl || `${SITE_ORIGIN}/${p.slug}/`
+  const keywords = postKeywords(p.title, p.categoryName, p.seoKeywords)
+  const image = p.ogImage || p.coverImage || PROFILE_IMAGE
+
   return {
     title,
     description,
+    keywords,
+    authors: [{ name: AUTHOR_NAME, url: AUTHOR_URL }],
     alternates: { canonical },
     robots: p.noindex ? { index: false, follow: false } : undefined,
-    keywords: p.seoKeywords || undefined,
-    openGraph: { type: 'article', url: canonical, title, description, images: (p.ogImage || p.coverImage) ? [{ url: p.ogImage || p.coverImage! }] : undefined, publishedTime: p.publishedAt || undefined, modifiedTime: p.updatedAt },
+    openGraph: {
+      type: 'article',
+      locale: 'bn_BD',
+      url: canonical,
+      title,
+      description,
+      siteName: 'সোহানুর রহমান জার্নাল',
+      images: [{ url: image, alt: p.title }],
+      publishedTime: p.publishedAt || undefined,
+      modifiedTime: p.updatedAt || undefined,
+      authors: [AUTHOR_URL],
+      section: p.categoryName || undefined,
+      tags: keywords,
+    },
+    twitter: { card: 'summary_large_image', title, description, images: [image] },
   }
 }
 
@@ -72,34 +93,41 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const p = await getPostBySlug(slug)
   const [categories, menu] = await Promise.all([getCategories(), getHeaderMenu()])
-  if (!p) {
-    return (
-      <div className="site-public">
-        <PublicHeader categories={categories} menu={menu} />
-        <main className="mag-main"><div className="mag-container mag-article-head"><h1 className="mag-article-title">লেখাটি পাওয়া যায়নি</h1><p className="mag-article-dek"><Link href="/">← হোমে ফিরুন</Link></p></div></main>
-        <PublicFooter categories={categories} />
-      </div>
-    )
-  }
+  if (!p) notFound()
 
   const [comments, allPosts] = await Promise.all([getComments(p.id), listPublishedPosts(8)])
   const commentTree = buildCommentTree(comments)
   const related = allPosts.filter((post) => post.id !== p.id && (post.categoryId === p.categoryId || !p.categoryId)).slice(0, 3) as unknown as Card[]
   const html = p.contentFormat === 'HTML' ? p.content : markdownToHtml(p.content)
   const color = catColor(p.categoryName)
-  const shareUrl = `${SITE}/${p.slug}/`
+  const shareUrl = `${SITE_ORIGIN}/${p.slug}/`
+  const image = p.ogImage || p.coverImage || PROFILE_IMAGE
+  const description = postDescription(p.title, p.seoDescription || p.excerpt)
+  const keywords = postKeywords(p.title, p.categoryName, p.seoKeywords)
+  const wordCount = html.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').trim().split(/\s+/).filter(Boolean).length
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
+    '@id': `${shareUrl}#article`,
     headline: p.title,
-    description: p.seoDescription || p.excerpt || undefined,
+    description,
+    url: shareUrl,
+    inLanguage: 'bn-BD',
     datePublished: p.publishedAt || undefined,
-    dateModified: p.updatedAt,
-    mainEntityOfPage: shareUrl,
-    author: { '@type': 'Person', name: 'Sohanur Rahman', url: 'https://suhanurrahman.com/' },
-    image: (p.ogImage || p.coverImage) ? [p.ogImage || p.coverImage!] : undefined,
+    dateModified: p.updatedAt || p.publishedAt || undefined,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': shareUrl },
+    author: { '@type': 'Person', name: AUTHOR_NAME, url: AUTHOR_URL, image: PROFILE_IMAGE },
+    publisher: { '@type': 'Person', name: AUTHOR_NAME, url: AUTHOR_URL, image: PROFILE_IMAGE },
+    image: [image],
     articleSection: p.categoryName || undefined,
+    keywords: keywords.join(', '),
+    wordCount: wordCount || undefined,
   }
+  const breadcrumbLd = breadcrumbJsonLd([
+    { name: 'হোম', url: '/' },
+    ...(p.categoryName && p.categorySlug ? [{ name: p.categoryName, url: `/category/${p.categorySlug}/` }] : []),
+    { name: p.title, url: shareUrl },
+  ])
 
   return (
     <div className="site-public mag-article" style={{ ['--cat' as string]: color }}>
@@ -130,13 +158,14 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       <main className="mag-main">
         <div className="mag-container">
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
 
           <header className="mag-article-head reveal">
             {p.categoryName && p.categorySlug ? <Link className="mag-kicker" href={`/category/${p.categorySlug}/`}>{p.categoryName}</Link> : <div className="mag-kicker">Journal</div>}
             <h1 className="mag-article-title">{p.title}</h1>
             {p.excerpt ? <p className="mag-article-dek">{p.excerpt}</p> : null}
             <div className="mag-article-meta">
-              <a href="https://suhanurrahman.com/" target="_blank" rel="noreferrer"><b>সোহানুর রহমান</b></a>
+              <a href={AUTHOR_URL} target="_blank" rel="noreferrer"><b>{AUTHOR_NAME}</b></a>
               <span className="dot" />
               <span>{formatDate(p.publishedAt)}</span>
               {p.updatedAt ? <><span className="dot" /><span>হালনাগাদ {formatDate(p.updatedAt)}</span></> : null}
@@ -145,8 +174,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
           {p.coverImage ? (
             <figure className="mag-article-figure reveal">
-              <img className="mag-article-hero" src={p.coverImage} alt={p.title} />
-            </figure>
+              <img className="mag-article-hero" src={p.coverImage} alt={p.title} decoding="async" fetchPriority="high" />
+          </figure>
           ) : null}
 
           <div className="mag-article-body" dangerouslySetInnerHTML={{ __html: html }} />
