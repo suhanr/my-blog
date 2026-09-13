@@ -14,7 +14,7 @@ const CKEditor = dynamic(() => import('@ckeditor/ckeditor5-react').then((module)
 type Category = { id: string; name: string }
 type Tag = { id: string; name: string }
 type Initial = {
-  id?: string; title?: string; slug?: string; excerpt?: string | null; content?: string; contentFormat?: 'HTML' | 'MARKDOWN'; coverImage?: string | null; categoryIds?: string[]; tags?: string[]; seoTitle?: string | null; seoDescription?: string | null; seoKeywords?: string | null; ogImage?: string | null; canonicalUrl?: string | null; noindex?: number
+  id?: string; title?: string; slug?: string; status?: 'DRAFT' | 'PUBLISHED' | 'TRASH'; excerpt?: string | null; content?: string; contentFormat?: 'HTML' | 'MARKDOWN'; coverImage?: string | null; categoryIds?: string[]; tags?: string[]; seoTitle?: string | null; seoDescription?: string | null; seoKeywords?: string | null; ogImage?: string | null; canonicalUrl?: string | null; noindex?: number
 }
 type Notice = { type: 'success' | 'error'; message: string } | null
 
@@ -30,6 +30,8 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
   const [pickerFor, setPickerFor] = useState<null | 'cover' | 'content'>(null)
   const [submitting, setSubmitting] = useState(false)
   const [notice, setNotice] = useState<Notice>(null)
+  const [currentStatus, setCurrentStatus] = useState<Initial['status']>(initial.status)
+  const [currentSlug, setCurrentSlug] = useState(initial.slug || '')
 
   function showNotice(type: 'success' | 'error', message: string, duration = 2600) {
     setNotice({ type, message })
@@ -78,6 +80,7 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
     if (submitter?.name) formData.set(submitter.name, submitter.value)
     const requestedStatus = String(formData.get('status') || '')
     const requestedAction = String(formData.get('action') || '')
+    const submittedSlug = String(formData.get('slug') || '').trim()
     setSubmitting(true)
     setNotice(null)
     try {
@@ -92,6 +95,10 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
         window.setTimeout(() => { window.location.href = result.redirectTo || '/admin/' }, 900)
         return
       }
+
+      const nextStatus: Initial['status'] = requestedStatus === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT'
+      setCurrentStatus(nextStatus)
+      setCurrentSlug(submittedSlug)
 
       if (requestedStatus === 'PUBLISHED') {
         showNotice('success', 'পোস্টটি সফলভাবে Publish হয়েছে।')
@@ -123,14 +130,18 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
         .ck-editor-post-meta-slug::placeholder { color:#94a3b8; font-weight:500; }
         .ck-editor-post-meta-slug:focus { border-color:var(--e-primary); box-shadow:0 0 0 3px var(--e-ring); }
         .ck-editor-post-meta-actions { display:flex; align-items:center; justify-content:flex-end; gap:10px; flex-wrap:wrap; }
-        .ck-editor-post-meta-actions button { height:40px; border-radius:8px; padding:0 16px; cursor:pointer; font-family:inherit; font-size:13px; font-weight:600; transition:background .15s ease,box-shadow .15s ease,transform .1s ease; }
-        .ck-editor-post-meta-actions button:active { transform:translateY(1px); }
+        .ck-editor-post-meta-actions button,
+        .ck-editor-post-view { height:40px; border-radius:8px; padding:0 16px; cursor:pointer; font-family:inherit; font-size:13px; font-weight:600; transition:background .15s ease,box-shadow .15s ease,transform .1s ease; display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; }
+        .ck-editor-post-meta-actions button:active,
+        .ck-editor-post-view:active { transform:translateY(1px); }
         .ck-editor-post-meta-actions .primary-action { background:#1f2937; color:#fff; border:1px solid #1f2937; }
         .ck-editor-post-meta-actions .primary-action:hover { background:#111827; }
         .ck-editor-post-meta-actions .publish-action { background:var(--e-primary); color:#fff; border:1px solid var(--e-primary); }
         .ck-editor-post-meta-actions .publish-action:hover { background:var(--e-primary-hover); border-color:var(--e-primary-hover); }
         .ck-editor-post-meta-actions .danger-action { background:#a52f33; color:#fff; border:1px solid #a52f33; }
         .ck-editor-post-meta-actions .danger-action:hover { background:#8f272b; border-color:#8f272b; }
+        .ck-editor-post-view { background:#fff; color:#334155; border:1px solid #cbd5e1; text-decoration:none; }
+        .ck-editor-post-view:hover { background:#f8fafc; border-color:#94a3b8; }
         .ck-editor-post-grid { flex:1 1 auto; min-height:0; overflow:hidden; }
         .ck-editor-post-main { display:flex; flex-direction:column; min-width:0; min-height:0; height:100%; }
         .ck-editor-post-editor-shell { flex:1 1 auto; min-height:0; display:flex; flex-direction:column; }
@@ -155,7 +166,7 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
         @keyframes ck-editor-notice-in { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
         @media (max-width:1100px) { .ck-editor-post-meta-row{grid-template-columns:1fr}.ck-editor-post-meta-actions{justify-content:flex-start} }
         @media (max-width:900px) { .ck-editor-post-form{min-height:auto;max-height:none;overflow:visible}.ck-editor-post-heading{padding:16px}.ck-editor-post-grid{overflow:visible}.ck-editor-post-main{height:auto}.ck-editor-post-editor-shell{min-height:560px}.ck-editor-post-editor-shell .ck-editor__main>.ck-editor__editable{height:560px}.ck-editor-post-sidebar{height:auto;max-height:none;overflow:visible}.ck-editor-notice{right:14px;left:14px;bottom:14px;min-width:0;max-width:none} }
-        @media (max-width:640px) { .ck-editor-post-heading input,.ck-editor-post-heading label:first-child input{font-size:16px;height:50px}.ck-editor-post-meta-slug{height:48px;font-size:15px}.ck-editor-post-meta-actions{gap:8px}.ck-editor-post-meta-actions button{flex:1 1 auto} }
+        @media (max-width:640px) { .ck-editor-post-heading input,.ck-editor-post-heading label:first-child input{font-size:16px;height:50px}.ck-editor-post-meta-slug{height:48px;font-size:15px}.ck-editor-post-meta-actions{gap:8px}.ck-editor-post-meta-actions button,.ck-editor-post-view{flex:1 1 auto} }
       `}</style>
 
       <input type="hidden" name="intent" value={saveIntent} />
@@ -171,6 +182,7 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
         <div className="ck-editor-post-meta-row">
           <input className="ck-editor-post-meta-slug" name="slug" defaultValue={initial.slug} placeholder="post-url-slug" disabled={submitting} aria-label="Post slug" />
           <div className="ck-editor-post-meta-actions">
+            {currentStatus === 'PUBLISHED' && currentSlug ? <a className="ck-editor-post-view" href={`/${currentSlug}/`} target="_blank" rel="noreferrer">View article ↗</a> : null}
             <button className="primary-action" name="status" value="DRAFT" type="submit" disabled={submitting}>{submitting ? 'Saving…' : 'Save draft'}</button>
             <button className="publish-action" name="status" value="PUBLISHED" type="submit" disabled={submitting}>{submitting ? 'Saving…' : 'Publish'}</button>
             {postId && <button className="danger-action" name="action" value="trash" type="submit" formNoValidate disabled={submitting}>{submitting ? 'Saving…' : 'Move to Trash'}</button>}
