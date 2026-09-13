@@ -51,7 +51,7 @@ export default async function Home() {
           {gridPosts.length ? (
             <section className="mag-section">
               <div className="mag-section-head">
-                <h2 className="mag-section-title">সাম্প্রতিক লেখা <span className="en">Latest</span></h2>
+                <h2 className="mag-section-title">সাম্প্রতিক লেখা</h2>
                 <Link className="mag-all" href="/">সব লেখা <span className="arrow">→</span></Link>
               </div>
               <PostGrid initialPosts={gridPosts} offsetStart={3} hasMore={hasMore} />
