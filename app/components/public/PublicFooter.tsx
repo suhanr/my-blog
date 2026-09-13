@@ -38,76 +38,71 @@ export default async function PublicFooter({ categories }: { categories: { id: s
         }
         .site-public .mag-footer-dept-nav {
           display: flex;
-          align-items: center;
-          gap: 20px;
-          flex-wrap: wrap;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 2px;
         }
         .site-public .mag-footer-dept-item {
-          position: relative;
+          border-bottom: 1px solid var(--line-2);
         }
-        .site-public .mag-footer-dept-link {
-          display: inline-flex;
+        .site-public .mag-footer-dept-item:last-child {
+          border-bottom: 0;
+        }
+        .site-public .mag-footer-dept-summary {
+          display: flex;
           align-items: center;
-          gap: 5px;
+          justify-content: space-between;
+          gap: 10px;
+          width: 100%;
+          padding: 8px 0;
+          color: var(--muted);
           font-size: 15px;
           font-weight: 600;
-          color: var(--muted);
-          white-space: nowrap;
-          padding: 5px 0;
-          transition: color 0.18s ease;
+          cursor: pointer;
+          list-style: none;
+          user-select: none;
         }
-        .site-public .mag-footer-dept-link:hover,
-        .site-public .mag-footer-dept-item:focus-within > .mag-footer-dept-link {
+        .site-public .mag-footer-dept-summary::-webkit-details-marker {
+          display: none;
+        }
+        .site-public .mag-footer-dept-summary:hover,
+        .site-public .mag-footer-dept-item[open] > .mag-footer-dept-summary {
           color: var(--accent);
         }
         .site-public .mag-footer-dept-chevron {
-          font-size: 11px;
+          flex: 0 0 auto;
+          font-size: 13px;
           line-height: 1;
           transition: transform 0.18s ease;
         }
-        .site-public .mag-footer-dept-item:hover .mag-footer-dept-chevron,
-        .site-public .mag-footer-dept-item:focus-within .mag-footer-dept-chevron {
+        .site-public .mag-footer-dept-item[open] .mag-footer-dept-chevron {
           transform: rotate(180deg);
         }
         .site-public .mag-footer-dept-dropdown {
-          position: absolute;
-          left: 0;
-          bottom: calc(100% + 8px);
-          min-width: 190px;
-          padding: 8px;
-          background: var(--surface);
-          border: 1px solid var(--line);
-          border-radius: 12px;
-          box-shadow: var(--shadow-lg);
-          opacity: 0;
-          visibility: hidden;
-          pointer-events: none;
-          transform: translateY(6px);
-          transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s ease;
-          z-index: 260;
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          padding: 0 0 8px 14px;
         }
         .site-public .mag-footer-dept-dropdown a {
           display: block;
-          padding: 8px 10px;
-          border-radius: 8px;
+          padding: 5px 0;
+          color: var(--muted);
           font-size: 14px;
           line-height: 1.35;
-          color: var(--fg);
+          transition: color 0.18s ease;
         }
         .site-public .mag-footer-dept-dropdown a:hover {
-          background: var(--bg-2);
           color: var(--accent);
         }
-        .site-public .mag-footer-dept-item:hover .mag-footer-dept-dropdown,
-        .site-public .mag-footer-dept-item:focus-within .mag-footer-dept-dropdown {
-          opacity: 1;
-          visibility: visible;
-          pointer-events: auto;
-          transform: translateY(0);
-        }
         @media (max-width: 720px) {
-          .site-public .mag-footer-dept-nav {
-            gap: 10px 16px;
+          .site-public .mag-footer-dept-summary {
+            min-height: 42px;
+            font-size: 16px;
+          }
+          .site-public .mag-footer-dept-dropdown a {
+            font-size: 15px;
+            padding: 6px 0;
           }
         }
       `}</style>
@@ -115,7 +110,7 @@ export default async function PublicFooter({ categories }: { categories: { id: s
       <div className="mag-container mag-footer-grid">
         <div>
           <Link href="/" className="mag-footer-brand">
-            সোহানুর <b>রহমান</b><span style={{ fontSize: '0.5em', color: 'var(--accent)', marginLeft: 6, fontWeight: 600 }}>জার্নাল</span>
+            সোহানুর{' '}<b>রহমান</b><span style={{ fontSize: '0.5em', color: 'var(--accent)', marginLeft: 6, fontWeight: 600 }}>জার্নাল</span>
           </Link>
           <p>প্রযুক্তি, গবেষণা, অনুসন্ধান, ডিজিটাল সংস্কৃতি ও ভাবনা নিয়ে একটি স্বাধীন জার্নাল।</p>
         </div>
@@ -124,11 +119,11 @@ export default async function PublicFooter({ categories }: { categories: { id: s
           <h4>বিভাগ</h4>
           <nav className="mag-footer-dept-nav" aria-label="Footer sections">
             {footerMenu.map((item) => (
-              <div key={item.id} className="mag-footer-dept-item">
-                <Link href={`/category/${item.slug}/`} className="mag-footer-dept-link">
-                  {item.name}
-                  {item.children.length ? <span className="mag-footer-dept-chevron">⌄</span> : null}
-                </Link>
+              <details key={item.id} className="mag-footer-dept-item">
+                <summary className="mag-footer-dept-summary">
+                  <span>{item.name}</span>
+                  {item.children.length ? <span className="mag-footer-dept-chevron" aria-hidden="true">⌄</span> : null}
+                </summary>
                 {item.children.length ? (
                   <div className="mag-footer-dept-dropdown">
                     {item.children.map((child) => (
@@ -136,7 +131,7 @@ export default async function PublicFooter({ categories }: { categories: { id: s
                     ))}
                   </div>
                 ) : null}
-              </div>
+              </details>
             ))}
           </nav>
         </div>
