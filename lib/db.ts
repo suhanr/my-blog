@@ -84,8 +84,16 @@ export async function getTagBySlug(slug: string) {
   return { tag, posts: posts.results }
 }
 
-export async function getComments(postId: string) {
-  const result = await db.prepare(`SELECT id,name,body,created_at AS createdAt FROM comments WHERE post_id=? AND status='APPROVED' AND deleted_at IS NULL ORDER BY datetime(created_at) ASC`).bind(postId).all<{id:string;name:string;body:string;createdAt:string}>()
+export type PublicComment = {
+  id: string
+  name: string
+  body: string
+  createdAt: string
+  parentCommentId: string | null
+}
+
+export async function getComments(postId: string): Promise<PublicComment[]> {
+  const result = await db.prepare(`SELECT id,name,body,created_at AS createdAt,parent_comment_id AS parentCommentId FROM comments WHERE post_id=? AND status='APPROVED' AND deleted_at IS NULL ORDER BY datetime(created_at) ASC`).bind(postId).all<PublicComment>()
   return result.results
 }
 
