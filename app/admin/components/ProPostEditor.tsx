@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { CKEditor } from '@ckeditor/ckeditor5-react'
 import {
   Alignment, AutoImage, AutoLink, AutoMediaEmbed, BlockQuote, Bold, ClassicEditor, Code, CodeBlock, Essentials, FindAndReplace, Font, GeneralHtmlSupport, Heading, Highlight, HorizontalLine, Image, ImageCaption, ImageInsert, ImageResize, ImageStyle, ImageToolbar, ImageUpload, Indent, Italic, Link, List, ListProperties, MediaEmbed, PageBreak, Paragraph, PasteFromOffice, RemoveFormat, SelectAll, SimpleUploadAdapter, SourceEditing, SpecialCharacters, SpecialCharactersEssentials, Strikethrough, Subscript, Superscript, Table, TableCaption, TableCellProperties, TableColumnResize, TableProperties, TableToolbar, TextTransformation, TodoList, Underline, WordCount,
@@ -19,7 +18,7 @@ type Initial = {
 const getDraftKey = (id?: string) => `blog-ckeditor-draft:${id || 'new'}`
 
 export default function ProPostEditor({ categories, tags, initial = {} }: { categories: Category[]; tags: Tag[]; initial?: Initial }) {
-  const router = useRouter()
+  const [postId, setPostId] = useState(initial.id)
   const [data, setData] = useState(initial.content || '<p></p>')
   const [dirty, setDirty] = useState(false)
   const [savedAt, setSavedAt] = useState<string | null>(null)
@@ -47,7 +46,7 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
   }
   const wordCountRef = useRef<HTMLDivElement | null>(null)
   const editorRef = useRef<ClassicEditor | null>(null)
-  const draftKey = useMemo(() => getDraftKey(initial.id), [initial.id])
+  const draftKey = useMemo(() => getDraftKey(postId), [postId])
 
   useEffect(() => { const saved = localStorage.getItem(draftKey); if (saved) setData(saved) }, [draftKey])
   useEffect(() => { if (!dirty) return; const timer = window.setTimeout(() => { localStorage.setItem(draftKey, data); setSavedAt(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })) }, 900); return () => window.clearTimeout(timer) }, [data, dirty, draftKey])
@@ -71,7 +70,7 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
     htmlSupport: { allow: [{ name: /.*/, attributes: true, classes: true, styles: true }] },
   }
 
-  const saveIntent = initial.id ? 'update' : 'create'
+  const saveIntent = postId ? 'update' : 'create'
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -89,19 +88,16 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
         body: formData,
         headers: { Accept: 'application/json' },
       })
-      const result = await response.json().catch(() => null) as { ok?: boolean; error?: string; redirectTo?: string }
+      const result = await response.json().catch(() => null) as { ok?: boolean; error?: string; id?: string; redirectTo?: string }
       if (!response.ok || !result?.ok) throw new Error(result?.error || 'Could not save the post.')
 
       localStorage.removeItem(draftKey)
       setDirty(false)
       setSavedAt(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }))
 
-      if (result.redirectTo === '/admin/') {
-        router.replace('/admin/')
-      } else if (result.redirectTo && !initial.id) {
-        router.replace(result.redirectTo)
-      } else {
-        router.refresh()
+      if (result.redirectTo && !postId && result.id) {
+        setPostId(result.id)
+        window.history.replaceState(window.history.state, '', result.redirectTo)
       }
     } catch (error) {
       console.error('post save failed', error)
@@ -115,7 +111,7 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
   return (
     <form className={`ck-editor-post-form${fullscreen ? ' ck-editor-post-form--fullscreen' : ''}`} action="/api/admin/posts" method="post" onSubmit={handleSubmit}>
       <input type="hidden" name="intent" value={saveIntent} />
-      {initial.id && <input type="hidden" name="id" value={initial.id} />}
+      {postId && <input type="hidden" name="id" value={postId} />}
       <input type="hidden" name="content" value={data} />
       <input type="hidden" name="contentFormat" value="HTML" />
       <input type="hidden" name="coverImage" value={cover} />
@@ -128,7 +124,7 @@ export default function ProPostEditor({ categories, tags, initial = {} }: { cate
           <section className="ck-editor-post-card"><div className="ck-editor-post-card-title">SEO</div><label>SEO title<input name="seoTitle" defaultValue={initial.seoTitle || ''} maxLength={60} disabled={submitting} /></label><label>Meta description<textarea name="seoDescription" defaultValue={initial.seoDescription || ''} maxLength={160} disabled={submitting} /></label><label>Keywords<input name="seoKeywords" defaultValue={initial.seoKeywords || ''} disabled={submitting} /></label><label>Canonical URL<input name="canonicalUrl" defaultValue={initial.canonicalUrl || ''} disabled={submitting} /></label><label>Open Graph image<input name="ogImage" defaultValue={initial.ogImage || ''} disabled={submitting} /></label><label className="ck-editor-check"><input type="checkbox" name="noindex" value="1" defaultChecked={initial.noindex === 1} disabled={submitting} /> Prevent indexing</label></section>
         </aside>
       </div>
-      <div className="ck-editor-post-actions"><div><button className="primary-action" name="status" value="DRAFT" type="submit" disabled={submitting}>{submitting ? 'Saving…' : 'Save draft'}</button><button className="publish-action" name="status" value="PUBLISHED" type="submit" disabled={submitting}>{submitting ? 'Saving…' : 'Publish'}</button>{initial.id && <button className="danger-action" name="action" value="trash" type="submit" formNoValidate disabled={submitting}>{submitting ? 'Saving…' : 'Move to Trash'}</button>}</div></div>
+      <div className="ck-editor-post-actions"><div><button className="primary-action" name="status" value="DRAFT" type="submit" disabled={submitting}>{submitting ? 'Saving…' : 'Save draft'}</button><button className="publish-action" name="status" value="PUBLISHED" type="submit" disabled={submitting}>{submitting ? 'Saving…' : 'Publish'}</button>{postId && <button className="danger-action" name="action" value="trash" type="submit" formNoValidate disabled={submitting}>{submitting ? 'Saving…' : 'Move to Trash'}</button>}</div></div>
       {pickerFor && <MediaLibrary mode="picker" onPick={handlePick} onClose={() => setPickerFor(null)} />}
     </form>
   )
