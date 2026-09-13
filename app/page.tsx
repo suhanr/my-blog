@@ -31,7 +31,7 @@ export default async function Home() {
                   <span className="mag-chip">{featured.categoryName || 'বিশেষ প্রতিবেদন'}</span>
                   <h1 className="mag-hero-title"><Link href={`/${featured.slug}/`}>{featured.title}</Link></h1>
                   <p className="mag-hero-dek">{shortText(featured.excerpt, 220)}</p>
-                  <div className="mag-meta">{formatDate(featured.publishedAt)} · সুহানুর রহমান</div>
+                  <div className="mag-meta">{formatDate(featured.publishedAt)} · সোহানুর রহমান</div>
                 </article>
                 <div className="mag-hero-side">
                   {side.map((post) => (
