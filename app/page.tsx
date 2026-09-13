@@ -4,6 +4,7 @@ import { catColor, formatDate, shortText } from '@/lib/publicUi'
 import PublicHeader from '@/app/components/public/PublicHeader'
 import PublicFooter from '@/app/components/public/PublicFooter'
 import PostGrid, { type Card } from '@/app/components/public/PostGrid'
+import { RevealInit } from '@/app/components/public/enhancers'
 
 export const dynamic = 'force-dynamic'
 
@@ -34,7 +35,7 @@ export default async function Home() {
           {featured ? (
             <section className="mag-section mobile-home-hero" style={{ paddingTop: 0 }}>
               <div className="mag-hero">
-                <article className="mag-hero-lead" style={{ ['--cat' as string]: catColor(featured.categoryName) }}>
+                <article className="mag-hero-lead reveal is-visible" style={{ ['--cat' as string]: catColor(featured.categoryName) }}>
                   <Link href={`/${featured.slug}/`} className="mag-hero-media">
                     {featured.coverImage ? <img src={featured.coverImage} alt={featured.title} /> : null}
                   </Link>
@@ -45,7 +46,7 @@ export default async function Home() {
                 </article>
                 <div className="mag-hero-side">
                   {side.map((post) => (
-                    <article key={post.id} style={{ ['--cat' as string]: catColor(post.categoryName) }}>
+                    <article key={post.id} className="reveal is-visible" style={{ ['--cat' as string]: catColor(post.categoryName) }}>
                       {post.categoryName && post.categorySlug ? <Link className="mag-chip" href={`/category/${post.categorySlug}/`}>{post.categoryName}</Link> : <span className="mag-chip">সাম্প্রতিক</span>}
                       <h3><Link href={`/${post.slug}/`}>{post.title}</Link></h3>
                       <div className="mag-meta">{formatDate(post.publishedAt)}</div>
@@ -69,7 +70,7 @@ export default async function Home() {
           ) : null}
 
           <section className="mag-section" style={{ borderBottom: 'none' }}>
-            <div className="mag-cta">
+            <div className="mag-cta reveal">
               <h2>নতুন লেখা মিস করতে চান না?</h2>
               <p>প্রযুক্তি, গবেষণা ও অনুসন্ধানের সেরা লেখাগুলো সরাসরি আপনার ইনবক্সে পেতে যোগাযোগ করুন।</p>
               <a className="mag-btn" href="mailto:suhanurrahman.r@gmail.com">যোগাযোগ করুন →</a>
@@ -79,6 +80,7 @@ export default async function Home() {
       </main>
 
       <PublicFooter categories={categories} />
+      <RevealInit />
     </div>
   )
 }
