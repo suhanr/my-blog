@@ -5,7 +5,7 @@ export default function PublicFooter({ categories }: { categories: { id: string;
     <footer className="mag-footer">
       <div className="mag-container mag-footer-grid">
         <div>
-          <div className="mag-footer-brand">সোহানুর <b>রহমান</b></div>
+          <div className="mag-footer-brand">সোহানুর <b>রহমান</b><span style={{ fontSize: '0.5em', color: 'var(--accent)', marginLeft: 6, fontWeight: 600 }}>জার্নাল</span></div>
           <p>প্রযুক্তি, গবেষণা, অনুসন্ধান, ডিজিটাল সংস্কৃতি ও ভাবনা নিয়ে একটি স্বাধীন জার্নাল।</p>
         </div>
         <div>
