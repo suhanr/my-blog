@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useEffect, useRef, useState } from 'react'
 import { BriefcaseBusiness, ChevronDown, Loader2, Menu, Moon, Search, Sun, X } from 'lucide-react'
 
 type MenuItem = { id: string; categoryId: string; name: string; slug: string; parentId: string | null; sortOrder: number; children: MenuItem[] }
