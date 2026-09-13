@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { getComments, getPostBySlug, listPublishedPosts } from '@/lib/db'
+import { getCategories, getComments, getPostBySlug, listPublishedPosts } from '@/lib/db'
 import { markdownToHtml } from '@/lib/markdown'
 
 const SITE = 'https://blog.suhanurrahman.com'
@@ -31,7 +31,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const p = await getPostBySlug(slug)
   if (!p) return <main className="site-public"><div className="public-container article-top"><h1 className="article-title">Article not found</h1><Link href="/">Back to journal</Link></div></main>
 
-  const [comments, allPosts] = await Promise.all([getComments(p.id), listPublishedPosts(8)])
+  const [comments, allPosts, categories] = await Promise.all([getComments(p.id), listPublishedPosts(8), getCategories()])
+  const nav = categories.slice(0, 7)
   const related = allPosts.filter((post) => post.id !== p.id && (post.categoryId === p.categoryId || !p.categoryId)).slice(0, 3)
   const html = p.contentFormat === 'HTML' ? p.content : markdownToHtml(p.content)
   const jsonLd = {
@@ -53,10 +54,10 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       <header className="public-header">
         <div className="public-container public-header-main">
           <div className="public-menu"><span className="public-icon" aria-hidden="true">☰</span><Link href="/">Journal</Link></div>
-          <Link href="/" className="public-wordmark">SUHANUR <span>JOURNAL</span><br/>RAHMAN</Link>
+          <Link href="/" className="public-wordmark">SUHANUR RAHMAN<span>জার্নাল</span></Link>
           <div className="public-actions"><a href="https://suhanurrahman.com/">Portfolio ↗</a><span className="public-icon" aria-hidden="true">⌕</span></div>
         </div>
-        <div className="public-navrow"><nav className="public-container public-navrow-inner"><Link href="/">Reports</Link><Link href="/">Analysis</Link><Link href="/">Opinion</Link><Link href="/">Research</Link><Link href="/">Data</Link><Link href="/">Photo stories</Link><Link href="/">Interviews</Link></nav></div>
+        <div className="public-navrow"><nav className="public-container public-navrow-inner" aria-label="Journal sections">{nav.map((category) => <Link key={category.id} href={`/category/${category.slug}/`}>{category.name}</Link>)}<Link href="/">All stories</Link></nav></div>
       </header>
 
       <main className="public-main">

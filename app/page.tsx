@@ -33,7 +33,7 @@ function Header({ categories }: { categories: { id: string; name: string; slug: 
             <span className="public-icon" aria-hidden="true">☰</span>
             <Link href="/" className="public-menu-link">Journal</Link>
           </div>
-          <Link href="/" className="public-wordmark">SUHANUR <span>JOURNAL</span><br/>RAHMAN</Link>
+          <Link href="/" className="public-wordmark">SUHANUR RAHMAN<span>জার্নাল</span></Link>
           <div className="public-actions">
             <Link href="/admin/">CMS</Link>
             <a href="https://suhanurrahman.com/">Portfolio ↗</a>
