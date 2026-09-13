@@ -28,15 +28,15 @@ export default async function Home() {
                   <Link href={`/${featured.slug}/`} className="mag-hero-media">
                     {featured.coverImage ? <img src={featured.coverImage} alt={featured.title} /> : null}
                   </Link>
-                  <span className="mag-chip">{featured.categoryName || 'বিশেষ প্রতিবেদন'}</span>
+                  {featured.categoryName && featured.categorySlug ? <Link className="mag-chip" href={`/category/${featured.categorySlug}/`}>{featured.categoryName}</Link> : <span className="mag-chip">বিশেষ প্রতিবেদন</span>}
                   <h1 className="mag-hero-title"><Link href={`/${featured.slug}/`}>{featured.title}</Link></h1>
                   <p className="mag-hero-dek">{shortText(featured.excerpt, 220)}</p>
-                  <div className="mag-meta">{formatDate(featured.publishedAt)} · সোহানুর রহমান</div>
+                  <div className="mag-meta">{formatDate(featured.publishedAt)} · <a href="https://suhanurrahman.com/" target="_blank" rel="noreferrer">সোহানুর রহমান</a></div>
                 </article>
                 <div className="mag-hero-side">
                   {side.map((post) => (
                     <article key={post.id} className="reveal" style={{ ['--cat' as string]: catColor(post.categoryName) }}>
-                      <span className="mag-chip">{post.categoryName || 'সাম্প্রতিক'}</span>
+                      {post.categoryName && post.categorySlug ? <Link className="mag-chip" href={`/category/${post.categorySlug}/`}>{post.categoryName}</Link> : <span className="mag-chip">সাম্প্রতিক</span>}
                       <h3><Link href={`/${post.slug}/`}>{post.title}</Link></h3>
                       <div className="mag-meta">{formatDate(post.publishedAt)}</div>
                     </article>
