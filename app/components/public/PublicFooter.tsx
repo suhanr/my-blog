@@ -48,29 +48,45 @@ export default async function PublicFooter({ categories }: { categories: { id: s
         .site-public .mag-footer-dept-item:last-child {
           border-bottom: 0;
         }
-        .site-public .mag-footer-dept-summary {
+        .site-public .mag-footer-dept-row {
           display: flex;
           align-items: center;
           justify-content: space-between;
           gap: 10px;
           width: 100%;
+        }
+        .site-public .mag-footer-dept-parent {
+          flex: 1;
+          min-width: 0;
           padding: 8px 0;
           color: var(--muted);
           font-size: 15px;
           font-weight: 600;
+          line-height: 1.35;
+          transition: color 0.18s ease;
+        }
+        .site-public .mag-footer-dept-parent:hover,
+        .site-public .mag-footer-dept-item[open] .mag-footer-dept-parent {
+          color: var(--accent);
+        }
+        .site-public .mag-footer-dept-toggle {
+          flex: 0 0 auto;
+          width: 34px;
+          height: 34px;
+          display: inline-grid;
+          place-items: center;
+          border: 0;
+          background: transparent;
+          color: var(--muted);
           cursor: pointer;
-          list-style: none;
-          user-select: none;
+          border-radius: 7px;
+          transition: color 0.18s ease, background 0.18s ease;
         }
-        .site-public .mag-footer-dept-summary::-webkit-details-marker {
-          display: none;
-        }
-        .site-public .mag-footer-dept-summary:hover,
-        .site-public .mag-footer-dept-item[open] > .mag-footer-dept-summary {
+        .site-public .mag-footer-dept-toggle:hover {
+          background: var(--bg-2);
           color: var(--accent);
         }
         .site-public .mag-footer-dept-chevron {
-          flex: 0 0 auto;
           font-size: 13px;
           line-height: 1;
           transition: transform 0.18s ease;
@@ -96,9 +112,12 @@ export default async function PublicFooter({ categories }: { categories: { id: s
           color: var(--accent);
         }
         @media (max-width: 720px) {
-          .site-public .mag-footer-dept-summary {
-            min-height: 42px;
+          .site-public .mag-footer-dept-parent {
             font-size: 16px;
+          }
+          .site-public .mag-footer-dept-toggle {
+            width: 40px;
+            height: 40px;
           }
           .site-public .mag-footer-dept-dropdown a {
             font-size: 15px;
@@ -119,19 +138,23 @@ export default async function PublicFooter({ categories }: { categories: { id: s
           <h4>বিভাগ</h4>
           <nav className="mag-footer-dept-nav" aria-label="Footer sections">
             {footerMenu.map((item) => (
-              <details key={item.id} className="mag-footer-dept-item">
-                <summary className="mag-footer-dept-summary">
-                  <span>{item.name}</span>
-                  {item.children.length ? <span className="mag-footer-dept-chevron" aria-hidden="true">⌄</span> : null}
-                </summary>
-                {item.children.length ? (
-                  <div className="mag-footer-dept-dropdown">
-                    {item.children.map((child) => (
-                      <Link key={child.id} href={`/category/${child.slug}/`}>{child.name}</Link>
-                    ))}
-                  </div>
-                ) : null}
-              </details>
+              <div key={item.id} className="mag-footer-dept-item">
+                <div className="mag-footer-dept-row">
+                  <Link href={`/category/${item.slug}/`} className="mag-footer-dept-parent">{item.name}</Link>
+                  {item.children.length ? (
+                    <details className="mag-footer-dept-details">
+                      <summary className="mag-footer-dept-toggle" aria-label={`${item.name} submenu`}>
+                        <span className="mag-footer-dept-chevron" aria-hidden="true">⌄</span>
+                      </summary>
+                      <div className="mag-footer-dept-dropdown">
+                        {item.children.map((child) => (
+                          <Link key={child.id} href={`/category/${child.slug}/`}>{child.name}</Link>
+                        ))}
+                      </div>
+                    </details>
+                  ) : null}
+                </div>
+              </div>
             ))}
           </nav>
         </div>
