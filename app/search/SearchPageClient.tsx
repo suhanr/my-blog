@@ -19,16 +19,19 @@ type Result = {
 type Category = { id: string; name: string; slug: string }
 type MenuItem = { id: string; categoryId: string; name: string; slug: string; parentId: string | null; sortOrder: number; children: MenuItem[] }
 
+const MIN_QUERY_LENGTH = 2
+
 export default function SearchPageClient({ categories, menu, initialQuery = '' }: { categories: Category[]; menu: MenuItem[]; initialQuery?: string }) {
   const [query, setQuery] = useState(initialQuery.slice(0, 100))
   const [results, setResults] = useState<Result[]>([])
   const [loading, setLoading] = useState(false)
-  const [searched, setSearched] = useState(Boolean(initialQuery.trim()))
+  const [searched, setSearched] = useState(initialQuery.trim().length >= MIN_QUERY_LENGTH)
   const [error, setError] = useState('')
 
   useEffect(() => {
     const term = query.trim().slice(0, 100)
-    if (!term) {
+
+    if (term.length < MIN_QUERY_LENGTH) {
       setResults([])
       setSearched(false)
       setLoading(false)
@@ -59,7 +62,7 @@ export default function SearchPageClient({ categories, menu, initialQuery = '' }
       } finally {
         if (!controller.signal.aborted) setLoading(false)
       }
-    }, 220)
+    }, 450)
 
     return () => {
       window.clearTimeout(timer)
@@ -73,6 +76,9 @@ export default function SearchPageClient({ categories, menu, initialQuery = '' }
     const trimmed = next.trim()
     window.history.replaceState(window.history.state, '', trimmed ? `/search/?q=${encodeURIComponent(trimmed)}` : '/search/')
   }
+
+  const normalizedQuery = query.trim()
+  const tooShort = normalizedQuery.length > 0 && normalizedQuery.length < MIN_QUERY_LENGTH
 
   return (
     <>
@@ -123,7 +129,9 @@ export default function SearchPageClient({ categories, menu, initialQuery = '' }
             </form>
           </section>
 
-          {query.trim() ? (
+          {tooShort ? (
+            <div className="search-empty">সার্চ করার জন্য কমপক্ষে ২টি অক্ষর লিখুন।</div>
+          ) : query.trim() ? (
             <section>
               <p className="search-summary">{loading ? 'ফলাফল খোঁজা হচ্ছে…' : `${results.length}টি ফলাফল`} · “{query.trim()}”</p>
               {loading ? (
