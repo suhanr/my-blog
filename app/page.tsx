@@ -54,14 +54,19 @@ export default async function Home() {
         .site-public .home-tech-card-title a { color: inherit; text-decoration: none; }
         .site-public .home-tech-card-title a:hover { color: var(--accent); }
         .site-public .home-tech-card-excerpt { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.65; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
-        .site-public .home-tech-card-meta { margin-top: 18px; color: var(--muted); font-size: 13px; }
         .site-public .home-tech-thumb { width: 126px; height: 94px; object-fit: cover; background: var(--bg-2); display: block; }
         @media (max-width: 1000px) {
           .site-public .home-tech-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
         @media (max-width: 680px) {
-          .site-public .home-tech-grid { grid-template-columns: 1fr; row-gap: 24px; }
-          .site-public .home-tech-card { grid-template-columns: minmax(0, 1fr) 104px; gap: 14px; }
+          .site-public .home-tech-grid { grid-template-columns: 1fr; row-gap: 0; }
+          .site-public .home-tech-card {
+            grid-template-columns: minmax(0, 1fr) 104px;
+            gap: 14px;
+            padding: 22px 0 24px;
+            border-bottom: 1px solid var(--line-2);
+          }
+          .site-public .home-tech-card:first-child { padding-top: 0; }
           .site-public .home-tech-card-title { font-size: 23px; }
           .site-public .home-tech-card-excerpt { font-size: 14px; }
           .site-public .home-tech-thumb { width: 104px; height: 78px; }
@@ -117,7 +122,6 @@ export default async function Home() {
                     <div>
                       <h3 className="home-tech-card-title"><Link href={`/${post.slug}/`}>{post.title}</Link></h3>
                       {post.excerpt ? <p className="home-tech-card-excerpt">{shortText(post.excerpt, 180)}</p> : null}
-                      <div className="home-tech-card-meta">সোহানুর রহমান</div>
                     </div>
                     <Link href={`/${post.slug}/`} aria-label={post.title}>
                       {post.coverImage ? <img className="home-tech-thumb" src={post.coverImage} alt="" loading="lazy" decoding="async" /> : <span className="home-tech-thumb" aria-hidden="true" />}
