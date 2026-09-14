@@ -92,7 +92,16 @@ export function ShareActions({ title, url }: { title: string; url: string }) {
 
   return (
     <div className="mag-share">
-      <button type="button" onClick={share} aria-label="Share this article">শেয়ার করুন</button>
+      <button type="button" onClick={share} aria-label="Share this article">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="18" cy="5" r="2.5" />
+          <circle cx="6" cy="12" r="2.5" />
+          <circle cx="18" cy="19" r="2.5" />
+          <path d="m8.2 10.8 7.6-4.5" />
+          <path d="m8.2 13.2 7.6 4.5" />
+        </svg>
+        শেয়ার করুন
+      </button>
       <button type="button" onClick={copyLink} aria-label="Copy article link">{status === 'copied' ? 'লিংক কপি হয়েছে' : 'লিংক কপি করুন'}</button>
     </div>
   )
