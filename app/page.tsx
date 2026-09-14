@@ -46,9 +46,11 @@ export default async function Home() {
       <PublicHeader categories={categories} menu={menu} />
       <style>{`
         .site-public .mobile-home-hero { border-bottom: 0; }
+        .site-public .home-tech-section { padding-top: 0; }
         .site-public .home-tech-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 38px; row-gap: 26px; }
         .site-public .home-tech-card { display: grid; grid-template-columns: minmax(0, 1fr) 126px; gap: 20px; align-items: start; min-width: 0; padding: 0; border: 0; }
-        .site-public .home-tech-card-title { margin: 0 0 13px; font-family: var(--serif); font-size: clamp(24px, 2vw, 31px); line-height: 1.18; font-weight: 500; letter-spacing: -.025em; color: var(--fg); }
+        .site-public .home-tech-card:first-child { border-top: 0; padding-top: 0; }
+        .site-public .home-tech-card-title { margin: 0 0 12px; font-family: var(--serif); font-size: 25px; line-height: 1.2; font-weight: 500; letter-spacing: -.025em; color: var(--fg); }
         .site-public .home-tech-card-title a { color: inherit; text-decoration: none; }
         .site-public .home-tech-card-title a:hover { color: var(--accent); }
         .site-public .home-tech-card-excerpt { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.65; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
@@ -104,7 +106,7 @@ export default async function Home() {
           )}
 
           {technologyPosts.length ? (
-            <section className="mag-section">
+            <section className="mag-section home-tech-section">
               <div className="mag-section-head">
                 <h2 className="mag-section-title">প্রযুক্তি কথন</h2>
                 <Link className="mag-all" href="/category/tech-gossip">সকল লেখা <span className="arrow">→</span></Link>
