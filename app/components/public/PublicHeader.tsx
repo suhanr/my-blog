@@ -70,13 +70,24 @@ export default function PublicHeader({ categories, menu }: { categories: Categor
         .site-public .mag-drawer-children-inner a { font-size: 17px; padding: 10px 0 10px 14px; border-bottom: 0; color: var(--muted); }
         .site-public .mag-drawer-children-inner a:hover { color: var(--accent); }
         .site-public .mag-search-all { display: block; margin-top: 10px; padding: 12px 2px 2px; border-top: 1px solid var(--line-2); color: var(--accent); font-size: 13px; font-weight: 600; text-align: center; }
-        .site-public .mag-search-results { max-height: min(60vh, 560px); overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; scrollbar-width: thin; touch-action: pan-y; }
-        .site-public .mag-search-box { max-height: calc(100dvh - 40px); min-height: 0; }
+        .site-public .mag-search { overflow: hidden; }
+        .site-public .mag-search-box { width: min(720px, 100%); align-self: flex-start; max-height: calc(100dvh - 32px); min-height: 0; display: flex; flex-direction: column; }
+        .site-public .mag-search-results { margin-top: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow-x: hidden; overflow-y: scroll; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; scrollbar-width: thin; touch-action: pan-y; height: min(60vh, 560px); max-height: calc(100dvh - 150px); min-height: 0; }
+        .site-public .mag-search-field { flex: 0 0 auto; }
+        .site-public .mag-search-item { display: flex; gap: 14px; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--line-2); transition: background 0.15s ease; }
+        .site-public .mag-search-item:last-child { border-bottom: 0; }
+        .site-public .mag-search-item:hover { background: var(--bg-2); }
+        .site-public .mag-search-item img { width: 64px; height: 48px; object-fit: cover; border-radius: 8px; background: var(--bg-2); flex: 0 0 auto; }
+        .site-public .mag-search-item h4 { margin: 0; font-size: 17px; font-weight: 700; line-height: 1.3; }
+        .site-public .mag-search-item span { font-size: 12.5px; color: var(--muted); }
+        .site-public .mag-search-empty { padding: 22px 18px; color: var(--muted); font-size: 15px; }
         @media (max-width: 720px) {
           .site-public .mag-nav { display: none; }
-          .site-public .mag-search { padding: max(16px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)); overflow: hidden; }
+          .site-public .mag-search { align-items: flex-start; padding: max(16px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)); overflow: hidden; }
           .site-public .mag-search-box { width: 100%; max-height: calc(100dvh - 28px); min-height: 0; }
-          .site-public .mag-search-results { max-height: calc(100dvh - 150px); margin-top: 10px; border-radius: 14px; }
+          .site-public .mag-search-field { border-radius: 14px; padding-left: 14px; }
+          .site-public .mag-search-field input { font-size: 18px; padding: 10px 0; }
+          .site-public .mag-search-results { width: 100%; height: min(60dvh, 560px); max-height: calc(100dvh - 150px); min-height: 0; margin-top: 10px; border-radius: 14px; overflow-y: scroll; touch-action: pan-y; -webkit-overflow-scrolling: touch; }
           .site-public .mag-search-item { padding: 13px 14px; }
           .site-public .mag-search-item h4 { font-size: 16px; }
           .site-public .mag-search-item span { font-size: 12px; }
