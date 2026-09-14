@@ -42,11 +42,11 @@ export default async function NotFound() {
           min-height: calc(100vh - 150px);
           margin: 0 auto;
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           justify-content: center;
           border-top: 1px solid var(--line-2);
           border-bottom: 1px solid var(--line-2);
-          padding: clamp(90px, 13vw, 170px) 0;
+          padding: clamp(58px, 7vw, 92px) 0 clamp(80px, 10vw, 130px);
           text-align: center;
         }
         .not-found-content {
@@ -58,7 +58,7 @@ export default async function NotFound() {
           align-items: center;
           justify-content: center;
           gap: 10px;
-          margin-bottom: 22px;
+          margin-bottom: 18px;
           color: var(--accent);
           font-size: 12px;
           font-weight: 700;
@@ -85,7 +85,7 @@ export default async function NotFound() {
         }
         .not-found-heading {
           max-width: 780px;
-          margin: 42px auto 16px;
+          margin: 34px auto 16px;
           font-size: clamp(34px, 4.5vw, 64px);
           line-height: 1.05;
           letter-spacing: -.045em;
@@ -103,7 +103,7 @@ export default async function NotFound() {
           justify-content: center;
           flex-wrap: wrap;
           gap: 10px;
-          margin-top: 32px;
+          margin-top: 28px;
         }
         .not-found-action {
           display: inline-flex;
@@ -138,10 +138,10 @@ export default async function NotFound() {
           .not-found-stage {
             width: min(100% - 32px, 1320px);
             min-height: calc(100vh - 120px);
-            padding: 76px 0 90px;
+            padding: 44px 0 76px;
           }
           .not-found-heading {
-            margin-top: 30px;
+            margin-top: 26px;
             font-size: 32px;
           }
           .not-found-copy {
