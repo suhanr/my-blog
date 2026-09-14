@@ -39,21 +39,22 @@ export default async function NotFound() {
         }
         .not-found-stage {
           width: min(1320px, calc(100% - 48px));
-          margin: 0 auto;
           min-height: calc(100vh - 150px);
-          display: grid;
-          grid-template-columns: minmax(0, 1.02fr) minmax(420px, .98fr);
+          margin: 0 auto;
+          display: flex;
           align-items: center;
-          gap: clamp(50px, 7vw, 110px);
-          padding: clamp(70px, 10vw, 130px) 0 clamp(80px, 10vw, 130px);
           border-top: 1px solid var(--line-2);
           border-bottom: 1px solid var(--line-2);
+          padding: clamp(90px, 13vw, 170px) 0;
+        }
+        .not-found-content {
+          max-width: 900px;
         }
         .not-found-kicker {
           display: inline-flex;
           align-items: center;
           gap: 10px;
-          margin-bottom: 18px;
+          margin-bottom: 22px;
           color: var(--accent);
           font-size: 12px;
           font-weight: 700;
@@ -62,48 +63,48 @@ export default async function NotFound() {
         }
         .not-found-kicker::before {
           content: '';
-          width: 28px;
+          width: 30px;
           height: 1px;
           background: currentColor;
         }
         .not-found-number {
           margin: 0;
           color: var(--fg);
-          font-size: clamp(105px, 17vw, 220px);
-          line-height: .75;
-          letter-spacing: -.085em;
+          font-size: clamp(120px, 18vw, 250px);
+          line-height: .72;
+          letter-spacing: -.09em;
           font-weight: 500;
         }
         .not-found-number span {
           color: var(--accent);
         }
         .not-found-heading {
-          max-width: 680px;
-          margin: 34px 0 14px;
-          font-size: clamp(32px, 4vw, 58px);
-          line-height: 1.04;
-          letter-spacing: -.04em;
+          max-width: 780px;
+          margin: 42px 0 16px;
+          font-size: clamp(34px, 4.5vw, 64px);
+          line-height: 1.05;
+          letter-spacing: -.045em;
           font-weight: 700;
         }
         .not-found-copy {
-          max-width: 620px;
+          max-width: 700px;
           margin: 0;
           color: var(--muted);
-          font-size: 16px;
-          line-height: 1.9;
+          font-size: 17px;
+          line-height: 1.95;
         }
         .not-found-actions {
           display: flex;
           flex-wrap: wrap;
           gap: 10px;
-          margin-top: 28px;
+          margin-top: 32px;
         }
         .not-found-action {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          min-height: 46px;
-          padding: 0 18px;
+          min-height: 48px;
+          padding: 0 20px;
           border: 1px solid var(--fg);
           border-radius: 999px;
           color: var(--fg);
@@ -127,106 +128,18 @@ export default async function NotFound() {
           background: transparent;
           color: var(--accent);
         }
-        .not-found-art {
-          position: relative;
-          aspect-ratio: 1 / 1.02;
-          display: grid;
-          place-items: center;
-          border: 1px solid var(--line);
-          background: var(--surface);
-          box-shadow: var(--shadow-lg);
-          overflow: hidden;
-        }
-        .not-found-art::before,
-        .not-found-art::after {
-          content: '';
-          position: absolute;
-          background: var(--line);
-          pointer-events: none;
-        }
-        .not-found-art::before {
-          width: 1px;
-          height: 100%;
-          left: 16%;
-          top: 0;
-        }
-        .not-found-art::after {
-          width: 100%;
-          height: 1px;
-          left: 0;
-          top: 54%;
-        }
-        .not-found-art-label {
-          position: absolute;
-          top: 22px;
-          right: 22px;
-          color: var(--muted);
-          font-size: 10px;
-          font-weight: 700;
-          letter-spacing: .16em;
-        }
-        .not-found-art-mark {
-          position: relative;
-          width: 72%;
-          aspect-ratio: 1;
-        }
-        .not-found-art-mark::before,
-        .not-found-art-mark::after {
-          content: '';
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          width: 84%;
-          height: 3px;
-          border-radius: 999px;
-          background: var(--accent);
-          transform-origin: center;
-        }
-        .not-found-art-mark::before {
-          transform: translate(-50%, -50%) rotate(38deg);
-        }
-        .not-found-art-mark::after {
-          transform: translate(-50%, -50%) rotate(-38deg);
-        }
-        .not-found-art-caption {
-          position: absolute;
-          left: 22px;
-          bottom: 20px;
-          color: var(--muted);
-          font-size: 10px;
-          font-weight: 700;
-          letter-spacing: .11em;
-        }
-        @media (max-width: 920px) {
-          .not-found-stage {
-            grid-template-columns: 1fr;
-            min-height: auto;
-            padding-top: 56px;
-          }
-          .not-found-art {
-            width: min(100%, 560px);
-            justify-self: center;
-            order: -1;
-          }
-        }
         @media (max-width: 560px) {
           .not-found-stage {
             width: min(100% - 32px, 1320px);
-            gap: 42px;
-            padding: 44px 0 62px;
-          }
-          .not-found-number {
-            font-size: clamp(94px, 27vw, 150px);
+            min-height: calc(100vh - 120px);
+            padding: 76px 0 90px;
           }
           .not-found-heading {
-            margin-top: 26px;
-            font-size: 31px;
+            margin-top: 30px;
+            font-size: 32px;
           }
           .not-found-copy {
             font-size: 15px;
-          }
-          .not-found-art {
-            aspect-ratio: 1 / .9;
           }
         }
       ` }} />
@@ -234,7 +147,7 @@ export default async function NotFound() {
       <PublicHeader categories={categories} menu={menu} />
 
       <main className="not-found-stage" aria-labelledby="not-found-title">
-        <section>
+        <section className="not-found-content">
           <div className="not-found-kicker">Page Error</div>
           <div className="not-found-number" aria-hidden="true">4<span>0</span>4</div>
           <h1 id="not-found-title" className="not-found-heading">এই পাতাটি আর এখানে নেই।</h1>
@@ -246,12 +159,6 @@ export default async function NotFound() {
             <Link href="/search/" className="not-found-action">সার্চ করুন</Link>
           </div>
         </section>
-
-        <div className="not-found-art" aria-hidden="true">
-          <div className="not-found-art-label">NOT FOUND</div>
-          <div className="not-found-art-mark" />
-          <div className="not-found-art-caption">EDITORIAL / PAGE ERROR</div>
-        </div>
       </main>
 
       <PublicFooter categories={categories} />
