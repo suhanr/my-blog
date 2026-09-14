@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { countPublishedPosts, getCategories, getCategoryBySlug, getHeaderMenu, listPublishedPosts } from '@/lib/db'
+import { countPublishedPosts, getCategories, getHeaderMenu, listPublishedPosts } from '@/lib/db'
 import { catColor, formatDate, shortText } from '@/lib/publicUi'
 import PublicHeader from '@/app/components/public/PublicHeader'
 import PublicFooter from '@/app/components/public/PublicFooter'
@@ -26,18 +26,20 @@ export const metadata: Metadata = {
 }
 
 export default async function Home() {
-  const [posts, categories, total, menu, technologyCategory] = await Promise.all([
+  const [posts, categories, total, menu, technologyPostsSource] = await Promise.all([
     listPublishedPosts(12),
     getCategories(),
     countPublishedPosts(),
     getHeaderMenu(),
-    getCategoryBySlug('technology'),
+    listPublishedPosts(100),
   ])
   const featured = posts[0]
   const side = posts.slice(1, 6)
   const gridPosts = posts.slice(6) as unknown as Card[]
   const hasMore = total > posts.length
-  const technologyPosts = (technologyCategory?.posts || []).slice(0, 6) as unknown as Card[]
+  const technologyPosts = technologyPostsSource
+    .filter((post) => post.categorySlug === 'technology' || post.categoryName === 'প্রযুক্তি কথন' || post.categoryName === 'Technology')
+    .slice(0, 6) as unknown as Card[]
 
   return (
     <div className="site-public">
@@ -57,7 +59,6 @@ export default async function Home() {
         .site-public .home-tech-card-excerpt { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.65; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
         .site-public .home-tech-card-meta { margin-top: 16px; color: var(--muted); font-size: 13px; }
         .site-public .home-tech-thumb { width: 126px; height: 94px; object-fit: cover; background: var(--bg-2); display: block; }
-        .site-public .home-tech-empty { color: var(--muted); padding: 8px 0 20px; }
         @media (max-width: 1000px) {
           .site-public .home-tech-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
           .site-public .home-tech-card:nth-child(-n + 3) { border-top: 1px solid var(--line-2); padding-top: 22px; }
