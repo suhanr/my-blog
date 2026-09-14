@@ -4,7 +4,7 @@ import { getCategories, getHeaderMenu } from '@/lib/db'
 import PublicHeader from '@/app/components/public/PublicHeader'
 import PublicFooter from '@/app/components/public/PublicFooter'
 import { RevealInit } from '@/app/components/public/enhancers'
-import { AUTHOR_NAME, AUTHOR_URL, GLOBAL_KEYWORDS, PROFILE_IMAGE, SITE, SITE_NAME } from '@/lib/seo'
+import { AUTHOR_NAME, AUTHOR_URL, GLOBAL_KEYWORDS, OG_IMAGE, PROFILE_IMAGE, SITE, SITE_NAME } from '@/lib/seo'
 
 export const dynamic = 'force-dynamic'
 
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     title: 'আমার সম্পর্কে — সোহানুর রহমান',
     description: 'সোহানুর রহমান সম্পর্কে জানুন—প্রযুক্তি, গবেষণা, ডেটা, এআই ও ডিজিটাল সংস্কৃতি নিয়ে কাজের পরিচয়।',
     siteName: SITE_NAME,
-    images: [{ url: PROFILE_IMAGE, width: 512, height: 512, alt: AUTHOR_NAME }],
+    images: [{ url: OG_IMAGE, width: 1672, height: 941, alt: 'সোহানুর রহমান | Notes' }],
   },
 }
 
