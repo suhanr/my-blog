@@ -118,7 +118,7 @@ export default function PublicHeader({ categories, menu }: { categories: Categor
           </nav>
           <div className="mag-tools">
             <button className="mag-icon-btn" aria-label="Search" onClick={() => setSearchOpen(true)}><Search size={18} strokeWidth={1.9} /></button>
-            <a className="mag-portfolio" href="https://suhanurrahman.com/" target="_blank" rel="noreferrer" aria-label="Portfolio"><BriefcaseBusiness size={17} strokeWidth={1.8} /><span>Portfolio</span></a>
+            <a className="mag-portfolio" href="https://suhanurrahman.com/" target="_blank" rel="noreferrer" aria-label="Portfolio"><BriefcaseBusiness size={17} strokeWidth={1.8} /><span>পোর্টফলিও</span></a>
             <button className="mag-icon-btn" aria-label="Toggle theme" onClick={toggleTheme}>{dark ? <Sun size={18} strokeWidth={1.9} /> : <Moon size={18} strokeWidth={1.9} />}</button>
           </div>
         </div>
@@ -135,7 +135,7 @@ export default function PublicHeader({ categories, menu }: { categories: Categor
 
             <a className="mag-drawer-portfolio" href="https://suhanurrahman.com/" target="_blank" rel="noreferrer">
               <BriefcaseBusiness size={17} strokeWidth={1.8} />
-              Portfolio
+              পোর্টফলিও
             </a>
 
             <Link href="/" onClick={closeDrawer}>হোম</Link>
