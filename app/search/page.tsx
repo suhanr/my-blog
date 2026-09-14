@@ -13,11 +13,19 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 }
 
-export default async function SearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
-  const [{ q = '' }, categories, menu] = await Promise.all([searchParams, getCategories(), getHeaderMenu()])
+export default async function SearchPage() {
+  let categories = []
+  let menu = []
+
+  try {
+    ;[categories, menu] = await Promise.all([getCategories(), getHeaderMenu()])
+  } catch {
+    // The search UI should still render even when a navigation/database read fails.
+  }
+
   return (
     <div className="site-public">
-      <SearchPageClient categories={categories} menu={menu} initialQuery={q} />
+      <SearchPageClient categories={categories} menu={menu} />
     </div>
   )
 }
