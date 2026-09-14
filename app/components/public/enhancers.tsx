@@ -92,8 +92,8 @@ export function ShareActions({ title, url }: { title: string; url: string }) {
 
   return (
     <div className="mag-share">
-      <style>{`.site-public .mag-share button:first-child::before { content:none !important; display:none !important; } .site-public .mag-share button:first-child svg { flex:0 0 auto; display:block; } .site-public .mag-share button:first-child { background:#d92b2b !important; border-color:#d92b2b !important; color:#fff !important; } .site-public .mag-share button:first-child:hover { background:#b91f1f !important; border-color:#b91f1f !important; color:#fff !important; } .site-public .mag-share button:last-child { border-color:#d92b2b !important; } .site-public .mag-share button:last-child:hover { border-color:#d92b2b !important; color:#d92b2b !important; }`}</style>
-      <button type="button" onClick={share} aria-label="Share this article">
+      <style>{`.site-public .mag-share button:first-child::before { content:none !important; display:none !important; } .site-public .mag-share button:first-child svg { flex:0 0 auto; display:block; } .site-public .mag-share button:first-child { background:#d92b2b !important; background-color:#d92b2b !important; background-image:none !important; border-color:#d92b2b !important; color:#fff !important; } .site-public .mag-share button:first-child:hover { background:#b91f1f !important; background-color:#b91f1f !important; border-color:#b91f1f !important; color:#fff !important; } .site-public .mag-share button:last-child { border-color:#d92b2b !important; } .site-public .mag-share button:last-child:hover { border-color:#d92b2b !important; color:#d92b2b !important; }`}</style>
+      <button type="button" onClick={share} aria-label="Share this article" style={{ backgroundColor: '#d92b2b', borderColor: '#d92b2b', color: '#fff' }}>
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="18" cy="5" r="2.5" />
           <circle cx="6" cy="12" r="2.5" />
@@ -103,7 +103,7 @@ export function ShareActions({ title, url }: { title: string; url: string }) {
         </svg>
         শেয়ার করুন
       </button>
-      <button type="button" onClick={copyLink} aria-label="Copy article link">{status === 'copied' ? 'লিংক কপি হয়েছে' : 'লিংক কপি করুন'}</button>
+      <button type="button" onClick={copyLink} aria-label="Copy article link" style={{ borderColor: '#d92b2b' }}>{status === 'copied' ? 'লিংক কপি হয়েছে' : 'লিংক কপি করুন'}</button>
     </div>
   )
 }
