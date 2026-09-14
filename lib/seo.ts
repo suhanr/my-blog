@@ -3,6 +3,7 @@ export const SITE_NAME = 'সোহানুর রহমান | Notes'
 export const AUTHOR_NAME = 'সোহানুর রহমান'
 export const AUTHOR_URL = 'https://suhanurrahman.com/'
 export const PROFILE_IMAGE = 'https://i0.wp.com/suhanurrahman.com/wp-content/uploads/2024/01/img-1.png?fit=512%2C512&ssl=1'
+export const OG_IMAGE = `${SITE}/suhan-notes.png`
 
 export const GLOBAL_KEYWORDS = [
   'সোহানুর রহমান',
