@@ -8,7 +8,7 @@ import { AUTHOR_NAME, AUTHOR_URL, DEFAULT_DESCRIPTION, GLOBAL_KEYWORDS, PROFILE_
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
-  title: { default: 'সোহানুর রহমান জার্নাল — প্রযুক্তি, এআই, গবেষণা ও ডিজিটাল সংস্কৃতি', template: `%s | ${SITE_NAME}` },
+  title: { default: `${SITE_NAME} — প্রযুক্তি, এআই, গবেষণা ও ডিজিটাল সংস্কৃতি`, template: `%s | ${SITE_NAME}` },
   description: DEFAULT_DESCRIPTION,
   keywords: GLOBAL_KEYWORDS,
   authors: [{ name: AUTHOR_NAME, url: AUTHOR_URL }],
@@ -37,13 +37,13 @@ export const metadata: Metadata = {
     locale: 'bn_BD',
     siteName: SITE_NAME,
     url: SITE,
-    title: 'সোহানুর রহমান জার্নাল — প্রযুক্তি, এআই, গবেষণা ও ডিজিটাল সংস্কৃতি',
+    title: `${SITE_NAME} — প্রযুক্তি, এআই, গবেষণা ও ডিজিটাল সংস্কৃতি`,
     description: DEFAULT_DESCRIPTION,
     images: [{ url: PROFILE_IMAGE, width: 512, height: 512, alt: 'সোহানুর রহমান' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'সোহানুর রহমান জার্নাল',
+    title: SITE_NAME,
     description: DEFAULT_DESCRIPTION,
     images: [PROFILE_IMAGE],
   },
