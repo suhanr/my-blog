@@ -55,6 +55,12 @@ export default async function Home() {
         .site-public .home-tech-card-title a:hover { color: var(--accent); }
         .site-public .home-tech-card-excerpt { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.65; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
         .site-public .home-tech-thumb { width: 126px; height: 94px; object-fit: cover; background: var(--bg-2); display: block; }
+        .site-public .mag-donation-card { display: flex; align-items: center; justify-content: space-between; gap: 32px; padding: 36px 40px; border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 16px; background: var(--surface); box-shadow: var(--shadow-sm); }
+        .site-public .mag-donation-copy { min-width: 0; }
+        .site-public .mag-donation-kicker { display: block; margin: 0 0 8px; color: var(--accent); font-size: 13px; font-weight: 700; letter-spacing: .04em; }
+        .site-public .mag-donation-card h2 { margin: 0 0 10px; font-family: var(--serif); font-size: 30px; line-height: 1.25; font-weight: 800; color: var(--fg); }
+        .site-public .mag-donation-card p { margin: 0; max-width: 680px; color: var(--muted); font-size: 16px; line-height: 1.7; }
+        .site-public .mag-donation-btn { flex: 0 0 auto; white-space: nowrap; }
         @media (max-width: 1000px) {
           .site-public .home-tech-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
@@ -70,6 +76,10 @@ export default async function Home() {
           .site-public .home-tech-card-title { font-size: 23px; }
           .site-public .home-tech-card-excerpt { font-size: 14px; }
           .site-public .home-tech-thumb { width: 104px; height: 78px; }
+          .site-public .mag-donation-card { align-items: flex-start; flex-direction: column; gap: 22px; padding: 28px 24px; }
+          .site-public .mag-donation-card h2 { font-size: 26px; }
+          .site-public .mag-donation-card p { font-size: 14px; }
+          .site-public .mag-donation-btn { width: 100%; text-align: center; }
         }
         @media (max-width: 420px) {
           .site-public .home-tech-card { grid-template-columns: 1fr; }
@@ -143,10 +153,13 @@ export default async function Home() {
           ) : null}
 
           <section className="mag-section" style={{ borderBottom: 'none' }}>
-            <div className="mag-cta reveal">
-              <h2>নতুন লেখা মিস করতে চান না?</h2>
-              <p>প্রযুক্তি, গবেষণা ও অনুসন্ধানের সেরা লেখাগুলো সম্পর্কে জানতে যোগাযোগ করুন।</p>
-              <Link className="mag-btn" href="https://suhanurrahman.com/contact/" target="_blank" rel="noreferrer">যোগাযোগ করুন →</Link>
+            <div className="mag-donation-card reveal">
+              <div className="mag-donation-copy">
+                <span className="mag-donation-kicker">পাঠকের সহায়তা</span>
+                <h2>এই জার্নালকে এগিয়ে নিতে পাশে থাকুন</h2>
+                <p>স্বাধীনভাবে প্রযুক্তি, গবেষণা ও ডিজিটাল সংস্কৃতি নিয়ে কাজ চালিয়ে যেতে আপনার সহায়তা গুরুত্বপূর্ণ।</p>
+              </div>
+              <a className="mag-btn mag-donation-btn" href="https://www.supportkori.com/suhanurrahman" target="_blank" rel="noreferrer">ডোনেট করুন →</a>
             </div>
           </section>
         </div>
