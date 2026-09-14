@@ -43,16 +43,20 @@ export default async function NotFound() {
           margin: 0 auto;
           display: flex;
           align-items: center;
+          justify-content: center;
           border-top: 1px solid var(--line-2);
           border-bottom: 1px solid var(--line-2);
           padding: clamp(90px, 13vw, 170px) 0;
+          text-align: center;
         }
         .not-found-content {
-          max-width: 900px;
+          width: min(900px, 100%);
+          margin: 0 auto;
         }
         .not-found-kicker {
           display: inline-flex;
           align-items: center;
+          justify-content: center;
           gap: 10px;
           margin-bottom: 22px;
           color: var(--accent);
@@ -61,7 +65,8 @@ export default async function NotFound() {
           letter-spacing: .16em;
           text-transform: uppercase;
         }
-        .not-found-kicker::before {
+        .not-found-kicker::before,
+        .not-found-kicker::after {
           content: '';
           width: 30px;
           height: 1px;
@@ -80,7 +85,7 @@ export default async function NotFound() {
         }
         .not-found-heading {
           max-width: 780px;
-          margin: 42px 0 16px;
+          margin: 42px auto 16px;
           font-size: clamp(34px, 4.5vw, 64px);
           line-height: 1.05;
           letter-spacing: -.045em;
@@ -88,13 +93,14 @@ export default async function NotFound() {
         }
         .not-found-copy {
           max-width: 700px;
-          margin: 0;
+          margin: 0 auto;
           color: var(--muted);
           font-size: 17px;
           line-height: 1.95;
         }
         .not-found-actions {
           display: flex;
+          justify-content: center;
           flex-wrap: wrap;
           gap: 10px;
           margin-top: 32px;
@@ -148,7 +154,7 @@ export default async function NotFound() {
 
       <main className="not-found-stage" aria-labelledby="not-found-title">
         <section className="not-found-content">
-          <div className="not-found-kicker">Page Error</div>
+          <div className="not-found-kicker">Page not found</div>
           <div className="not-found-number" aria-hidden="true">4<span>0</span>4</div>
           <h1 id="not-found-title" className="not-found-heading">এই পাতাটি আর এখানে নেই।</h1>
           <p className="not-found-copy">
