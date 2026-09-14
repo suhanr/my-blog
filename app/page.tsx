@@ -11,14 +11,14 @@ import { DEFAULT_DESCRIPTION, GLOBAL_KEYWORDS, PROFILE_IMAGE, SITE, SITE_NAME } 
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'সোহানুর রহমান জার্নাল | প্রযুক্তি, এআই, গবেষণা ও ডিজিটাল সংস্কৃতি',
+  title: `${SITE_NAME} | প্রযুক্তি, এআই, গবেষণা ও ডিজিটাল সংস্কৃতি`,
   description: DEFAULT_DESCRIPTION,
   keywords: GLOBAL_KEYWORDS,
   alternates: { canonical: `${SITE}/` },
   openGraph: {
     type: 'website',
     url: `${SITE}/`,
-    title: 'সোহানুর রহমান জার্নাল | প্রযুক্তি, এআই, গবেষণা ও ডিজিটাল সংস্কৃতি',
+    title: `${SITE_NAME} | প্রযুক্তি, এআই, গবেষণা ও ডিজিটাল সংস্কৃতি`,
     description: DEFAULT_DESCRIPTION,
     siteName: SITE_NAME,
     images: [{ url: PROFILE_IMAGE, width: 512, height: 512, alt: 'সোহানুর রহমান' }],
@@ -68,7 +68,7 @@ export default async function Home() {
               </div>
             </section>
           ) : (
-            <section className="mag-section"><h1 className="mag-article-title">সোহানুর রহমান জার্নাল</h1><p className="mag-hero-dek">এখনো কোনো লেখা প্রকাশিত হয়নি।</p></section>
+            <section className="mag-section"><h1 className="mag-article-title">{SITE_NAME}</h1><p className="mag-hero-dek">এখনো কোনো লেখা প্রকাশিত হয়নি।</p></section>
           )}
 
           {gridPosts.length ? (
