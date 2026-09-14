@@ -63,7 +63,7 @@ export default async function Home() {
           .site-public .home-tech-card {
             grid-template-columns: minmax(0, 1fr) 104px;
             gap: 14px;
-            padding: 22px 0 24px;
+            padding: 26px 0 28px;
             border-bottom: 1px solid var(--line-2);
           }
           .site-public .home-tech-card:first-child { padding-top: 0; }
