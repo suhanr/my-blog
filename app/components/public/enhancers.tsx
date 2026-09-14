@@ -92,6 +92,7 @@ export function ShareActions({ title, url }: { title: string; url: string }) {
 
   return (
     <div className="mag-share">
+      <style>{`.site-public .mag-share button:first-child::before { content:none !important; display:none !important; } .site-public .mag-share button:first-child svg { flex:0 0 auto; display:block; }`}</style>
       <button type="button" onClick={share} aria-label="Share this article">
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="18" cy="5" r="2.5" />
