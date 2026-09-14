@@ -1,6 +1,10 @@
 import type { Metadata } from 'next'
+import { getCategories, getHeaderMenu } from '@/lib/db'
 import SearchPageClient from './SearchPageClient'
+import PublicFooter from '@/app/components/public/PublicFooter'
 import { SITE } from '@/lib/seo'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'সার্চ — সোহানুর রহমান | Notes',
@@ -10,10 +14,20 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 }
 
-export default function SearchPage() {
+export default async function SearchPage() {
+  let categories: Awaited<ReturnType<typeof getCategories>> = []
+  let menu: Awaited<ReturnType<typeof getHeaderMenu>> = []
+
+  try {
+    ;[categories, menu] = await Promise.all([getCategories(), getHeaderMenu()])
+  } catch {
+    // Keep the search UI available even if navigation data is unavailable.
+  }
+
   return (
     <div className="site-public">
-      <SearchPageClient categories={[]} menu={[]} />
+      <SearchPageClient categories={categories} menu={menu} />
+      <PublicFooter categories={categories} />
     </div>
   )
 }
