@@ -14,9 +14,13 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 }
 
-export default async function SearchPage() {
+type SearchParams = Promise<{ q?: string }>
+
+export default async function SearchPage({ searchParams }: { searchParams: SearchParams }) {
   let categories: Awaited<ReturnType<typeof getCategories>> = []
   let menu: Awaited<ReturnType<typeof getHeaderMenu>> = []
+  const params = await searchParams
+  const initialQuery = typeof params.q === 'string' ? params.q.trim().slice(0, 100) : ''
 
   try {
     ;[categories, menu] = await Promise.all([getCategories(), getHeaderMenu()])
@@ -26,7 +30,7 @@ export default async function SearchPage() {
 
   return (
     <div className="site-public">
-      <SearchPageClient categories={categories} menu={menu} />
+      <SearchPageClient categories={categories} menu={menu} initialQuery={initialQuery} />
       <PublicFooter categories={categories} />
     </div>
   )
