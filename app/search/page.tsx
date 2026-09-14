@@ -1,9 +1,6 @@
 import type { Metadata } from 'next'
-import { getCategories, getHeaderMenu } from '@/lib/db'
 import SearchPageClient from './SearchPageClient'
 import { SITE } from '@/lib/seo'
-
-export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'সার্চ — সোহানুর রহমান | Notes',
@@ -13,19 +10,10 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 }
 
-export default async function SearchPage() {
-  let categories: Awaited<ReturnType<typeof getCategories>> = []
-  let menu: Awaited<ReturnType<typeof getHeaderMenu>> = []
-
-  try {
-    ;[categories, menu] = await Promise.all([getCategories(), getHeaderMenu()])
-  } catch {
-    // The search UI should still render even when a navigation/database read fails.
-  }
-
+export default function SearchPage() {
   return (
     <div className="site-public">
-      <SearchPageClient categories={categories} menu={menu} />
+      <SearchPageClient categories={[]} menu={[]} />
     </div>
   )
 }
