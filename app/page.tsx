@@ -45,20 +45,21 @@ export default async function Home() {
     <div className="site-public">
       <PublicHeader categories={categories} menu={menu} />
       <style>{`
-        .site-public .home-tech-card { display: grid; grid-template-columns: minmax(0, 1fr) 126px; gap: 20px; align-items: start; min-width: 0; padding: 22px 0 30px; border-top: 1px solid var(--line-2); }
-        .site-public .home-tech-card:first-child { border-top: 0; padding-top: 0; }
-        .site-public .home-tech-card-title { margin: 0 0 12px; font-family: var(--serif); font-size: clamp(23px, 2vw, 31px); line-height: 1.2; font-weight: 500; letter-spacing: -.025em; color: var(--fg); }
+        .site-public .mobile-home-hero { border-bottom: 0; }
+        .site-public .home-tech-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 38px; row-gap: 26px; }
+        .site-public .home-tech-card { display: grid; grid-template-columns: minmax(0, 1fr) 126px; gap: 20px; align-items: start; min-width: 0; padding: 0; border: 0; }
+        .site-public .home-tech-card-title { margin: 0 0 13px; font-family: var(--serif); font-size: clamp(24px, 2vw, 31px); line-height: 1.18; font-weight: 500; letter-spacing: -.025em; color: var(--fg); }
         .site-public .home-tech-card-title a { color: inherit; text-decoration: none; }
         .site-public .home-tech-card-title a:hover { color: var(--accent); }
         .site-public .home-tech-card-excerpt { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.65; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
-        .site-public .home-tech-card-meta { margin-top: 16px; color: var(--muted); font-size: 13px; }
+        .site-public .home-tech-card-meta { margin-top: 18px; color: var(--muted); font-size: 13px; }
         .site-public .home-tech-thumb { width: 126px; height: 94px; object-fit: cover; background: var(--bg-2); display: block; }
         @media (max-width: 1000px) {
-          .site-public .home-tech-card:nth-child(2) { border-top: 0; padding-top: 0; }
+          .site-public .home-tech-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
         @media (max-width: 680px) {
-          .site-public .home-tech-card { grid-template-columns: minmax(0, 1fr) 104px; gap: 14px; padding-bottom: 24px; }
-          .site-public .home-tech-card:nth-child(2) { border-top: 1px solid var(--line-2); padding-top: 20px; }
+          .site-public .home-tech-grid { grid-template-columns: 1fr; row-gap: 24px; }
+          .site-public .home-tech-card { grid-template-columns: minmax(0, 1fr) 104px; gap: 14px; }
           .site-public .home-tech-card-title { font-size: 23px; }
           .site-public .home-tech-card-excerpt { font-size: 14px; }
           .site-public .home-tech-thumb { width: 104px; height: 78px; }
@@ -106,7 +107,7 @@ export default async function Home() {
             <section className="mag-section">
               <div className="mag-section-head">
                 <h2 className="mag-section-title">প্রযুক্তি কথন</h2>
-                <Link className="mag-all" href="/category/tech-gossip">সকল লেখা<span className="arrow">→</span></Link>
+                <Link className="mag-all" href="/category/tech-gossip">সকল লেখা <span className="arrow">→</span></Link>
               </div>
               <div className="home-tech-grid">
                 {technologyPosts.map((post) => (
@@ -114,7 +115,7 @@ export default async function Home() {
                     <div>
                       <h3 className="home-tech-card-title"><Link href={`/${post.slug}/`}>{post.title}</Link></h3>
                       {post.excerpt ? <p className="home-tech-card-excerpt">{shortText(post.excerpt, 180)}</p> : null}
-                      <div className="home-tech-card-meta">{formatDate(post.publishedAt)}</div>
+                      <div className="home-tech-card-meta">সোহানুর রহমান</div>
                     </div>
                     <Link href={`/${post.slug}/`} aria-label={post.title}>
                       {post.coverImage ? <img className="home-tech-thumb" src={post.coverImage} alt="" loading="lazy" decoding="async" /> : <span className="home-tech-thumb" aria-hidden="true" />}
