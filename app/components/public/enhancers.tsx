@@ -53,6 +53,51 @@ export function ReadingProgress() {
   return <div className="mag-progress" style={{ width: `${pct}%` }} aria-hidden="true" />
 }
 
+export function ShareActions({ title, url }: { title: string; url: string }) {
+  const [status, setStatus] = useState<'idle' | 'copied'>('idle')
+
+  const copyLink = async () => {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url)
+      } else {
+        const textarea = document.createElement('textarea')
+        textarea.value = url
+        textarea.setAttribute('readonly', '')
+        textarea.style.position = 'fixed'
+        textarea.style.opacity = '0'
+        document.body.appendChild(textarea)
+        textarea.select()
+        document.execCommand('copy')
+        textarea.remove()
+      }
+      setStatus('copied')
+      window.setTimeout(() => setStatus('idle'), 1800)
+    } catch {
+      setStatus('idle')
+    }
+  }
+
+  const share = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, text: title, url })
+      } catch (error) {
+        if ((error as DOMException)?.name !== 'AbortError') return
+      }
+      return
+    }
+    await copyLink()
+  }
+
+  return (
+    <div className="mag-share">
+      <button type="button" onClick={share} aria-label="Share this article">শেয়ার করুন</button>
+      <button type="button" onClick={copyLink} aria-label="Copy article link">{status === 'copied' ? 'লিংক কপি হয়েছে' : 'লিংক কপি করুন'}</button>
+    </div>
+  )
+}
+
 /** Click any image in the article body to view it full-screen. */
 export function Lightbox() {
   const [src, setSrc] = useState<string | null>(null)
