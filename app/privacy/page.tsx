@@ -3,7 +3,7 @@ import { getCategories, getHeaderMenu } from '@/lib/db'
 import PublicHeader from '@/app/components/public/PublicHeader'
 import PublicFooter from '@/app/components/public/PublicFooter'
 import { RevealInit } from '@/app/components/public/enhancers'
-import { SITE, SITE_NAME } from '@/lib/seo'
+import { OG_IMAGE, SITE, SITE_NAME } from '@/lib/seo'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,6 +18,7 @@ export const metadata: Metadata = {
     title: `প্রাইভেসি পলিসি — ${SITE_NAME}`,
     description: `${SITE_NAME}-এ ব্যক্তিগত তথ্য ও গোপনীয়তা ব্যবস্থাপনা সম্পর্কে নীতিমালা।`,
     siteName: SITE_NAME,
+    images: [{ url: OG_IMAGE, width: 1672, height: 941, alt: 'সোহানুর রহমান | Notes' }],
   },
 }
 
