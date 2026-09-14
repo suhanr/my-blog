@@ -1,5 +1,9 @@
 -- Publish 12 research-style SEO posts.
 
+INSERT OR IGNORE INTO categories (id,name,slug) VALUES
+('cat-technology','Technology','technology'),
+('cat-research','Research','research');
+
 INSERT OR IGNORE INTO tags (id,name,slug) VALUES
 ('tag-ai','AI','ai'),
 ('tag-ai-hallucination','AI Hallucination','ai-hallucination'),
@@ -85,7 +89,7 @@ INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT p.id,t.id FROM posts p J
 INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT p.id,t.id FROM posts p JOIN tags t ON t.slug='software-developer' WHERE p.id='post-20260914-data-analyst-vs-software-engineer' LIMIT 1;
 INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT p.id,t.id FROM posts p JOIN tags t ON t.slug='career' WHERE p.id='post-20260914-data-analyst-vs-software-engineer' LIMIT 1;
 INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT p.id,t.id FROM posts p JOIN tags t ON t.slug='future-of-work' WHERE p.id='post-20260914-data-analyst-vs-software-engineer' LIMIT 1;
-INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT p.id,t.id FROM posts p JOIN tags t ON t.slug='programmer' WHERE p.id='post-20260914-programmer-ai-skills' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT p.id,t.id FROM tags t JOIN posts p ON p.id='post-20260914-programmer-ai-skills' WHERE t.slug='programmer' LIMIT 1;
 INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT p.id,t.id FROM posts p JOIN tags t ON t.slug='ai' WHERE p.id='post-20260914-programmer-ai-skills' LIMIT 1;
 INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT p.id,t.id FROM posts p JOIN tags t ON t.slug='software-engineering' WHERE p.id='post-20260914-programmer-ai-skills' LIMIT 1;
 INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT p.id,t.id FROM posts p JOIN tags t ON t.slug='future-of-work' WHERE p.id='post-20260914-programmer-ai-skills' LIMIT 1;
