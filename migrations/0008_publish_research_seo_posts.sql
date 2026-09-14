@@ -46,50 +46,49 @@ INSERT OR IGNORE INTO posts (id,title,slug,excerpt,content,content_format,cover_
 ('post-20260914-data-analyst-vs-software-engineer','Data Analyst বনাম Software Engineer: কোন Career বেছে নেবেন?','data-analyst-vs-software-engineer-career','Data Analyst ও Software Engineer-এর কাজ, skill, career outlook এবং AI-এর প্রভাব তুলনা করে কোন পথ কার জন্য বেশি উপযুক্ত তা বিশ্লেষণ।','# Data Analyst বনাম Software Engineer: কোন Career বেছে নেবেন?\n\nডেটা অ্যানালিস্ট এবং সফটওয়্যার ইঞ্জিনিয়ার দুটোই প্রযুক্তিনির্ভর career। কিন্তু তাদের প্রশ্নের ধরন আলাদা।\n\nডেটা অ্যানালিস্ট বেশি কাজ করেন: কী ঘটছে, কেন ঘটছে, কোন pattern দেখা যাচ্ছে।\n\nসফটওয়্যার ইঞ্জিনিয়ার বেশি কাজ করেন: কীভাবে একটি system তৈরি হবে, কীভাবে এটি নির্ভরযোগ্য থাকবে এবং কীভাবে scale করবে।\n\n## Data Analyst\n\nSQL, Excel, statistics, data cleaning, dashboard এবং communication এখানে গুরুত্বপূর্ণ। Research, business, marketing, finance এবং policy analysis-এর মতো জায়গায় এই skill ব্যবহার হয়।\n\n## Software Engineer\n\nProgramming, algorithms, software architecture, API, database, testing এবং deployment এখানে বেশি গুরুত্বপূর্ণ। Web application থেকে distributed system পর্যন্ত কাজের ক্ষেত্র বিস্তৃত।\n\n## Career outlook\n\nযুক্তরাষ্ট্রের BLS অনুযায়ী software developer-দের employment ২০২৪ থেকে ২০৩৪ সময়ে শক্তিশালীভাবে বাড়ার projection রয়েছে। Data scientist-দের ক্ষেত্রে একই সময়ে প্রায় ৩৪ শতাংশ growth projection করা হয়েছে। এই সংখ্যা বাংলাদেশকে সরাসরি প্রতিনিধিত্ব করে না। তবে বৈশ্বিক প্রযুক্তি শ্রমবাজারের দিক বোঝার জন্য এগুলো কার্যকর indicator।\n\n## কোনটি আপনার জন্য\n\nআপনি যদি প্রশ্ন করতে ভালোবাসেন কেন, কতটা, কোন group বেশি এবং data কী বলছে, তাহলে Data Analyst role স্বাভাবিক হতে পারে। আপনি যদি system, code, architecture এবং technical failure নিয়ে ভাবতে ভালোবাসেন, Software Engineering বেশি উপযুক্ত হতে পারে।\n\n## AI কী বদলাবে\n\nদুই career-এই AI workflow বদলাচ্ছে। Data Analyst আরও দ্রুত query, summary এবং chart তৈরি করতে পারবে। Software Engineer আরও দ্রুত boilerplate code ও test লিখতে পারবে। কিন্তু verification, domain knowledge এবং judgement-এর গুরুত্ব থাকবে।\n\nতাই career বেছে নেওয়ার সবচেয়ে ভালো পদ্ধতি হলো দুই ধরনের ছোট project করা। একটি dataset নিয়ে analysis করুন। আরেকটি ছোট software application বানান। কোন কাজ করতে গিয়ে আপনি স্বাভাবিকভাবে বেশি আগ্রহী হন, সেটিই গুরুত্বপূর্ণ সংকেত।\n\n## সূত্র\n\nBLS, Software Developers\nhttps://www.bls.gov/ooh/computer-and-information-technology/software-developers.htm\n\nBLS, Data Scientists\nhttps://www.bls.gov/ooh/math/data-scientists.htm\n\nWEF, Future of Jobs 2025\nhttps://www.weforum.org/publications/the-future-of-jobs-report-2025/','MARKDOWN','https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1600&q=80','PUBLISHED','2026-09-14T15:35:00+06:00','2026-09-14T15:35:00+06:00','2026-09-14T15:35:00+06:00','cat-technology','Data Analyst বনাম Software Engineer: কোন Career ভালো?','Data Analyst এবং Software Engineer-এর কাজ, skill, career outlook ও AI-এর প্রভাব তুলনা করে career choice বোঝার বিশ্লেষণ।','ডেটা অ্যানালিস্ট, সফটওয়্যার ইঞ্জিনিয়ার, ক্যারিয়ার, ডেটা সায়েন্স, প্রোগ্রামিং, AI jobs',NULL,NULL,0),
 ('post-20260914-programmer-ai-skills','AI-এর যুগে একজন Programmer-এর কোন Skillগুলো শেখা উচিত?','programmer-skills-ai-era','AI coding tool জনপ্রিয় হওয়ার পর একজন programmer-এর জন্য debugging, architecture, security, testing, data literacy ও problem solving কেন আরও গুরুত্বপূর্ণ হয়েছে।','# AI-এর যুগে একজন Programmer-এর কোন Skillগুলো শেখা উচিত?\n\nএআই এখন code লিখতে পারে। তাই স্বাভাবিক প্রশ্ন হলো, একজন programmer-এর আর কী শেখার দরকার?\n\nউত্তর হলো: code লেখার বাইরে যে কাজগুলো আসলে software engineering তৈরি করে, সেগুলোর গুরুত্ব বরং বাড়ছে।\n\n## ১. Problem decomposition\n\nএকটি বড় সমস্যা ছোট অংশে ভাঙতে পারা গুরুত্বপূর্ণ। ভুল specification দিলে AI খুব দ্রুত ভুল solution তৈরি করতে পারে।\n\n## ২. Code reading\n\nAI-generated code বুঝতে পারা এখন নিজেই একটি skill। অন্যের code পড়ে bug বা design সমস্যা খুঁজে বের করতে হবে।\n\n## ৩. Debugging\n\nRuntime error, dependency সমস্যা, logic error এবং edge case শনাক্ত করা AI-এর যুগেও জরুরি।\n\n## ৪. Architecture\n\nএকটি function লিখে দেওয়া আর পুরো system design করা এক নয়। Authentication, database, caching, queue, API boundary এবং failure mode নিয়ে সিদ্ধান্ত নিতে হয়।\n\n## ৫. Security\n\nAI-generated code-এ security flaw থাকতে পারে। Input validation, authorization, secret management এবং common web vulnerability বুঝতে হবে।\n\n## ৬. Data literacy\n\nSQL, database design, API data এবং basic statistics বুঝলে AI-এর output যাচাই করা সহজ হয়।\n\n## ৭. Testing\n\nAI code তৈরি করতে পারে, কিন্তু আপনার business requirement সঠিক কি না সেটি নিশ্চিত করে না। Unit test, integration test এবং end-to-end test প্রয়োজন।\n\n## ৮. Git ও collaboration\n\nSoftware engineering একটি দলগত কাজ। Git, branch, pull request এবং code review-এর অভ্যাস জরুরি।\n\n## ৯. Domain knowledge\n\nব্যাংকিং, গবেষণা, স্বাস্থ্য বা মিডিয়ার software problem একই রকম নয়। Domain knowledge AI-এর উত্তর যাচাই করতে সাহায্য করে।\n\n## ১০. Communication\n\nTechnical decision কেন নেওয়া হয়েছে, কোথায় ঝুঁকি, কোন assumption আছে, এগুলো পরিষ্কারভাবে ব্যাখ্যা করতে হয়।\n\nWEF-এর Future of Jobs 2025 রিপোর্টে AI ও big data-এর পাশাপাশি analytical thinking, creative thinking, technology literacy এবং lifelong learning-এর গুরুত্ব বাড়ছে বলে দেখানো হয়েছে।\n\nঅর্থাৎ AI-এর সঙ্গে প্রতিযোগিতা করে লাভ নেই। বরং AI-এর output বুঝতে, পরীক্ষা করতে এবং দায়িত্ব নিতে পারে এমন programmer হওয়াই ভবিষ্যতের জন্য বেশি কার্যকর।\n\n## সূত্র\n\nWorld Economic Forum, Future of Jobs 2025\nhttps://www.weforum.org/publications/the-future-of-jobs-report-2025/\n\nBLS, Software Developers\nhttps://www.bls.gov/ooh/computer-and-information-technology/software-developers.htm','MARKDOWN','https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=1600&q=80','PUBLISHED','2026-09-14T15:30:00+06:00','2026-09-14T15:30:00+06:00','2026-09-14T15:30:00+06:00','cat-technology','AI-এর যুগে Programmer-এর কোন Skill শেখা উচিত?','AI coding tool-এর যুগে programmer-এর জন্য debugging, architecture, security, testing, data literacy ও problem solving কেন গুরুত্বপূর্ণ।','programmer skills, AI coding, software engineering, programming, developer career, AI',NULL,NULL,0);
 
-INSERT OR IGNORE INTO post_tags (post_id,tag_id) VALUES
-('post-20260914-ai-hallucination','tag-ai'),
-('post-20260914-ai-hallucination','tag-ai-hallucination'),
-('post-20260914-ai-hallucination','tag-artificial-intelligence'),
-('post-20260914-ai-privacy','tag-ai'),
-('post-20260914-ai-privacy','tag-ai-privacy'),
-('post-20260914-ai-privacy','tag-data-privacy'),
-('post-20260914-ai-privacy','tag-online-privacy'),
-('post-20260914-bangla-ai','tag-ai'),
-('post-20260914-bangla-ai','tag-bangla-ai'),
-('post-20260914-bangla-ai','tag-bengali-nlp'),
-('post-20260914-bangla-ai','tag-large-language-model'),
-('post-20260914-browser-fingerprint','tag-browser-fingerprinting'),
-('post-20260914-browser-fingerprint','tag-online-privacy'),
-('post-20260914-browser-fingerprint','tag-cybersecurity'),
-('post-20260914-ai-cv-bangladesh','tag-ai'),
-('post-20260914-ai-cv-bangladesh','tag-cv'),
-('post-20260914-ai-cv-bangladesh','tag-job-search'),
-('post-20260914-ai-cv-bangladesh','tag-career'),
-('post-20260914-data-cleaning','tag-data-cleaning'),
-('post-20260914-data-cleaning','tag-research-data'),
-('post-20260914-data-cleaning','tag-data-analysis'),
-('post-20260914-sample-size','tag-sample-size'),
-('post-20260914-sample-size','tag-survey-research'),
-('post-20260914-sample-size','tag-survey-methods'),
-('post-20260914-questionnaire','tag-questionnaire'),
-('post-20260914-questionnaire','tag-survey-methods'),
-('post-20260914-questionnaire','tag-survey-research'),
-('post-20260914-full-stack','tag-full-stack'),
-('post-20260914-full-stack','tag-web-development'),
-('post-20260914-full-stack','tag-programming'),
-('post-20260914-full-stack','tag-software-engineering'),
-('post-20260914-cse-skills','tag-cse'),
-('post-20260914-cse-skills','tag-programming'),
-('post-20260914-cse-skills','tag-career'),
-('post-20260914-cse-skills','tag-software-engineering'),
-('post-20260914-data-analyst-vs-software-engineer','tag-data-analyst'),
-('post-20260914-data-analyst-vs-software-engineer','tag-software-developer'),
-('post-20260914-data-analyst-vs-software-engineer','tag-career'),
-('post-20260914-data-analyst-vs-software-engineer','tag-future-of-work'),
-('post-20260914-programmer-ai-skills','tag-programmer'),
-('post-20260914-programmer-ai-skills','tag-ai'),
-('post-20260914-programmer-ai-skills','tag-software-engineering'),
-('post-20260914-programmer-ai-skills','tag-future-of-work');
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-ai-hallucination',id FROM tags WHERE slug='ai' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-ai-hallucination',id FROM tags WHERE slug='ai-hallucination' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-ai-hallucination',id FROM tags WHERE slug='artificial-intelligence' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-ai-privacy',id FROM tags WHERE slug='ai' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-ai-privacy',id FROM tags WHERE slug='ai-privacy' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-ai-privacy',id FROM tags WHERE slug='data-privacy' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-ai-privacy',id FROM tags WHERE slug='online-privacy' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-bangla-ai',id FROM tags WHERE slug='ai' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-bangla-ai',id FROM tags WHERE slug='bangla-ai' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-bangla-ai',id FROM tags WHERE slug='bengali-nlp' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-bangla-ai',id FROM tags WHERE slug='large-language-model' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-browser-fingerprint',id FROM tags WHERE slug='browser-fingerprinting' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-browser-fingerprint',id FROM tags WHERE slug='online-privacy' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-browser-fingerprint',id FROM tags WHERE slug='cybersecurity' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-ai-cv-bangladesh',id FROM tags WHERE slug='ai' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-ai-cv-bangladesh',id FROM tags WHERE slug='cv' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-ai-cv-bangladesh',id FROM tags WHERE slug='job-search' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-ai-cv-bangladesh',id FROM tags WHERE slug='career' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-data-cleaning',id FROM tags WHERE slug='data-cleaning' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-data-cleaning',id FROM tags WHERE slug='research-data' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-data-cleaning',id FROM tags WHERE slug='data-analysis' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-sample-size',id FROM tags WHERE slug='sample-size' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-sample-size',id FROM tags WHERE slug='survey-research' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-sample-size',id FROM tags WHERE slug='survey-methods' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-questionnaire',id FROM tags WHERE slug='questionnaire' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-questionnaire',id FROM tags WHERE slug='survey-methods' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-questionnaire',id FROM tags WHERE slug='survey-research' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-full-stack',id FROM tags WHERE slug='full-stack-development' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-full-stack',id FROM tags WHERE slug='web-development' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-full-stack',id FROM tags WHERE slug='programming' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-full-stack',id FROM tags WHERE slug='software-engineering' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-cse-skills',id FROM tags WHERE slug='cse' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-cse-skills',id FROM tags WHERE slug='programming' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-cse-skills',id FROM tags WHERE slug='career' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-cse-skills',id FROM tags WHERE slug='software-engineering' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-data-analyst-vs-software-engineer',id FROM tags WHERE slug='data-analyst' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-data-analyst-vs-software-engineer',id FROM tags WHERE slug='software-developer' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-data-analyst-vs-software-engineer',id FROM tags WHERE slug='career' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-data-analyst-vs-software-engineer',id FROM tags WHERE slug='future-of-work' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-programmer-ai-skills',id FROM tags WHERE slug='programmer' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-programmer-ai-skills',id FROM tags WHERE slug='ai' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-programmer-ai-skills',id FROM tags WHERE slug='software-engineering' LIMIT 1;
+INSERT OR IGNORE INTO post_tags (post_id,tag_id) SELECT 'post-20260914-programmer-ai-skills',id FROM tags WHERE slug='future-of-work' LIMIT 1;
 
 INSERT OR IGNORE INTO post_categories (post_id,category_id) VALUES
 ('post-20260914-ai-hallucination','cat-technology'),
