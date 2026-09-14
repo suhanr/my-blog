@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { countPublishedPosts, getCategories, getHeaderMenu, listPublishedPosts } from '@/lib/db'
+import { countPublishedPosts, getCategories, getHeaderMenu, listPublishedPosts, listTechnologyPosts } from '@/lib/db'
 import { catColor, formatDate, shortText } from '@/lib/publicUi'
 import PublicHeader from '@/app/components/public/PublicHeader'
 import PublicFooter from '@/app/components/public/PublicFooter'
@@ -26,20 +26,17 @@ export const metadata: Metadata = {
 }
 
 export default async function Home() {
-  const [posts, categories, total, menu, technologyPostsSource] = await Promise.all([
+  const [posts, categories, total, menu, technologyPosts] = await Promise.all([
     listPublishedPosts(12),
     getCategories(),
     countPublishedPosts(),
     getHeaderMenu(),
-    listPublishedPosts(100),
+    listTechnologyPosts(6),
   ])
   const featured = posts[0]
   const side = posts.slice(1, 6)
   const gridPosts = posts.slice(6) as unknown as Card[]
   const hasMore = total > posts.length
-  const technologyPosts = technologyPostsSource
-    .filter((post) => post.categorySlug === 'technology' || post.categoryName === 'প্রযুক্তি কথন' || post.categoryName === 'Technology')
-    .slice(0, 6) as unknown as Card[]
 
   return (
     <div className="site-public">
