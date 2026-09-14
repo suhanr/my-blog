@@ -146,10 +146,25 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         .site-public .mag-reply-form textarea { grid-column:1 / -1; min-height:110px; resize:vertical; }
         .site-public .mag-reply-form .mag-btn { width:max-content; }
         .site-public .mag-reply-form small { grid-column:1 / -1; color:var(--muted); font-size:12px; }
+        .site-public .mag-article-foot { gap:18px; }
+        .site-public .mag-article-foot > .mag-meta { font-weight:700; }
+        .site-public .mag-article-foot > .mag-meta::after { content:''; display:inline-block; width:28px; height:1px; margin:0 0 4px 10px; background:var(--line); }
+        .site-public .mag-share { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+        .site-public .mag-share button { min-height:42px; display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:9px 16px; border:1px solid var(--line); border-radius:999px; background:var(--surface); color:var(--fg); font-family:var(--serif); font-size:14px; font-weight:700; line-height:1; cursor:pointer; box-shadow:0 4px 14px -10px rgba(20,20,30,.35); transition:transform .18s ease, background .18s ease, border-color .18s ease, color .18s ease, box-shadow .18s ease; }
+        .site-public .mag-share button:first-child { background:var(--accent); color:#fff; border-color:var(--accent); box-shadow:0 8px 20px -12px var(--accent); }
+        .site-public .mag-share button:first-child::before { content:'↗'; font-family:Arial,sans-serif; font-size:16px; }
+        .site-public .mag-share button:last-child::before { content:'⧉'; font-family:Arial,sans-serif; font-size:15px; }
+        .site-public .mag-share button:hover { transform:translateY(-2px); border-color:var(--accent); color:var(--accent); box-shadow:0 8px 20px -12px rgba(20,20,30,.35); }
+        .site-public .mag-share button:first-child:hover { background:color-mix(in srgb, var(--accent) 88%, #000); color:#fff; }
+        .site-public .mag-share button:active { transform:translateY(0) scale(.98); }
+        .site-public .mag-share button:focus-visible { outline:3px solid var(--ring); outline-offset:3px; }
         @media (max-width:640px) {
           .site-public .mag-comment-children { margin-left:14px; padding-left:12px; }
           .site-public .mag-reply-form { grid-template-columns:1fr; }
           .site-public .mag-reply-form textarea,.site-public .mag-reply-form small { grid-column:auto; }
+          .site-public .mag-article-foot { align-items:flex-start; flex-direction:column; }
+          .site-public .mag-share { width:100%; }
+          .site-public .mag-share button { flex:1; min-width:0; }
         }
       `}</style>
       <ReadingProgress />
