@@ -7,7 +7,7 @@ import { catColor, formatDate } from '@/lib/publicUi'
 import PublicHeader from '@/app/components/public/PublicHeader'
 import PublicFooter from '@/app/components/public/PublicFooter'
 import { PostCard, type Card } from '@/app/components/public/PostGrid'
-import { Lightbox, ReadingProgress, RevealInit } from '@/app/components/public/enhancers'
+import { Lightbox, ReadingProgress, RevealInit, ShareActions } from '@/app/components/public/enhancers'
 import { AUTHOR_NAME, AUTHOR_URL, OG_IMAGE, PROFILE_IMAGE, SITE, SITE_NAME, breadcrumbJsonLd, postDescription, postKeywords } from '@/lib/seo'
 
 const SITE_ORIGIN = SITE
@@ -182,12 +182,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
           <div className="mag-article-foot">
             <span className="mag-meta">এই লেখাটি শেয়ার করুন</span>
-            <div className="mag-share">
-              <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noreferrer" aria-label="Share on Facebook">f</a>
-              <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(p.title)}`} target="_blank" rel="noreferrer" aria-label="Share on X">X</a>
-              <a href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`${p.title} ${shareUrl}`)}`} target="_blank" rel="noreferrer" aria-label="Share on WhatsApp">W</a>
-              <a href={`mailto:?subject=${encodeURIComponent(p.title)}&body=${encodeURIComponent(shareUrl)}`} aria-label="Share by email">@</a>
-            </div>
+            <ShareActions title={p.title} url={shareUrl} />
           </div>
 
           <section className="mag-comments">
