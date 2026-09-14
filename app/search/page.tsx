@@ -14,8 +14,8 @@ export const metadata: Metadata = {
 }
 
 export default async function SearchPage() {
-  let categories = []
-  let menu = []
+  let categories: Awaited<ReturnType<typeof getCategories>> = []
+  let menu: Awaited<ReturnType<typeof getHeaderMenu>> = []
 
   try {
     ;[categories, menu] = await Promise.all([getCategories(), getHeaderMenu()])
