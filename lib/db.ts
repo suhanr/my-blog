@@ -17,7 +17,12 @@ export type HeaderMenuItem = {
 }
 
 export async function listPublishedPosts(limit = 20, offset = 0): Promise<Post[]> {
-  const result = await db.prepare(`SELECT ${postSelect}, c.name AS categoryName,c.slug AS categorySlug FROM posts p LEFT JOIN categories c ON c.id=p.category_id AND c.deleted_at IS NULL WHERE p.status='PUBLISHED' AND p.published_at IS NOT NULL AND p.deleted_at IS NULL ORDER BY datetime(p.published_at) DESC LIMIT ? OFFSET ?`).bind(limit, offset).all<Post>()
+  const result = await db.prepare(`SELECT ${postSelect}, c.name AS categoryName,c.slug AS categorySlug FROM posts p LEFT JOIN categories c ON c.id=p.category_id AND c.deleted_at IS NULL WHERE p.status='PUBLISHED' AND p.published_at IS NOT NULL AND p.deleted_at IS NULL ORDER BY p.published_at DESC LIMIT ? OFFSET ?`).bind(limit, offset).all<Post>()
+  return result.results
+}
+
+export async function listTechnologyPosts(limit = 6): Promise<Post[]> {
+  const result = await db.prepare(`SELECT ${postSelect}, c.name AS categoryName,c.slug AS categorySlug FROM posts p JOIN categories c ON c.id=p.category_id WHERE c.deleted_at IS NULL AND (c.slug IN ('technology','tech-gossip') OR c.name IN ('প্রযুক্তি কথন','Technology')) AND p.status='PUBLISHED' AND p.published_at IS NOT NULL AND p.deleted_at IS NULL ORDER BY p.published_at DESC LIMIT ?`).bind(limit).all<Post>()
   return result.results
 }
 
