@@ -6,15 +6,15 @@ import PublicHeader from '@/app/components/public/PublicHeader'
 import PublicFooter from '@/app/components/public/PublicFooter'
 import { PostCard, type Card } from '@/app/components/public/PostGrid'
 import { RevealInit } from '@/app/components/public/enhancers'
-import { PROFILE_IMAGE, SITE, breadcrumbJsonLd } from '@/lib/seo'
+import { PROFILE_IMAGE, SITE, SITE_NAME, breadcrumbJsonLd } from '@/lib/seo'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const data = await getTagBySlug(slug)
   if (!data) return { title: 'ট্যাগ পাওয়া যায়নি', robots: { index: false, follow: false } }
   const hasPosts = data.posts.length > 0
-  const title = `#${data.tag.name} — ট্যাগ | সোহানুর রহমান জার্নাল`
-  const description = `#${data.tag.name} ট্যাগে সোহানুর রহমান জার্নালের লেখা, বিশ্লেষণ ও গাইডগুলো দেখুন।`
+  const title = `#${data.tag.name} — ট্যাগ | ${SITE_NAME}`
+  const description = `#${data.tag.name} ট্যাগে ${SITE_NAME}-এর লেখা, বিশ্লেষণ ও গাইডগুলো দেখুন।`
   return {
     title,
     description,
