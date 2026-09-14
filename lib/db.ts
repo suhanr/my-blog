@@ -26,6 +26,12 @@ export async function listTechnologyPosts(limit = 6): Promise<Post[]> {
   return result.results
 }
 
+export async function listRelatedPosts(categoryId: string | null, excludePostId: string, limit = 3): Promise<Post[]> {
+  if (!categoryId) return []
+  const result = await db.prepare(`SELECT ${postSelect}, c.name AS categoryName,c.slug AS categorySlug FROM posts p LEFT JOIN categories c ON c.id=p.category_id AND c.deleted_at IS NULL WHERE p.category_id=? AND p.id<>? AND p.status='PUBLISHED' AND p.published_at IS NOT NULL AND p.deleted_at IS NULL ORDER BY p.published_at DESC LIMIT ?`).bind(categoryId, excludePostId, limit).all<Post>()
+  return result.results
+}
+
 export async function searchPublishedPosts(query: string, limit = 12): Promise<Post[]> {
   const q = query.trim().slice(0, 100)
   if (!q) return []
@@ -46,7 +52,7 @@ export async function searchPublishedPosts(query: string, limit = 12): Promise<P
         OR COALESCE(c.name, '') LIKE ?
         OR COALESCE(c.slug, '') LIKE ?
       )
-    ORDER BY datetime(p.published_at) DESC
+    ORDER BY p.published_at DESC
     LIMIT ?
   `).bind(like, like, like, like, like, like, limit).all<Post>()
 
@@ -97,14 +103,14 @@ export async function getHeaderMenu(): Promise<HeaderMenuItem[]> {
 export async function getCategoryBySlug(slug: string) {
   const category = await db.prepare(`SELECT id,name,slug FROM categories WHERE slug=? AND deleted_at IS NULL LIMIT 1`).bind(slug).first<Category>()
   if (!category) return null
-  const posts = await db.prepare(`SELECT ${postSelect},c.name AS categoryName,c.slug AS categorySlug FROM posts p JOIN categories c ON c.id=p.category_id WHERE c.slug=? AND c.deleted_at IS NULL AND p.status='PUBLISHED' AND p.deleted_at IS NULL ORDER BY datetime(p.published_at) DESC`).bind(slug).all<Post>()
+  const posts = await db.prepare(`SELECT ${postSelect},c.name AS categoryName,c.slug AS categorySlug FROM posts p JOIN categories c ON c.id=p.category_id WHERE c.slug=? AND c.deleted_at IS NULL AND p.status='PUBLISHED' AND p.deleted_at IS NULL ORDER BY p.published_at DESC`).bind(slug).all<Post>()
   return { category, posts: posts.results }
 }
 
 export async function getTagBySlug(slug: string) {
   const tag = await db.prepare(`SELECT id,name,slug FROM tags WHERE slug=? AND deleted_at IS NULL LIMIT 1`).bind(slug).first<Tag>()
   if (!tag) return null
-  const posts = await db.prepare(`SELECT ${postSelect},c.name AS categoryName,c.slug AS categorySlug FROM posts p JOIN post_tags pt ON pt.post_id=p.id JOIN tags t ON t.id=pt.tag_id LEFT JOIN categories c ON c.id=p.category_id AND c.deleted_at IS NULL WHERE t.slug=? AND t.deleted_at IS NULL AND p.status='PUBLISHED' AND p.deleted_at IS NULL ORDER BY datetime(p.published_at) DESC`).bind(slug).all<Post>()
+  const posts = await db.prepare(`SELECT ${postSelect},c.name AS categoryName,c.slug AS categorySlug FROM posts p JOIN post_tags pt ON pt.post_id=p.id JOIN tags t ON t.id=pt.tag_id LEFT JOIN categories c ON c.id=p.category_id AND c.deleted_at IS NULL WHERE t.slug=? AND t.deleted_at IS NULL AND p.status='PUBLISHED' AND p.deleted_at IS NULL ORDER BY p.published_at DESC`).bind(slug).all<Post>()
   return { tag, posts: posts.results }
 }
 
@@ -117,7 +123,7 @@ export type PublicComment = {
 }
 
 export async function getComments(postId: string): Promise<PublicComment[]> {
-  const result = await db.prepare(`SELECT id,name,body,created_at AS createdAt,parent_comment_id AS parentCommentId FROM comments WHERE post_id=? AND status='APPROVED' AND deleted_at IS NULL ORDER BY datetime(created_at) ASC`).bind(postId).all<PublicComment>()
+  const result = await db.prepare(`SELECT id,name,body,created_at AS createdAt,parent_comment_id AS parentCommentId FROM comments WHERE post_id=? AND status='APPROVED' AND deleted_at IS NULL ORDER BY created_at ASC`).bind(postId).all<PublicComment>()
   return result.results
 }
 
