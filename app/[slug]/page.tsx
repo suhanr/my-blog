@@ -229,7 +229,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         </div>
       </main>
 
-      <PublicFooter categories={categories} />
+      <PublicFooter categories={categories} menu={menu} />
       <RevealInit />
       <Lightbox />
     </div>

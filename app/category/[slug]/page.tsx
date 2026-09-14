@@ -59,7 +59,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
           </section>
         </div>
       </main>
-      <PublicFooter categories={categories} />
+      <PublicFooter categories={categories} menu={menu} />
       <RevealInit />
     </div>
   )

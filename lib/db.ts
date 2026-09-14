@@ -6,6 +6,12 @@ const db = (env as BlogEnv).BLOG_DB
 
 const postSelect = `p.id,p.title,p.slug,p.excerpt,p.content,p.content_format AS contentFormat,p.cover_image AS coverImage,p.status,p.published_at AS publishedAt,p.created_at AS createdAt,p.updated_at AS updatedAt,p.category_id AS categoryId,p.seo_title AS seoTitle,p.seo_description AS seoDescription,p.seo_keywords AS seoKeywords,p.og_image AS ogImage,p.canonical_url AS canonicalUrl,p.noindex`
 
+// Lean column set for list/card views. These never render the article body or
+// SEO metadata, so we avoid pulling the (potentially large) `content` column
+// and unused SEO fields out of D1 — less data over the wire and less Worker
+// CPU per request. Only `getPostBySlug` (the article page) needs `postSelect`.
+const cardSelect = `p.id,p.title,p.slug,p.excerpt,p.cover_image AS coverImage,p.published_at AS publishedAt,p.category_id AS categoryId`
+
 export type HeaderMenuItem = {
   id: string
   categoryId: string
@@ -17,51 +23,13 @@ export type HeaderMenuItem = {
 }
 
 export async function listPublishedPosts(limit = 20, offset = 0): Promise<Post[]> {
-  const result = await db.prepare(`SELECT ${postSelect}, c.name AS categoryName,c.slug AS categorySlug FROM posts p LEFT JOIN categories c ON c.id=p.category_id AND c.deleted_at IS NULL WHERE p.status='PUBLISHED' AND p.published_at IS NOT NULL AND p.deleted_at IS NULL ORDER BY p.published_at DESC LIMIT ? OFFSET ?`).bind(limit, offset).all<Post>()
+  const result = await db.prepare(`SELECT ${cardSelect}, c.name AS categoryName,c.slug AS categorySlug FROM posts p LEFT JOIN categories c ON c.id=p.category_id AND c.deleted_at IS NULL WHERE p.status='PUBLISHED' AND p.published_at IS NOT NULL AND p.deleted_at IS NULL ORDER BY p.published_at DESC LIMIT ? OFFSET ?`).bind(limit, offset).all<Post>()
   return result.results
 }
 
 export async function listTechnologyPosts(limit = 6): Promise<Post[]> {
-  const result = await db.prepare(`SELECT ${postSelect}, c.name AS categoryName,c.slug AS categorySlug FROM posts p JOIN categories c ON c.id=p.category_id WHERE c.deleted_at IS NULL AND (c.slug IN ('technology','tech-gossip') OR c.name IN ('প্রযুক্তি কথন','Technology')) AND p.status='PUBLISHED' AND p.published_at IS NOT NULL AND p.deleted_at IS NULL ORDER BY p.published_at DESC LIMIT ?`).bind(limit).all<Post>()
+  const result = await db.prepare(`SELECT ${cardSelect}, c.name AS categoryName,c.slug AS categorySlug FROM posts p JOIN categories c ON c.id=p.category_id WHERE c.deleted_at IS NULL AND (c.slug IN ('technology','tech-gossip') OR c.name IN ('প্রযুক্তি কথন','Technology')) AND p.status='PUBLISHED' AND p.published_at IS NOT NULL AND p.deleted_at IS NULL ORDER BY p.published_at DESC LIMIT ?`).bind(limit).all<Post>()
   return result.results
-}
-
-export async function listRelatedPosts(categoryId: string | null, excludePostId: string, limit = 3): Promise<Post[]> {
-  if (!categoryId) return []
-  const result = await db.prepare(`SELECT ${postSelect}, c.name AS categoryName,c.slug AS categorySlug FROM posts p LEFT JOIN categories c ON c.id=p.category_id AND c.deleted_at IS NULL WHERE p.category_id=? AND p.id<>? AND p.status='PUBLISHED' AND p.published_at IS NOT NULL AND p.deleted_at IS NULL ORDER BY p.published_at DESC LIMIT ?`).bind(categoryId, excludePostId, limit).all<Post>()
-  return result.results
-}
-
-export async function searchPublishedPosts(query: string, limit = 12): Promise<Post[]> {
-  const q = query.trim().slice(0, 100)
-  if (!q) return []
-
-  const like = `%${q}%`
-  const result = await db.prepare(`
-    SELECT ${postSelect}, c.name AS categoryName, c.slug AS categorySlug
-    FROM posts p
-    LEFT JOIN categories c ON c.id=p.category_id AND c.deleted_at IS NULL
-    WHERE p.status='PUBLISHED'
-      AND p.published_at IS NOT NULL
-      AND p.deleted_at IS NULL
-      AND (
-        p.title LIKE ?
-        OR COALESCE(p.excerpt, '') LIKE ?
-        OR p.slug LIKE ?
-        OR COALESCE(p.content, '') LIKE ?
-        OR COALESCE(c.name, '') LIKE ?
-        OR COALESCE(c.slug, '') LIKE ?
-      )
-    ORDER BY p.published_at DESC
-    LIMIT ?
-  `).bind(like, like, like, like, like, like, limit).all<Post>()
-
-  return result.results
-}
-
-export async function countPublishedPosts(): Promise<number> {
-  const row = await db.prepare(`SELECT COUNT(*) AS count FROM posts WHERE status='PUBLISHED' AND published_at IS NOT NULL AND deleted_at IS NULL`).first<{ count: number }>()
-  return Number(row?.count || 0)
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
@@ -103,14 +71,14 @@ export async function getHeaderMenu(): Promise<HeaderMenuItem[]> {
 export async function getCategoryBySlug(slug: string) {
   const category = await db.prepare(`SELECT id,name,slug FROM categories WHERE slug=? AND deleted_at IS NULL LIMIT 1`).bind(slug).first<Category>()
   if (!category) return null
-  const posts = await db.prepare(`SELECT ${postSelect},c.name AS categoryName,c.slug AS categorySlug FROM posts p JOIN categories c ON c.id=p.category_id WHERE c.slug=? AND c.deleted_at IS NULL AND p.status='PUBLISHED' AND p.deleted_at IS NULL ORDER BY p.published_at DESC`).bind(slug).all<Post>()
+  const posts = await db.prepare(`SELECT ${cardSelect},c.name AS categoryName,c.slug AS categorySlug FROM posts p JOIN categories c ON c.id=p.category_id WHERE c.slug=? AND c.deleted_at IS NULL AND p.status='PUBLISHED' AND p.deleted_at IS NULL ORDER BY p.published_at DESC`).bind(slug).all<Post>()
   return { category, posts: posts.results }
 }
 
 export async function getTagBySlug(slug: string) {
   const tag = await db.prepare(`SELECT id,name,slug FROM tags WHERE slug=? AND deleted_at IS NULL LIMIT 1`).bind(slug).first<Tag>()
   if (!tag) return null
-  const posts = await db.prepare(`SELECT ${postSelect},c.name AS categoryName,c.slug AS categorySlug FROM posts p JOIN post_tags pt ON pt.post_id=p.id JOIN tags t ON t.id=pt.tag_id LEFT JOIN categories c ON c.id=p.category_id AND c.deleted_at IS NULL WHERE t.slug=? AND t.deleted_at IS NULL AND p.status='PUBLISHED' AND p.deleted_at IS NULL ORDER BY p.published_at DESC`).bind(slug).all<Post>()
+  const posts = await db.prepare(`SELECT ${cardSelect},c.name AS categoryName,c.slug AS categorySlug FROM posts p JOIN post_tags pt ON pt.post_id=p.id JOIN tags t ON t.id=pt.tag_id LEFT JOIN categories c ON c.id=p.category_id AND c.deleted_at IS NULL WHERE t.slug=? AND t.deleted_at IS NULL AND p.status='PUBLISHED' AND p.deleted_at IS NULL ORDER BY p.published_at DESC`).bind(slug).all<Post>()
   return { tag, posts: posts.results }
 }
 

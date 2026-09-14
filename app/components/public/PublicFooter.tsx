@@ -12,8 +12,10 @@ type MenuItem = {
   children: MenuItem[]
 }
 
-export default async function PublicFooter({ categories }: { categories: { id: string; name: string; slug: string }[] }) {
-  const menu: MenuItem[] = await getHeaderMenu()
+export default async function PublicFooter({ categories, menu: menuProp }: { categories: { id: string; name: string; slug: string }[]; menu?: MenuItem[] }) {
+  // The navigation menu is already fetched by the page for the header; reuse it
+  // when passed to avoid a second identical header_menu_items query per request.
+  const menu: MenuItem[] = menuProp ?? (await getHeaderMenu())
   const footerMenu = menu.length
     ? menu
     : categories.slice(0, 6).map((c, index) => ({

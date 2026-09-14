@@ -58,7 +58,7 @@ export default async function TagPage({ params }: { params: Promise<{ slug: stri
           </section>
         </div>
       </main>
-      <PublicFooter categories={categories} />
+      <PublicFooter categories={categories} menu={menu} />
       <RevealInit />
     </div>
   )

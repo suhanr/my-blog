@@ -162,7 +162,7 @@ export default async function Home() {
         </div>
       </main>
 
-      <PublicFooter categories={categories} />
+      <PublicFooter categories={categories} menu={menu} />
       <RevealInit />
     </div>
   )

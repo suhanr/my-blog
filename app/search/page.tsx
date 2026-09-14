@@ -31,7 +31,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Searc
   return (
     <div className="site-public">
       <SearchPageClient categories={categories} menu={menu} initialQuery={initialQuery} />
-      <PublicFooter categories={categories} />
+      <PublicFooter categories={categories} menu={menu} />
     </div>
   )
 }
