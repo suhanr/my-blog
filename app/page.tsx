@@ -6,7 +6,7 @@ import PublicHeader from '@/app/components/public/PublicHeader'
 import PublicFooter from '@/app/components/public/PublicFooter'
 import PostGrid, { type Card } from '@/app/components/public/PostGrid'
 import { RevealInit } from '@/app/components/public/enhancers'
-import { DEFAULT_DESCRIPTION, GLOBAL_KEYWORDS, PROFILE_IMAGE, SITE, SITE_NAME } from '@/lib/seo'
+import { DEFAULT_DESCRIPTION, GLOBAL_KEYWORDS, OG_IMAGE, SITE, SITE_NAME } from '@/lib/seo'
 
 export const dynamic = 'force-dynamic'
 
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     title: `${SITE_NAME} | প্রযুক্তি, এআই, গবেষণা ও ডিজিটাল সংস্কৃতি`,
     description: DEFAULT_DESCRIPTION,
     siteName: SITE_NAME,
-    images: [{ url: PROFILE_IMAGE, width: 512, height: 512, alt: 'সোহানুর রহমান' }],
+    images: [{ url: OG_IMAGE, width: 1672, height: 941, alt: 'সোহানুর রহমান | Notes' }],
   },
 }
 
