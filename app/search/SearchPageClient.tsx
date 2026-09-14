@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { Loader2, Search } from 'lucide-react'
 import PublicHeader from '@/app/components/public/PublicHeader'
-import PublicFooter from '@/app/components/public/PublicFooter'
 import { RevealInit } from '@/app/components/public/enhancers'
 
 type Result = {
@@ -160,7 +159,6 @@ export default function SearchPageClient({ categories, menu, initialQuery = '' }
           )}
         </div>
       </main>
-      <PublicFooter categories={categories} />
       <RevealInit />
     </>
   )
