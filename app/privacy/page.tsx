@@ -8,15 +8,15 @@ import { SITE, SITE_NAME } from '@/lib/seo'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'প্রাইভেসি পলিসি — সোহানুর রহমান জার্নাল',
-  description: 'সোহানুর রহমান জার্নালে মন্তব্য, স্থানীয় স্টোরেজ, ব্যক্তিগত তথ্য এবং গোপনীয়তা ব্যবস্থাপনা সম্পর্কে এই প্রাইভেসি পলিসিতে জানুন।',
-  keywords: ['প্রাইভেসি পলিসি', 'privacy policy', 'সোহানুর রহমান', 'সোহানুর রহমান জার্নাল'],
+  title: `প্রাইভেসি পলিসি — ${SITE_NAME}`,
+  description: `${SITE_NAME}-এ মন্তব্য, স্থানীয় স্টোরেজ, ব্যক্তিগত তথ্য এবং গোপনীয়তা ব্যবস্থাপনা সম্পর্কে এই প্রাইভেসি পলিসিতে জানুন।`,
+  keywords: ['প্রাইভেসি পলিসি', 'privacy policy', 'সোহানুর রহমান', 'Notes'],
   alternates: { canonical: `${SITE}/privacy/` },
   openGraph: {
     type: 'article',
     url: `${SITE}/privacy/`,
-    title: 'প্রাইভেসি পলিসি — সোহানুর রহমান জার্নাল',
-    description: 'সোহানুর রহমান জার্নালে ব্যক্তিগত তথ্য ও গোপনীয়তা ব্যবস্থাপনা সম্পর্কে নীতিমালা।',
+    title: `প্রাইভেসি পলিসি — ${SITE_NAME}`,
+    description: `${SITE_NAME}-এ ব্যক্তিগত তথ্য ও গোপনীয়তা ব্যবস্থাপনা সম্পর্কে নীতিমালা।`,
     siteName: SITE_NAME,
   },
 }
