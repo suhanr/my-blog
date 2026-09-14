@@ -6,9 +6,9 @@ import { SITE } from '@/lib/seo'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'সার্চ — সোহানুর রহমান জার্নাল',
-  description: 'সোহানুর রহমান জার্নালে প্রযুক্তি, এআই, গবেষণা, ডেটা ও ডিজিটাল সংস্কৃতি নিয়ে লেখা খুঁজুন।',
-  keywords: ['সার্চ', 'সোহানুর রহমান', 'জার্নাল', 'প্রযুক্তি', 'এআই', 'গবেষণা'],
+  title: 'সার্চ — সোহানুর রহমান | Notes',
+  description: 'সোহানুর রহমানের Notes-এ প্রযুক্তি, এআই, গবেষণা, ডেটা ও ডিজিটাল সংস্কৃতি নিয়ে লেখা খুঁজুন।',
+  keywords: ['সার্চ', 'সোহানুর রহমান', 'Notes', 'প্রযুক্তি', 'এআই', 'গবেষণা'],
   alternates: { canonical: `${SITE}/search/` },
   robots: { index: false, follow: true },
 }
