@@ -22,12 +22,12 @@ jobs:
           package-manager-cache: false
       - name: Install dependencies
         run: npm install
-      - name: Export published posts
+      - name: Export all active posts
         run: |
-          npx wrangler d1 execute suhanur-blog --remote --json --command="SELECT p.id,p.title,p.slug,p.excerpt,p.content,p.content_format AS contentFormat,p.cover_image AS coverImage,p.status,p.published_at AS publishedAt,p.updated_at AS updatedAt,p.category_id AS categoryId,p.seo_title AS seoTitle,p.seo_description AS seoDescription,p.seo_keywords AS seoKeywords,p.og_image AS ogImage,p.canonical_url AS canonicalUrl,p.noindex,c.name AS categoryName,c.slug AS categorySlug FROM posts p LEFT JOIN categories c ON c.id=p.category_id WHERE p.status='PUBLISHED' AND p.deleted_at IS NULL ORDER BY p.published_at DESC;" > seo-posts.json
+          npx wrangler d1 execute suhanur-blog --remote --json --command="SELECT p.id,p.title,p.slug,p.excerpt,p.content,p.content_format AS contentFormat,p.cover_image AS coverImage,p.status,p.published_at AS publishedAt,p.updated_at AS updatedAt,p.category_id AS categoryId,p.seo_title AS seoTitle,p.seo_description AS seoDescription,p.seo_keywords AS seoKeywords,p.og_image AS ogImage,p.canonical_url AS canonicalUrl,p.noindex,c.name AS categoryName,c.slug AS categorySlug FROM posts p LEFT JOIN categories c ON c.id=p.category_id WHERE p.deleted_at IS NULL ORDER BY p.published_at DESC;" > seo-posts.json
       - name: Upload audit data
         uses: actions/upload-artifact@v4
         with:
-          name: seo-posts-export
+          name: seo-posts-export-all
           path: seo-posts.json
           retention-days: 1
