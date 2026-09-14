@@ -8,7 +8,7 @@ import PublicHeader from '@/app/components/public/PublicHeader'
 import PublicFooter from '@/app/components/public/PublicFooter'
 import { PostCard, type Card } from '@/app/components/public/PostGrid'
 import { Lightbox, ReadingProgress, RevealInit } from '@/app/components/public/enhancers'
-import { AUTHOR_NAME, AUTHOR_URL, PROFILE_IMAGE, SITE, breadcrumbJsonLd, postDescription, postKeywords } from '@/lib/seo'
+import { AUTHOR_NAME, AUTHOR_URL, PROFILE_IMAGE, SITE, SITE_NAME, breadcrumbJsonLd, postDescription, postKeywords } from '@/lib/seo'
 
 const SITE_ORIGIN = SITE
 
@@ -77,7 +77,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       url: canonical,
       title,
       description,
-      siteName: 'সোহানুর রহমান জার্নাল',
+      siteName: SITE_NAME,
       images: [{ url: image, alt: p.title }],
       publishedTime: p.publishedAt || undefined,
       modifiedTime: p.updatedAt || undefined,
