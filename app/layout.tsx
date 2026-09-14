@@ -4,7 +4,7 @@ import './theme.css'
 import './scroll-to-top.css'
 import './header-menu.css'
 import ScrollToTop from './components/public/ScrollToTop'
-import { AUTHOR_NAME, AUTHOR_URL, DEFAULT_DESCRIPTION, GLOBAL_KEYWORDS, PROFILE_IMAGE, SITE, SITE_NAME } from '@/lib/seo'
+import { AUTHOR_NAME, AUTHOR_URL, DEFAULT_DESCRIPTION, GLOBAL_KEYWORDS, OG_IMAGE, PROFILE_IMAGE, SITE, SITE_NAME } from '@/lib/seo'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
@@ -39,13 +39,13 @@ export const metadata: Metadata = {
     url: SITE,
     title: `${SITE_NAME} — প্রযুক্তি, এআই, গবেষণা ও ডিজিটাল সংস্কৃতি`,
     description: DEFAULT_DESCRIPTION,
-    images: [{ url: PROFILE_IMAGE, width: 512, height: 512, alt: 'সোহানুর রহমান' }],
+    images: [{ url: OG_IMAGE, width: 1672, height: 941, alt: 'সোহানুর রহমান | Notes' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: SITE_NAME,
     description: DEFAULT_DESCRIPTION,
-    images: [PROFILE_IMAGE],
+    images: [OG_IMAGE],
   },
 }
 
