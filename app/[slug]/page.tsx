@@ -186,6 +186,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               <span>{formatDate(p.publishedAt)}</span>
               {p.updatedAt ? <><span className="dot" /><span>হালনাগাদ {formatDate(p.updatedAt)}</span></> : null}
             </div>
+            <ShareActions title={p.title} url={shareUrl} compact />
           </header>
 
           {p.coverImage ? (
