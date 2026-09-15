@@ -82,7 +82,7 @@ export const SEO_TOPIC_CLUSTERS: SeoCluster[] = [
     ],
   },
   {
-    match: ['data science', 'ডেটা সায়েন্স', 'ডেটা সায়েন্স', 'data analytics', 'data analyst', 'data scientist', 'machine learning'],
+    match: ['data science', 'ডেটা সায়েন্স', 'ডেটা সায়েন্স', 'data analytics', 'data analyst', 'data scientist', 'machine learning', 'python vs r', 'r programming', 'pandas', 'numpy'],
     keywords: [
       'Data Science বাংলা',
       'Data Science কী',
@@ -96,7 +96,7 @@ export const SEO_TOPIC_CLUSTERS: SeoCluster[] = [
     ],
   },
   {
-    match: ['full stack', 'web development', 'software development', 'software engineering', 'programming', 'programmer', 'cse', 'git', 'github', 'html', 'css', 'javascript', 'react', 'node.js', 'nodejs', 'next.js', 'nextjs'],
+    match: ['full stack', 'web development', 'software development', 'software engineering', 'programming', 'programmer', 'cse', 'git', 'github', 'html', 'css', 'javascript', 'react', 'node.js', 'nodejs', 'next.js', 'nextjs', 'python', 'sql', 'api'],
     keywords: [
       'Programming বাংলা',
       'Web Development বাংলা',
@@ -109,6 +109,9 @@ export const SEO_TOPIC_CLUSTERS: SeoCluster[] = [
       'Git বাংলা tutorial',
       'Git কী',
       'GitHub বাংলা',
+      'Python বাংলা',
+      'Python tutorial বাংলা',
+      'SQL বাংলা',
     ],
   },
   {
@@ -141,7 +144,7 @@ export const SEO_TOPIC_CLUSTERS: SeoCluster[] = [
     ],
   },
   {
-    match: ['artificial intelligence', 'কৃত্রিম বুদ্ধিমত্তা', ' ai ', 'chatgpt', 'openai', 'hallucination', 'deepfake', 'misinformation', 'disinformation', 'ai agent', 'ai agents'],
+    match: ['artificial intelligence', 'কৃত্রিম বুদ্ধিমত্তা', ' ai ', 'chatgpt', 'openai', 'hallucination', 'deepfake', 'misinformation', 'disinformation', 'ai agent', 'ai agents', 'generative ai', 'ai tool', 'ai tools', 'llm', 'gemini', 'claude ai', 'gpt', 'leonardo ai', 'ai cv'],
     keywords: [
       'AI বাংলা',
       'কৃত্রিম বুদ্ধিমত্তা বাংলা',
@@ -154,6 +157,9 @@ export const SEO_TOPIC_CLUSTERS: SeoCluster[] = [
       'AI misinformation',
       'বাংলাদেশে AI',
       'বাংলাদেশে AI ব্যবহার',
+      'Generative AI বাংলা',
+      'সেরা AI tools',
+      'AI tools বাংলা',
     ],
   },
   {
@@ -182,6 +188,30 @@ export const SEO_TOPIC_CLUSTERS: SeoCluster[] = [
       'ইন্টারনেট বাংলা',
       'সোশ্যাল মিডিয়া বাংলা',
       'ডিজিটাল প্রযুক্তি বাংলাদেশ',
+    ],
+  },
+  {
+    match: ['microsoft office', 'ms office', 'microsoft word', 'ms word', 'excel', 'powerpoint', 'google sheets', 'google docs'],
+    keywords: [
+      'Microsoft Office বাংলা',
+      'Excel বাংলা',
+      'Excel tutorial বাংলা',
+      'MS Word বাংলা',
+      'PowerPoint বাংলা',
+      'Google Sheets বাংলা',
+      'কম্পিউটার শেখা বাংলা',
+    ],
+  },
+  {
+    match: ['আয়কর', 'income tax', 'e-return', 'ই-রিটার্ন', 'nbr', 'ট্যাক্স', 'tin certificate', 'online tax', 'e-service', 'ই-সেবা'],
+    keywords: [
+      'আয়কর রিটার্ন',
+      'অনলাইন আয়কর রিটার্ন',
+      'e-return দাখিল',
+      'income tax return বাংলাদেশ',
+      'NBR e-return',
+      'ট্যাক্স রিটার্ন বাংলা',
+      'অনলাইন সরকারি সেবা বাংলাদেশ',
     ],
   },
 ]
