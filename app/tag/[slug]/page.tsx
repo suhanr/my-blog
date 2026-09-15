@@ -25,9 +25,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 }
 
-export default async function TagPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function TagPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ page?: string }> }) {
   const { slug } = await params
-  const [data, categories, menu] = await Promise.all([getTagBySlug(slug), getCategories(), getHeaderMenu()])
+  const query = await searchParams
+  const parsedPage = Number.parseInt(query.page || '1', 10)
+  const page = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1
+  const [data, categories, menu] = await Promise.all([getTagBySlug(slug, page), getCategories(), getHeaderMenu()])
   if (!data) notFound()
 
   const breadcrumbLd = breadcrumbJsonLd([
@@ -46,7 +49,7 @@ export default async function TagPage({ params }: { params: Promise<{ slug: stri
             <div className="mag-section-head" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 8 }}>
               <div className="mag-kicker">ট্যাগ</div>
               <h1 className="mag-article-title" style={{ fontSize: 'clamp(30px,4vw,46px)' }}>#{data.tag.name}</h1>
-              <p className="mag-meta">{data.posts.length} টি লেখা</p>
+              <p className="mag-meta">পৃষ্ঠা {page}</p>
             </div>
             {data.posts.length ? (
               <div className="mag-grid">
@@ -54,6 +57,12 @@ export default async function TagPage({ params }: { params: Promise<{ slug: stri
               </div>
             ) : (
               <p className="mag-hero-dek">এই ট্যাগে এখনো কোনো লেখা নেই।</p>
+            )}
+            {(page > 1 || data.hasMore) && (
+              <nav aria-label="ট্যাগের পৃষ্ঠা" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, marginTop: 32 }}>
+                {page > 1 ? <Link href={`/tag/${slug}/?page=${page - 1}`}>← আগের পৃষ্ঠা</Link> : <span />}
+                {data.hasMore ? <Link href={`/tag/${slug}/?page=${page + 1}`}>পরের পৃষ্ঠা →</Link> : <span />}
+              </nav>
             )}
           </section>
         </div>
