@@ -84,7 +84,7 @@ export default function SearchPageClient({ categories, menu, initialQuery = '' }
       <PublicHeader categories={categories} menu={menu} />
       <style>{`
         .site-public .search-page { padding: 76px 0 110px; }
-        .site-public .search-hero { max-width: 920px; margin: 0 auto 52px; }
+        .site-public .search-hero { width: min(920px, 100%); margin: 0 auto 52px; }
         .site-public .search-kicker { margin-bottom: 10px; font-size: 11px; font-weight: 700; letter-spacing: .12em; color: var(--accent); }
         .site-public .search-title { margin: 0; font-size: clamp(42px, 7vw, 78px); line-height: 1; letter-spacing: -.04em; color: var(--fg); }
         .site-public .search-dek { max-width: 700px; margin: 18px 0 28px; color: var(--muted); font-size: 17px; line-height: 1.8; }
@@ -92,7 +92,7 @@ export default function SearchPageClient({ categories, menu, initialQuery = '' }
         .site-public .search-input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--fg); padding: 10px 12px; font: inherit; font-size: 18px; }
         .site-public .search-icon { flex: 0 0 auto; display: grid; place-items: center; color: var(--muted); padding: 0 4px 0 8px; }
         .site-public .search-submit { border: 0; border-radius: 10px; padding: 10px 18px; background: var(--accent); color: #fff; font: inherit; font-weight: 700; cursor: default; opacity: .9; }
-        .site-public .search-hero + section { max-width: 920px; margin: 0 auto; }
+        .site-public .search-results-section { width: min(920px, 100%); margin: 0 auto; }
         .site-public .search-summary { margin: 0 0 18px; color: var(--muted); font-size: 14px; }
         .site-public .search-results { display: grid; gap: 0; border-top: 1px solid var(--line-2); }
         .site-public .search-result { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 22px; padding: 24px 0; border-bottom: 1px solid var(--line-2); }
@@ -110,8 +110,8 @@ export default function SearchPageClient({ categories, menu, initialQuery = '' }
         @keyframes search-spin { to { transform: rotate(360deg); } }
         @media (max-width: 720px) {
           .site-public .search-page { padding: 52px 0 80px; }
-          .site-public .search-hero { margin-bottom: 36px; }
-          .site-public .search-hero + section { max-width: none; margin: 0; }
+          .site-public .search-hero { width: 100%; margin-bottom: 36px; }
+          .site-public .search-results-section { width: 100%; margin: 0; }
           .site-public .search-form { flex-direction: column; }
           .site-public .search-result { grid-template-columns: 1fr; gap: 14px; }
           .site-public .search-result-thumb { width: 100%; height: 190px; }
@@ -134,7 +134,7 @@ export default function SearchPageClient({ categories, menu, initialQuery = '' }
           {tooShort ? (
             <div className="search-empty">সার্চ করার জন্য কমপক্ষে ২টি অক্ষর লিখুন।</div>
           ) : query.trim() ? (
-            <section>
+            <section className="search-results-section">
               <p className="search-summary">{loading ? 'ফলাফল খোঁজা হচ্ছে…' : `${results.length}টি ফলাফল`} · “{query.trim()}”</p>
               {loading ? (
                 <div className="search-loading"><Loader2 className="search-spin" size={18} strokeWidth={1.9} /> ফলাফল আপডেট হচ্ছে…</div>
