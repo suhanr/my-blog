@@ -4,6 +4,7 @@ import './theme.css'
 import './scroll-to-top.css'
 import './header-menu.css'
 import ScrollToTop from './components/public/ScrollToTop'
+import PWAInstallPrompt from './components/public/PWAInstallPrompt'
 import { AUTHOR_NAME, AUTHOR_URL, DEFAULT_DESCRIPTION, GLOBAL_KEYWORDS, OG_IMAGE, PROFILE_IMAGE, SITE, SITE_NAME } from '@/lib/seo'
 
 export const metadata: Metadata = {
@@ -105,6 +106,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {children}
         <ScrollToTop />
+        <PWAInstallPrompt />
       </body>
     </html>
   )
