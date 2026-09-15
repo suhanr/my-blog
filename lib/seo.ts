@@ -7,8 +7,8 @@ export const OG_IMAGE = `${SITE}/suhan-notes.png`
 
 /**
  * Brand/entity phrases only.
- * Broad topics such as AI, technology, research, data, programming, etc.
- * belong at article/topic level rather than being injected into every page.
+ * Broad topics belong at article/topic level rather than being injected into
+ * every page.
  */
 export const GLOBAL_KEYWORDS = [
   'সোহানুর রহমান',
@@ -24,10 +24,9 @@ export const GLOBAL_KEYWORDS = [
 
 /**
  * Search-led topic clusters.
- * These are not treated as ranking guarantees or search-volume claims.
- * They are query-language variants observed in current Bangladesh/Bangla
- * search results and established content ecosystems, and are used as
- * article-level semantic signals when an article clearly matches a topic.
+ * These are query-language variants observed in current Bangladesh/Bangla
+ * search results and established content ecosystems. They are not claims
+ * about search volume, difficulty, or ranking guarantees.
  */
 type SeoCluster = {
   match: string[]
@@ -218,14 +217,15 @@ export function postKeywords(title: string, categoryName?: string | null, stored
     .filter((cluster) => clusterMatches(cluster, source))
     .flatMap((cluster) => cluster.keywords)
 
-  // Keep article metadata compact. The title/category and existing manually
-  // curated terms win; researched query variants are supporting signals.
+  // Meta keywords are not a Google ranking factor. Keep this list compact and
+  // relevant because it is also reused as article-level semantic metadata in
+  // Open Graph and BlogPosting structured data.
+  // Manual keywords take priority; researched cluster terms fill the remaining
+  // slots. Do not inject the site's global brand/topic keywords here.
   return Array.from(new Set([
     ...values,
-    title,
-    categoryName || '',
     ...matched,
-  ].filter(Boolean))).slice(0, 16)
+  ].filter(Boolean))).slice(0, 6)
 }
 
 export function breadcrumbJsonLd(items: Array<{ name: string; url: string }>) {
