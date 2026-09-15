@@ -1,7 +1,9 @@
 import handler from 'vinext/server/fetch-handler'
 
 const PUBLIC_HTML_TTL = 'public, max-age=300, stale-while-revalidate=60'
+const SEARCH_TTL = 'public, max-age=60, stale-while-revalidate=30'
 const BLOG_CACHE_TAG = 'blog-public'
+const SEARCH_CACHE_TAG = 'blog-search'
 
 function isAdminOrApiPath(pathname: string) {
   return pathname === '/admin' || pathname.startsWith('/admin/') || pathname === '/api' || pathname.startsWith('/api/')
@@ -39,13 +41,21 @@ export default {
 
     if (shouldPurge && response.status < 400) {
       ctx.waitUntil(
-        ctx.cache.purge({ tags: [BLOG_CACHE_TAG] }).catch((error) => {
+        ctx.cache.purge({ tags: [BLOG_CACHE_TAG, SEARCH_CACHE_TAG] }).catch((error) => {
           console.error('public cache purge failed', error)
         }),
       )
     }
 
     if (request.method !== 'GET' && request.method !== 'HEAD') return response
+    if (response.headers.has('Set-Cookie')) return response
+
+    if (url.pathname === '/api/search' && response.status === 200) {
+      return withHeaders(response, {
+        'Cloudflare-CDN-Cache-Control': SEARCH_TTL,
+        'Cache-Tag': SEARCH_CACHE_TAG,
+      })
+    }
 
     if (isAdminOrApiPath(url.pathname) || isRscRequest(request)) {
       return withHeaders(response, {
@@ -55,7 +65,6 @@ export default {
     }
 
     if (response.status !== 200) return response
-    if (response.headers.has('Set-Cookie')) return response
 
     const contentType = response.headers.get('Content-Type') || ''
     if (!contentType.toLowerCase().startsWith('text/html')) return response
