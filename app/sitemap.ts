@@ -4,7 +4,7 @@ import { SITE } from '@/lib/seo'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [posts, categories, tags] = await Promise.all([
-    db.prepare(`SELECT slug, updated_at AS updatedAt FROM posts WHERE status='PUBLISHED' AND deleted_at IS NULL ORDER BY published_at DESC`).all<{ slug: string; updatedAt: string }>(),
+    db.prepare(`SELECT slug, updated_at AS updatedAt FROM posts WHERE status='PUBLISHED' AND deleted_at IS NULL AND (noindex IS NULL OR noindex=0) ORDER BY published_at DESC`).all<{ slug: string; updatedAt: string }>(),
     db.prepare(`SELECT c.slug, MAX(p.updated_at) AS updatedAt FROM categories c JOIN posts p ON p.category_id=c.id WHERE c.deleted_at IS NULL AND p.status='PUBLISHED' AND p.deleted_at IS NULL GROUP BY c.slug`).all<{ slug: string; updatedAt: string | null }>(),
     db.prepare(`SELECT t.slug, MAX(p.updated_at) AS updatedAt FROM tags t JOIN post_tags pt ON pt.tag_id=t.id JOIN posts p ON p.id=pt.post_id WHERE t.deleted_at IS NULL AND p.status='PUBLISHED' AND p.deleted_at IS NULL GROUP BY t.slug`).all<{ slug: string; updatedAt: string | null }>(),
   ])
