@@ -159,13 +159,20 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         .site-public .mag-share button:first-child:hover { background:color-mix(in srgb, var(--accent) 88%, #000); color:#fff; }
         .site-public .mag-share button:active { transform:translateY(0) scale(.98); }
         .site-public .mag-share button:focus-visible { outline:3px solid var(--ring); outline-offset:3px; }
+        .site-public .mag-article-head > .mag-share-compact { margin-top:18px; }
+        .site-public .mag-share-floating { position:fixed; right:24px; bottom:24px; z-index:80; width:auto; padding:6px; gap:6px; flex-wrap:nowrap; background:color-mix(in srgb, var(--surface) 92%, transparent); border:1px solid var(--line); border-radius:999px; box-shadow:0 14px 34px -18px rgba(20,20,30,.5); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); animation:magShareFloatIn .2s ease-out; }
+        .site-public .mag-share-floating button { min-height:40px; padding:8px 13px; box-shadow:none; }
+        .site-public .mag-share-floating button:first-child { box-shadow:0 6px 16px -10px var(--accent); }
+        @keyframes magShareFloatIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
         @media (max-width:640px) {
           .site-public .mag-comment-children { margin-left:14px; padding-left:12px; }
           .site-public .mag-reply-form { grid-template-columns:1fr; }
           .site-public .mag-reply-form textarea,.site-public .mag-reply-form small { grid-column:auto; }
           .site-public .mag-article-foot { align-items:flex-start; flex-direction:column; }
-          .site-public .mag-share { width:100%; }
-          .site-public .mag-share button { flex:1; min-width:0; }
+          .site-public .mag-article-head > .mag-share-compact { justify-content:center; align-self:center; margin-top:16px; }
+          .site-public .mag-share-compact button { flex:0 0 auto !important; min-width:0; }
+          .site-public .mag-share-floating { left:50%; right:auto; bottom:calc(12px + env(safe-area-inset-bottom)); transform:translateX(-50%); }
+          .site-public .mag-share-floating button { min-height:42px; padding:8px 13px; }
         }
       `}</style>
       <ReadingProgress />
@@ -180,13 +187,13 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             {p.categoryName && p.categorySlug ? <Link className="mag-kicker" href={`/category/${p.categorySlug}/`}>{p.categoryName}</Link> : <div className="mag-kicker">Journal</div>}
             <h1 className="mag-article-title">{p.title}</h1>
             {p.excerpt ? <p className="mag-article-dek">{p.excerpt}</p> : null}
+            <ShareActions title={p.title} url={shareUrl} compact />
             <div className="mag-article-meta">
               <a href={AUTHOR_URL} target="_blank" rel="noreferrer"><b>{AUTHOR_NAME}</b></a>
               <span className="dot" />
               <span>{formatDate(p.publishedAt)}</span>
               {p.updatedAt ? <><span className="dot" /><span>হালনাগাদ {formatDate(p.updatedAt)}</span></> : null}
             </div>
-            <ShareActions title={p.title} url={shareUrl} compact />
           </header>
 
           {p.coverImage ? (
@@ -230,7 +237,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         </div>
       </main>
 
-      <PublicFooter categories={categories} menu={menu} />
+      <PublicFooter categories={categories} />
       <RevealInit />
       <Lightbox />
     </div>
