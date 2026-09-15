@@ -9,6 +9,7 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: `${SITE}/`,
     scope: `${SITE}/`,
     display: 'standalone',
+    display_override: ['window-controls-overlay', 'standalone'],
     lang: 'bn-BD',
     theme_color: '#ffffff',
     background_color: '#ffffff',
@@ -19,6 +20,7 @@ export default function manifest(): MetadataRoute.Manifest {
       { src: '/android-icon-96x96.png', sizes: '96x96', type: 'image/png' },
       { src: '/android-icon-144x144.png', sizes: '144x144', type: 'image/png' },
       { src: '/android-icon-192x192.png', sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
+      { src: '/pwa-icon-512.svg', sizes: '512x512', type: 'image/svg+xml', purpose: 'any maskable' },
     ],
   }
 }
