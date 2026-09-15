@@ -113,21 +113,40 @@ export async function getHeaderMenu(): Promise<HeaderMenuItem[]> {
   })
 }
 
-export async function getCategoryBySlug(slug: string) {
-  return cachedRead(`category:${slug}`, async () => {
+const TAXONOMY_PAGE_SIZE = 24
+
+type TaxonomyPosts = {
+  posts: Post[]
+  hasMore: boolean
+}
+
+export async function getCategoryBySlug(slug: string, page = 1) {
+  const safePage = Math.max(1, Math.floor(page) || 1)
+  const offset = (safePage - 1) * TAXONOMY_PAGE_SIZE
+  return cachedRead(`category:${slug}:${safePage}`, async () => {
     const category = await db.prepare(`SELECT id,name,slug FROM categories WHERE slug=? AND deleted_at IS NULL LIMIT 1`).bind(slug).first<Category>()
     if (!category) return null
-    const posts = await db.prepare(`SELECT ${cardSelect},c.name AS categoryName,c.slug AS categorySlug FROM posts p JOIN categories c ON c.id=p.category_id WHERE c.slug=? AND c.deleted_at IS NULL AND p.status='PUBLISHED' AND p.deleted_at IS NULL ORDER BY p.published_at DESC`).bind(slug).all<Post>()
-    return { category, posts: posts.results }
+    const posts = await db.prepare(`SELECT ${cardSelect},c.name AS categoryName,c.slug AS categorySlug FROM posts p JOIN categories c ON c.id=p.category_id WHERE c.slug=? AND c.deleted_at IS NULL AND p.status='PUBLISHED' AND p.deleted_at IS NULL ORDER BY p.published_at DESC LIMIT ? OFFSET ?`).bind(slug, TAXONOMY_PAGE_SIZE + 1, offset).all<Post>()
+    const result: TaxonomyPosts = {
+      posts: posts.results.slice(0, TAXONOMY_PAGE_SIZE),
+      hasMore: posts.results.length > TAXONOMY_PAGE_SIZE,
+    }
+    return { category, ...result }
   })
 }
 
-export async function getTagBySlug(slug: string) {
-  return cachedRead(`tag:${slug}`, async () => {
+export async function getTagBySlug(slug: string, page = 1) {
+  const safePage = Math.max(1, Math.floor(page) || 1)
+  const offset = (safePage - 1) * TAXONOMY_PAGE_SIZE
+  return cachedRead(`tag:${slug}:${safePage}`, async () => {
     const tag = await db.prepare(`SELECT id,name,slug FROM tags WHERE slug=? AND deleted_at IS NULL LIMIT 1`).bind(slug).first<Tag>()
     if (!tag) return null
-    const posts = await db.prepare(`SELECT ${cardSelect},c.name AS categoryName,c.slug AS categorySlug FROM posts p JOIN post_tags pt ON pt.post_id=p.id JOIN tags t ON t.id=pt.tag_id LEFT JOIN categories c ON c.id=p.category_id AND c.deleted_at IS NULL WHERE t.slug=? AND t.deleted_at IS NULL AND p.status='PUBLISHED' AND p.deleted_at IS NULL ORDER BY p.published_at DESC`).bind(slug).all<Post>()
-    return { tag, posts: posts.results }
+    const posts = await db.prepare(`SELECT ${cardSelect},c.name AS categoryName,c.slug AS categorySlug FROM posts p JOIN post_tags pt ON pt.post_id=p.id JOIN tags t ON t.id=pt.tag_id LEFT JOIN categories c ON c.id=p.category_id AND c.deleted_at IS NULL WHERE t.slug=? AND t.deleted_at IS NULL AND p.status='PUBLISHED' AND p.deleted_at IS NULL ORDER BY p.published_at DESC LIMIT ? OFFSET ?`).bind(slug, TAXONOMY_PAGE_SIZE + 1, offset).all<Post>()
+    const result: TaxonomyPosts = {
+      posts: posts.results.slice(0, TAXONOMY_PAGE_SIZE),
+      hasMore: posts.results.length > TAXONOMY_PAGE_SIZE,
+    }
+    return { tag, ...result }
   })
 }
 
