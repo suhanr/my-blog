@@ -16,9 +16,9 @@ export default async function AdminDashboard() {
   const [postCounts, comments, categories, tags] = await Promise.all([
     db.prepare(`
       SELECT
-        COUNT(*) AS allCount,
-        SUM(CASE WHEN status='PUBLISHED' THEN 1 ELSE 0 END) AS publishedCount,
-        SUM(CASE WHEN status='DRAFT' THEN 1 ELSE 0 END) AS draftsCount,
+        SUM(CASE WHEN deleted_at IS NULL THEN 1 ELSE 0 END) AS allCount,
+        SUM(CASE WHEN status='PUBLISHED' AND deleted_at IS NULL THEN 1 ELSE 0 END) AS publishedCount,
+        SUM(CASE WHEN status='DRAFT' AND deleted_at IS NULL THEN 1 ELSE 0 END) AS draftsCount,
         SUM(CASE WHEN deleted_at IS NOT NULL THEN 1 ELSE 0 END) AS trashCount
       FROM posts
     `).first<any>(),
