@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import './ckeditor-admin.css'
 import './theme.css'
 import './scroll-to-top.css'
@@ -107,6 +108,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <ScrollToTop />
         <PWAInstallPrompt />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-E4HZ6RPVBC"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){window.dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-E4HZ6RPVBC');
+          `}
+        </Script>
       </body>
     </html>
   )
