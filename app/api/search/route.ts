@@ -6,6 +6,10 @@ function escapeLike(value: string) {
   return value.replace(/\\/g, '\\\\').replace(/%/g, '\\%').replace(/_/g, '\\_')
 }
 
+function quoteFts(value: string) {
+  return `"${value.replace(/"/g, '""')}"`
+}
+
 export async function GET(request: Request) {
   const url = new URL(request.url)
   const q = (url.searchParams.get('q') || '').trim().slice(0, 100)
@@ -23,7 +27,6 @@ export async function GET(request: Request) {
       .map((term) => term.trim())
       .filter(Boolean)
       .slice(0, 6)
-      .map(escapeLike)
 
     if (!terms.length) {
       return Response.json(
@@ -33,19 +36,31 @@ export async function GET(request: Request) {
     }
 
     const fields = [
-      "p.title",
+      'p.title',
       "COALESCE(p.excerpt, '')",
-      "p.slug",
+      'p.slug',
       "COALESCE(p.content, '')",
       "COALESCE(c.name, '')",
       "COALESCE(c.slug, '')",
     ]
 
-    const conditions = terms.map(() => `(${fields.map((field) => `${field} LIKE ? ESCAPE '\\'`).join(' OR ')})`)
-    const likeValues = terms.flatMap((term) => {
-      const value = `%${term}%`
-      return fields.map(() => value)
-    })
+    const conditions: string[] = []
+    const values: string[] = []
+
+    for (const term of terms) {
+      if ([...term].length >= 3) {
+        conditions.push(`(p.id IN (SELECT post_id FROM posts_fts WHERE posts_fts MATCH ?)
+          OR c.name LIKE ? ESCAPE '\\'
+          OR c.slug LIKE ? ESCAPE '\\')`)
+        values.push(quoteFts(term))
+        const likeValue = `%${escapeLike(term)}%`
+        values.push(likeValue, likeValue)
+      } else {
+        conditions.push(`(${fields.map((field) => `${field} LIKE ? ESCAPE '\\'`).join(' OR ')})`)
+        const likeValue = `%${escapeLike(term)}%`
+        values.push(...fields.map(() => likeValue))
+      }
+    }
 
     const sql = `
       SELECT
@@ -63,11 +78,11 @@ export async function GET(request: Request) {
         AND p.published_at IS NOT NULL
         AND p.deleted_at IS NULL
         AND ${conditions.join(' AND ')}
-      ORDER BY datetime(p.published_at) DESC
+      ORDER BY p.published_at DESC
       LIMIT 12
     `
 
-    const posts = await db.prepare(sql).bind(...likeValues).all()
+    const posts = await db.prepare(sql).bind(...values).all()
 
     return Response.json(
       {
