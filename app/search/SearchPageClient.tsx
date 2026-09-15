@@ -89,10 +89,13 @@ export default function SearchPageClient({ categories, menu, initialQuery = '' }
         .site-public .search-title { margin: 0; font-size: clamp(42px, 7vw, 78px); line-height: 1; letter-spacing: -.04em; color: var(--fg); }
         .site-public .search-dek { max-width: 700px; margin: 18px 0 28px; color: var(--muted); font-size: 17px; line-height: 1.8; }
         .site-public .search-form { display: flex; align-items: center; gap: 8px; padding: 7px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); box-shadow: var(--shadow-sm); }
-        .site-public .search-input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--fg); padding: 10px 10px; font: inherit; font-size: 18px; }
+        .site-public .search-input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--fg); padding: 10px 10px; font: inherit; font-size: 18px; line-height: 1.3; }
+        .site-public .search-input::-webkit-search-cancel-button,
+        .site-public .search-input::-webkit-search-decoration { display: none; -webkit-appearance: none; }
         .site-public .search-input::placeholder { color: var(--muted); opacity: .9; }
         .site-public .search-icon { flex: 0 0 auto; display: grid; place-items: center; color: var(--muted); width: 34px; height: 34px; }
-        .site-public .search-submit { flex: 0 0 auto; min-width: 100px; min-height: 42px; border: 0; border-radius: 11px; padding: 9px 16px; background: var(--accent); color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+        .site-public .search-submit { flex: 0 0 auto; min-width: 100px; min-height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 11px; padding: 9px 16px; background: var(--accent); color: #fff; font: inherit; font-weight: 700; line-height: 1; cursor: pointer; white-space: nowrap; }
+        .site-public .search-submit svg { flex: 0 0 auto; }
         .site-public .search-results-section,
         .site-public .search-empty-state { width: min(920px, 100%); margin: 0 auto; }
         .site-public .search-summary { margin: 0 0 18px; color: var(--muted); font-size: 14px; }
@@ -116,11 +119,11 @@ export default function SearchPageClient({ categories, menu, initialQuery = '' }
           .site-public .search-results-section,
           .site-public .search-empty-state { width: 100%; margin: 0; }
           .site-public .search-form { flex-direction: row; align-items: center; gap: 6px; padding: 6px; border-radius: 14px; min-height: 56px; }
-          .site-public .search-icon { width: 34px; height: 34px; }
-          .site-public .search-input { font-size: 17px; padding: 8px 4px; }
-          .site-public .search-submit { min-width: 46px; width: 46px; height: 46px; min-height: 46px; padding: 0; border-radius: 12px; display: grid; place-items: center; }
-          .site-public .search-submit .search-submit-label { display: none; }
-          .site-public .search-submit svg { width: 20px; height: 20px; }
+          .site-public .search-icon { width: 34px; height: 34px; flex-basis: 34px; }
+          .site-public .search-input { font-size: 17px; line-height: 1.35; padding: 8px 4px; min-height: 40px; }
+          .site-public .search-submit { min-width: 86px; width: auto; height: 42px; min-height: 42px; padding: 0 13px; border-radius: 11px; gap: 5px; }
+          .site-public .search-submit .search-submit-label { display: inline; }
+          .site-public .search-submit svg { width: 18px; height: 18px; }
           .site-public .search-result { grid-template-columns: 1fr; gap: 14px; }
           .site-public .search-result-thumb { width: 100%; height: 190px; }
         }
