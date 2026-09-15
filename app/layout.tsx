@@ -10,7 +10,7 @@ import { AUTHOR_NAME, AUTHOR_URL, DEFAULT_DESCRIPTION, GLOBAL_KEYWORDS, OG_IMAGE
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
-  title: { default: `${SITE_NAME} — প্রযুক্তি, এআই, গবেষণা ও ডিজিটাল সংস্কৃতি`, template: `%s | ${SITE_NAME}` },
+  title: { default: `${SITE_NAME} — প্রযুক্তি, গবেষণা, AI ও ডিজিটাল জীবন`, template: `%s | ${SITE_NAME}` },
   description: DEFAULT_DESCRIPTION,
   keywords: GLOBAL_KEYWORDS,
   authors: [{ name: AUTHOR_NAME, url: AUTHOR_URL }],
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     locale: 'bn_BD',
     siteName: SITE_NAME,
     url: SITE,
-    title: `${SITE_NAME} — প্রযুক্তি, এআই, গবেষণা ও ডিজিটাল সংস্কৃতি`,
+    title: `${SITE_NAME} — প্রযুক্তি, গবেষণা, AI ও ডিজিটাল জীবন`,
     description: DEFAULT_DESCRIPTION,
     images: [{ url: OG_IMAGE, width: 1672, height: 941, alt: 'সোহানুর রহমান | Notes' }],
   },
