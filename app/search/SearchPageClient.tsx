@@ -92,7 +92,8 @@ export default function SearchPageClient({ categories, menu, initialQuery = '' }
         .site-public .search-input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--fg); padding: 10px 12px; font: inherit; font-size: 18px; }
         .site-public .search-icon { flex: 0 0 auto; display: grid; place-items: center; color: var(--muted); padding: 0 4px 0 8px; }
         .site-public .search-submit { border: 0; border-radius: 10px; padding: 10px 18px; background: var(--accent); color: #fff; font: inherit; font-weight: 700; cursor: default; opacity: .9; }
-        .site-public .search-results-section { width: min(920px, 100%); margin: 0 auto; }
+        .site-public .search-results-section,
+        .site-public .search-empty-state { width: min(920px, 100%); margin: 0 auto; }
         .site-public .search-summary { margin: 0 0 18px; color: var(--muted); font-size: 14px; }
         .site-public .search-results { display: grid; gap: 0; border-top: 1px solid var(--line-2); }
         .site-public .search-result { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 22px; padding: 24px 0; border-bottom: 1px solid var(--line-2); }
@@ -111,7 +112,8 @@ export default function SearchPageClient({ categories, menu, initialQuery = '' }
         @media (max-width: 720px) {
           .site-public .search-page { padding: 52px 0 80px; }
           .site-public .search-hero { width: 100%; margin-bottom: 36px; }
-          .site-public .search-results-section { width: 100%; margin: 0; }
+          .site-public .search-results-section,
+          .site-public .search-empty-state { width: 100%; margin: 0; }
           .site-public .search-form { flex-direction: column; }
           .site-public .search-result { grid-template-columns: 1fr; gap: 14px; }
           .site-public .search-result-thumb { width: 100%; height: 190px; }
@@ -132,7 +134,9 @@ export default function SearchPageClient({ categories, menu, initialQuery = '' }
           </section>
 
           {tooShort ? (
-            <div className="search-empty">সার্চ করার জন্য কমপক্ষে ২টি অক্ষর লিখুন।</div>
+            <div className="search-empty-state">
+              <div className="search-empty">সার্চ করার জন্য কমপক্ষে ২টি অক্ষর লিখুন।</div>
+            </div>
           ) : query.trim() ? (
             <section className="search-results-section">
               <p className="search-summary">{loading ? 'ফলাফল খোঁজা হচ্ছে…' : `${results.length}টি ফলাফল`} · “{query.trim()}”</p>
@@ -158,7 +162,9 @@ export default function SearchPageClient({ categories, menu, initialQuery = '' }
               ) : null}
             </section>
           ) : (
-            <div className="search-empty">সার্চ বক্সে লিখলেই প্রকাশিত লেখাগুলো থেকে ফলাফল দেখাবে।</div>
+            <div className="search-empty-state">
+              <div className="search-empty">সার্চ বক্সে লিখলেই প্রকাশিত লেখাগুলো থেকে ফলাফল দেখাবে।</div>
+            </div>
           )}
         </div>
       </main>
