@@ -26,9 +26,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 }
 
-export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function CategoryPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ page?: string }> }) {
   const { slug } = await params
-  const [data, categories, menu] = await Promise.all([getCategoryBySlug(slug), getCategories(), getHeaderMenu()])
+  const query = await searchParams
+  const parsedPage = Number.parseInt(query.page || '1', 10)
+  const page = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1
+  const [data, categories, menu] = await Promise.all([getCategoryBySlug(slug, page), getCategories(), getHeaderMenu()])
   if (!data) notFound()
 
   const breadcrumbLd = breadcrumbJsonLd([
@@ -47,7 +50,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
             <div className="mag-section-head" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 8 }}>
               <div className="mag-kicker">বিভাগ</div>
               <h1 className="mag-article-title" style={{ fontSize: 'clamp(30px,4vw,46px)' }}>{data.category.name}</h1>
-              <p className="mag-meta">{data.posts.length} টি লেখা</p>
+              <p className="mag-meta">পৃষ্ঠা {page}</p>
             </div>
             {data.posts.length ? (
               <div className="mag-grid">
@@ -55,6 +58,12 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
               </div>
             ) : (
               <p className="mag-hero-dek">এই বিভাগে এখনো কোনো লেখা নেই।</p>
+            )}
+            {(page > 1 || data.hasMore) && (
+              <nav aria-label="বিভাগের পৃষ্ঠা" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, marginTop: 32 }}>
+                {page > 1 ? <Link href={`/category/${slug}/?page=${page - 1}`}>← আগের পৃষ্ঠা</Link> : <span />}
+                {data.hasMore ? <Link href={`/category/${slug}/?page=${page + 1}`}>পরের পৃষ্ঠা →</Link> : <span />}
+              </nav>
             )}
           </section>
         </div>
