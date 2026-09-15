@@ -53,7 +53,7 @@ export function ReadingProgress() {
   return <div className="mag-progress" style={{ width: `${pct}%` }} aria-hidden="true" />
 }
 
-export function ShareActions({ title, url }: { title: string; url: string }) {
+export function ShareActions({ title, url, compact = false }: { title: string; url: string; compact?: boolean }) {
   const [status, setStatus] = useState<'idle' | 'copied'>('idle')
 
   const copyLink = async () => {
@@ -91,8 +91,8 @@ export function ShareActions({ title, url }: { title: string; url: string }) {
   }
 
   return (
-    <div className="mag-share">
-      <style>{`.site-public .mag-share button:first-child::before { content:none !important; display:none !important; } .site-public .mag-share button:first-child svg { flex:0 0 auto; display:block; } .site-public .mag-share button:first-child { background:#d92b2b !important; background-color:#d92b2b !important; background-image:none !important; border-color:#d92b2b !important; color:#fff !important; } .site-public .mag-share button:first-child:hover { background:#b91f1f !important; background-color:#b91f1f !important; border-color:#b91f1f !important; color:#fff !important; } .site-public .mag-share button:last-child { border-color:#d92b2b !important; } .site-public .mag-share button:last-child:hover { border-color:#d92b2b !important; color:#d92b2b !important; }`}</style>
+    <div className={compact ? 'mag-share mag-share-compact' : 'mag-share'}>
+      <style>{`.site-public .mag-share button:first-child::before { content:none !important; display:none !important; } .site-public .mag-share button:first-child svg { flex:0 0 auto; display:block; } .site-public .mag-share button:first-child { background:#d92b2b !important; background-color:#d92b2b !important; background-image:none !important; border-color:#d92b2b !important; color:#fff !important; } .site-public .mag-share button:first-child:hover { background:#b91f1f !important; background-color:#b91f1f !important; border-color:#b91f1f !important; color:#fff !important; } .site-public .mag-share button:last-child { border-color:#d92b2b !important; } .site-public .mag-share button:last-child:hover { border-color:#d92b2b !important; color:#d92b2b !important; } .site-public .mag-share-compact { gap:7px; margin-top:12px; } .site-public .mag-share-compact button { min-height:36px; padding:7px 12px; gap:6px; font-size:13px; box-shadow:none; } .site-public .mag-share-compact button svg { width:15px; height:15px; } .site-public .mag-share-compact button:hover { transform:translateY(-1px); }`}</style>
       <button type="button" onClick={share} aria-label="Share this article" style={{ backgroundColor: '#d92b2b', borderColor: '#d92b2b', color: '#fff' }}>
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="18" cy="5" r="2.5" />
@@ -101,9 +101,11 @@ export function ShareActions({ title, url }: { title: string; url: string }) {
           <path d="m8.2 10.8 7.6-4.5" />
           <path d="m8.2 13.2 7.6 4.5" />
         </svg>
-        শেয়ার করুন
+        {compact ? 'শেয়ার' : 'শেয়ার করুন'}
       </button>
-      <button type="button" onClick={copyLink} aria-label="Copy article link" style={{ borderColor: '#d92b2b' }}>{status === 'copied' ? 'লিংক কপি হয়েছে' : 'লিংক কপি করুন'}</button>
+      <button type="button" onClick={copyLink} aria-label="Copy article link" style={{ borderColor: '#d92b2b' }}>
+        {compact ? (status === 'copied' ? 'কপি হয়েছে' : 'লিংক কপি') : (status === 'copied' ? 'লিংক কপি হয়েছে' : 'লিংক কপি করুন')}
+      </button>
     </div>
   )
 }
