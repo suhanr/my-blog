@@ -156,10 +156,10 @@ export function ShareActions({ title, url, compact = false }: { title: string; u
             position:fixed !important;
             left:20px !important;
             right:auto !important;
-            top:50% !important;
-            bottom:auto !important;
-            transform:translateY(-50%) !important;
-            z-index:80;
+            top:auto !important;
+            bottom:24px !important;
+            transform:none !important;
+            z-index:450;
             width:auto !important;
             padding:5px;
             gap:5px;
@@ -174,7 +174,7 @@ export function ShareActions({ title, url, compact = false }: { title: string; u
           }
           .site-public .mag-share-floating button { min-height:40px; padding:8px 12px; box-shadow:none; }
           .site-public .mag-share-floating button:first-child { box-shadow:0 6px 16px -10px rgba(217,43,43,.6); }
-          @keyframes magShareFloatIn { from { opacity:0; transform:translateY(calc(-50% + 8px)); } to { opacity:1; transform:translateY(-50%); } }
+          @keyframes magShareFloatIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
           @media (max-width:1100px) {
             .site-public .mag-share-floating { left:14px !important; }
           }
