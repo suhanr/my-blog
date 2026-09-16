@@ -18,7 +18,10 @@ export const metadata: Metadata = {
   creator: AUTHOR_NAME,
   publisher: AUTHOR_NAME,
   category: 'technology',
-  alternates: { canonical: SITE },
+  alternates: {
+    canonical: SITE,
+    types: { 'application/rss+xml': `${SITE}/feed.xml` },
+  },
   robots: {
     index: true,
     follow: true,
