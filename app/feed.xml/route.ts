@@ -40,17 +40,21 @@ export async function GET() {
         <guid isPermaLink="true">${escapeXml(url)}</guid>
         <description>${description}</description>
         <pubDate>${pubDate}</pubDate>
-        <author>${escapeXml(AUTHOR_NAME)}</author>
+        <dc:creator>${escapeXml(AUTHOR_NAME)}</dc:creator>
       </item>`
   }).join('')
 
+  const latestDate = posts.results[0]?.publishedAt || posts.results[0]?.updatedAt
+  const lastBuildDate = latestDate ? new Date(latestDate).toUTCString() : new Date().toUTCString()
+
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
     <title>${escapeXml(SITE_NAME)}</title>
     <link>${escapeXml(`${SITE}/`)}</link>
     <description>${escapeXml(DEFAULT_DESCRIPTION)}</description>
     <language>bn-BD</language>
+    <lastBuildDate>${lastBuildDate}</lastBuildDate>
     <generator>Suhanur Rahman Notes</generator>${items}
   </channel>
 </rss>`
