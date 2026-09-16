@@ -95,9 +95,12 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const [categories, menu] = await Promise.all([getCategories(), getHeaderMenu()])
   if (!p) notFound()
 
-  const [comments, allPosts] = await Promise.all([getComments(p.id), listPublishedPosts(8)])
+  const [comments, allPosts] = await Promise.all([getComments(p.id), listPublishedPosts(24)])
   const commentTree = buildCommentTree(comments)
-  const related = allPosts.filter((post) => post.id !== p.id && (post.categoryId === p.categoryId || !p.categoryId)).slice(0, 3) as unknown as Card[]
+  const candidates = allPosts.filter((post) => post.id !== p.id)
+  const sameCategory = p.categoryId ? candidates.filter((post) => post.categoryId === p.categoryId) : []
+  const fallbackPosts = candidates.filter((post) => !p.categoryId || post.categoryId !== p.categoryId)
+  const related = [...sameCategory, ...fallbackPosts].slice(0, 3) as unknown as Card[]
   const html = p.contentFormat === 'HTML' ? p.content : markdownToHtml(p.content)
   const color = catColor(p.categoryName)
   const shareUrl = `${SITE_ORIGIN}/${p.slug}/`
